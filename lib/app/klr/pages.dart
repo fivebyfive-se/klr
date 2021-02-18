@@ -18,13 +18,7 @@ class KlrPages extends FbfPageRouteList {
       builder: (context) => StartPage(),
       children: [
         DashboardSubPage.routeDefinition,
-        FbfSubPageRoute(
-          icon: PaletteSubPage.routeIcon,
-          activeIcon: PaletteSubPage.routeActiveIcon,
-          label: PaletteSubPage.routeLabel,
-          routeName: PaletteSubPage.routeName,
-          builder: (c) => PaletteSubPage(),
-        ),
+        PaletteSubPage.routeDefinition,
       ]
     ),
   ]);

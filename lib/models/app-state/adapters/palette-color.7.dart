@@ -32,7 +32,6 @@ class PaletteColorAdapter extends TypeAdapter<PaletteColor> {
     writer.writeHiveList(obj.transformations);
 
     writer.writeDoubleList(obj.shadeDeltas);
-
     writer.writeInt(obj.displayIndex);
   }
 }
