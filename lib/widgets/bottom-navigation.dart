@@ -1,56 +1,63 @@
 import 'package:flutter/material.dart';
+
 import 'package:klr/app/klr.dart';
+import 'package:klr/models/app-state.dart';
+import 'package:klr/views/views.dart';
 
 class BottomNavigation extends StatefulWidget {
-  BottomNavigation(this.config);
+  BottomNavigation(this.appState);
 
-  final BottomNavigationConfig config;
-
+  final AppState appState;
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  int _selectedIndex = 0;
+  List<BottomNavigationPage> get _pages => [
+    StartPage.makeNavigationPage(widget.appState),
+    PalettePage.makeNavigationPage(widget.appState),
+  ];
 
-  BottomNavigationConfig get _config => widget.config;
 
-  List<BottomNavigationBarItem> _buildItems() => _config.pages.map(
-    (p) => BottomNavigationBarItem(
+  BottomNavigationBarItem _pageToItem(BottomNavigationPage p) 
+    => BottomNavigationBarItem(
       icon: Icon(
-        p.disabled ? p.disabledIcon : p.icon,
-        color: p.disabled ? Klr.theme.bottomNavDisabled : Klr.theme.bottomNavForeground
+        p.disabled
+          ? p.disabledIcon
+          : p.icon,
+        color: p.disabled 
+          ? Klr.theme.bottomNavDisabled
+          : Klr.theme.bottomNavForeground
       ),
       activeIcon: Icon(p.activeIcon),
       label: p.disabled ? "" : p.label,
       tooltip: p.label
-    )).toList();
+    );
 
   void _onItemTapped(int index) {
-    if (!_config.pages[index].disabled) {
-      setState(() {
-        _selectedIndex = index;
-        _config.onSelectedIndexChanged?.call(_selectedIndex);
-      });
+    if (!_pages[index].disabled) {
+      Navigator.pushNamed(context, _pages[index].routeName);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = _config.intialSelectedIndex;
   }
 
   @override
   Widget build(BuildContext context) {
+    final nav = Navigator.of(context);
+    final currentRoute = ModalRoute.of(context).settings.name;
+    final currentIndex = _pages.indexWhere((p) => p.routeName == currentRoute);
+
     return BottomNavigationBar(
-      currentIndex: _selectedIndex,
+      currentIndex: currentIndex < 0 ? 0 : currentIndex,
       backgroundColor: Klr.theme.bottomNavBackground,
       unselectedItemColor: Klr.theme.bottomNavForeground,
       selectedItemColor: Klr.theme.bottomNavSelected,
-      showUnselectedLabels: false,
       onTap: _onItemTapped,
-      items: _buildItems()
+      items: _pages.map((p) => _pageToItem(p)).toList()
     );
   }
 }
@@ -60,6 +67,7 @@ class BottomNavigationPage {
     this.disabled = false,
     this.label,
     this.icon,
+    this.routeName,
     IconData activeIcon,
     IconData disabledIcon
   }) : activeIcon = activeIcon ?? icon,
@@ -70,16 +78,15 @@ class BottomNavigationPage {
   final IconData icon;
   final IconData activeIcon;
   final IconData disabledIcon;
+  final String routeName;
 }
 
 class BottomNavigationConfig {
   BottomNavigationConfig({
-    this.intialSelectedIndex,
     this.pages,
-    this.onSelectedIndexChanged
+    this.activePageRoute
   });
 
-  final int intialSelectedIndex;
   final List<BottomNavigationPage> pages;
-  final void Function(int) onSelectedIndexChanged;
+  final String activePageRoute;
 }

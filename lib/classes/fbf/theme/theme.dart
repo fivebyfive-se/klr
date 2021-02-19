@@ -140,7 +140,6 @@ class FivebyfiveTheme {
 
     dialogBackgroundColor: dialogBackground,
     
-    
     textTheme: fontTheme.textTheme,
     fontFamily: fontTheme.fontBody,
     

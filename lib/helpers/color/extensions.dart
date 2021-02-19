@@ -23,7 +23,7 @@ extension ColorExtensions on Color {
     => this.toHSL().deltaSaturation(delta).toColor();
 
   Color deltaLightness(double delta)
-    => this.toHSL().deltaSaturation(delta).toColor();
+    => this.toHSL().deltaLightness(delta).toColor();
 
   LinearGradient gradientTo(Color other, {Axis axis = Axis.vertical})
     => LinearGradient(
@@ -61,7 +61,7 @@ extension HSLColorExtensions on HSLColor {
 }
 
 double deltaRatio(double value, double delta)
-  => max(min(value * 100 + delta, 100.0), 0); 
+  => max(min(value * 100 + delta, 100.0), 0) / 100.0; 
 
 double rotateValue(double value, double delta, double max, {double min = 0}) {
   final res = value + delta;

@@ -10,7 +10,7 @@ class PaletteAdapter extends TypeAdapter<Palette> {
     return Palette.fromAdapter(
       reader.readString(),
       reader.readString(),
-      reader.readHiveList(),
+      reader.readHiveList().castHiveList<PaletteColor>(),
       reader.readInt()
     );
   }

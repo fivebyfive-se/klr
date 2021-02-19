@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class FbfPageRouteBase {
-  FbfPageRouteBase(this.routeName, this.builder);
+  FbfPageRouteBase(this.routeName);
 
   final String routeName;
-  final WidgetBuilder builder;
-
-  MapEntry<String, WidgetBuilder> toEntry()
-    => MapEntry(routeName, builder);
 }

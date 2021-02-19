@@ -26,7 +26,7 @@ class KlrTheme extends FivebyfiveTheme {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter
       ),
-      cardBackground: klrs.grey35,
+      cardBackground: klrs.grey20,
       cardForeground: klrs.grey95,
 
       dialogBackground: klrs.grey17,
@@ -46,24 +46,23 @@ class KlrTheme extends FivebyfiveTheme {
       appBarForeground: klrs.bamboo90,
 
       bottomNavBackground: klrs.grey25,
-      bottomNavForeground: klrs.bamboo90,
+      bottomNavForeground: klrs.grey80,
       bottomNavSelected: klrs.pink95,
       bottomNavDisabled: klrs.grey50,
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.green80, klrs.purple60],
+          colors: [klrs.orange99, klrs.pink20.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.purple60, klrs.pink30],
+          colors: [klrs.purple60, klrs.pink40, klrs.pink20],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),
-
 
       splashGradientStart: LinearGradient(
         begin: Alignment(2.5, -1.0),

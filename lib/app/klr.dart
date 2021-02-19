@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:klr/classes/fbf.dart';
+import 'package:klr/views/views.dart';
 
 import 'klr/colors.dart';
 import 'klr/pages.dart';
@@ -36,6 +37,8 @@ class _KlrApp extends StatelessWidget {
       title: Klr.appTitle,
       theme: Klr.theme.toThemeData(),
       routes: Klr.pages.routes,
-      initialRoute: Klr.pages.initialRoute,
+      home: SplashPage(
+        nextBuilder: (ctx) => StartPage(),
+      ),
     );
 }

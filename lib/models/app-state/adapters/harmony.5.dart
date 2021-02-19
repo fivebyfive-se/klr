@@ -10,7 +10,7 @@ class HarmonyAdapter extends TypeAdapter<Harmony> {
     return Harmony.fromAdapter(
       reader.readString(),
       reader.readString(),
-      reader.readHiveList()
+      reader.readHiveList().castHiveList<ColorTransform>()
     );
   }
 

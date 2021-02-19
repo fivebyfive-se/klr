@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:klr/klr.dart';
@@ -18,19 +16,23 @@ class SplashPage extends PageBase<SplashPageConfig> {
   static const String routeName = "/";
   static const String title = 'Splash';
 
-  SplashPage({this.timeout = 5000, this.transition = 1500})
+  SplashPage({
+    this.timeout = 5000,
+    this.transition = 1500,
+    this.nextBuilder
+  })
     : super("/");
 
   final int timeout;
   final int transition;
+  final WidgetBuilder nextBuilder;
     
   @override
   _SplashPageState createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  BuildContext        _context;
-  Size                _viewportSize;
+  Size get _viewportSize => MediaQuery.of(context).size;
   AnimationController _controller;
   bool _transStarted = false;
 
@@ -43,23 +45,23 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       end: Klr.theme.splashGradientEnd.toDeco(),
     );
 
-  void _transition({bool isDimiss = false, Offset swipeDelta}) {
-    if (_transStarted) {
+  void _transition({bool isDimiss = false}) {
+    final currentRouteName = ModalRoute.of(context).settings.name;
+    if (currentRouteName == 'start' || _transStarted) {
       return;
     }
     _transStarted = true;
     if (isDimiss) {
       _transDur = _transDur.divideBy(2);
     }
-    Navigator.of(_context)
-      .push(_createRoute(swipeDelta: swipeDelta));
+    Navigator.of(context).push(_createRoute());
   }
 
-  Route _createRoute({Offset swipeDelta}) => PageRouteBuilder(
+  Route _createRoute() => PageRouteBuilder(
     barrierDismissible: true,
 
     pageBuilder: (ctx, animation, secondAnimation)
-      => nextBuilder().call(ctx),
+      => widget.nextBuilder.call(ctx),
 
     transitionDuration: _transDur,
     reverseTransitionDuration: _transDur.multiplyBy(2),
@@ -110,9 +112,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    _viewportSize = MediaQuery.of(context).size;
-
     return DecoratedBoxTransition(
       position: DecorationPosition.background,
       decoration: _decoTween.chain(CurveTween(curve: Curves.easeIn)).animate(_controller),

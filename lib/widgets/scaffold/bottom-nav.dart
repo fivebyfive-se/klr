@@ -9,9 +9,7 @@ Widget scaffoldBottomNavigation<C extends PageConfig, A extends PageArguments>(
   C config,
   A arguments
 ) {
-  return (config is PageConfig_HasSubPages) 
-    ? BottomAppBar(
-        child: BottomNavigation(config.navigationConfig)
-    )
+  return (config is PageConfig_ScaffoldShowNavigation) 
+    ? BottomAppBar(child: BottomNavigation(config.appStateSnapshot))
     : null;
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:klr/classes/fbf/routing/sub-page-route.dart';
 
 import 'page-route.dart';
 
@@ -34,7 +33,4 @@ class FbfPageRouteList {
       ? pageRoutes[idx + 1] 
       : null;
   }
-
-  Iterable<FbfSubPageRoute> children(String routeName)
-    => routeByName(routeName)?.children ?? [];
 }

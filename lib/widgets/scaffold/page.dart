@@ -30,13 +30,17 @@ Widget scaffoldPage<C extends PageConfig,A extends PageArguments>(
   final drawer = scaffoldDrawer<C,A>(context, config, arguments);
   return Scaffold(
     backgroundColor: Klr.theme.background,
+
     appBar: appBar,
+
     bottomNavigationBar: navBar,
+
     floatingActionButton: fab,
     floatingActionButtonLocation: 
-    (config is PageConfig_HasSubPages)
+    (config is PageConfig_ScaffoldShowNavigation)
       ? FloatingActionButtonLocation.miniCenterDocked
       : FloatingActionButtonLocation.centerDocked,
+
     drawer: drawer,
 
     body: (config is PageConfig_ScaffoldNoContainer) 

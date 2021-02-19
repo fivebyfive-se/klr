@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:klr/app/klr.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/widgets/bottom-sheet-menu.dart';
 
 class AppStateService {
   static const String rootKey = "klrState";
@@ -48,17 +51,6 @@ class AppStateService {
     (await PaletteColor.ensureBoxOf()).listen(onBoxEvent);
     (await Palette.ensureBoxOf()).listen(onBoxEvent);
     (await AppStateStore.ensureBoxOf()).listen(onBoxEvent);
-
-    // await Hive.openBoxes([
-    //   ColorTransform.boxPath,
-    //   Harmony.boxPath,
-    //   PaletteColor.boxPath,
-    //   Palette.boxPath,
-    //   AppStateStore.boxPath,
-    // ], onUpdate: (event) {
-    //   print(event.key);
-    //   _update();
-    // });    
   }
 
   Future<ColorTransform> createColorTransform() async
@@ -93,3 +85,4 @@ class AppStateService {
 
 AppStateService appStateService() 
   => AppStateService.getInstance();
+

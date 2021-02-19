@@ -103,12 +103,12 @@ class FivebyfiveFontTheme {
     ).copyWith(headline6: heading(fontRatio: .15)
     
     ).copyWith(
-      subtitle1: heading(
+      subtitle1: body(
         fontRatio: .085,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w800,
         fontStyle: FontStyle.normal
       )
-    ).copyWith(subtitle2: heading(fontRatio: .06)
+    ).copyWith(subtitle2: body(fontRatio: .06)
 
     ).copyWith(
       bodyText1: body(

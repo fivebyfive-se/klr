@@ -15,7 +15,7 @@ class PaletteColorAdapter extends TypeAdapter<PaletteColor> {
 
       reader.readDoubleList(),
 
-      reader.readHiveList(),
+      reader.readHiveList().castHiveList<ColorTransform>(),
 
       reader.readDoubleList(),
       reader.readInt(),

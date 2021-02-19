@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:klr/app/klr.dart';
-import 'package:klr/classes/fbf/routing/sub-page-route.dart';
+
 import 'package:klr/models/app-state/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
+
 import 'package:klr/views/base/page-arguments.dart';
-import 'package:klr/views/subpages/start/palette.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
+import 'package:klr/widgets/bottom-sheet-menu.dart';
 
 import 'base/_page-base.dart';
 
 class StartPage extends PageBase<StartPageConfig> {
+  static Color pageAccent = Klr.colors.pink95;
+  static Color onPageAccent = Klr.colors.grey05; 
   static const String routeName = '/start';
-  static const String title = 'Start';
+  static const String title = 'Dashboard';
+
+  static BottomNavigationPage makeNavigationPage(AppState state)
+    => BottomNavigationPage(
+      icon: Icons.dashboard_outlined,
+      activeIcon: Icons.dashboard,
+      label: 'Dashboard',
+      routeName: routeName,
+      disabled: false
+    );
 
   StartPage() : super(routeName);
 
@@ -22,72 +34,74 @@ class StartPage extends PageBase<StartPageConfig> {
 class _StartPageState extends State<StartPage> {
   AppStateService _appStateService = AppStateService.getInstance();
   AppState get _appState => _appStateService.snapshot;
-  int _currentPageIndex = 0;
 
-  Widget _buildCurrentPage(BuildContext context)
-    => getChildren()
-        .elementAt(_currentPageIndex)
-        .builder(context);
+  List<BottomSheetMenuItem<String>> get _menuItems => [
+    BottomSheetMenuItem<String>(
+      icon: Icon(Icons.add_box_outlined, color: Klr.theme.primaryAccent),
+      title: "New palette",
+      subtitle: "Create a new color palette",
+      value: "Create"
+    ),
+    BottomSheetMenuItem<String>(
+      icon: Icon(Icons.cancel_outlined, color: Klr.theme.secondaryAccent),
+      title: "Cancel",
+      subtitle: "Close this menu",
+      value: "Cancel"
+    )
+  ];
 
-  List<BottomNavigationPage> _buildPageList() {
-    return getChildren().map((c) => BottomNavigationPage(
-      label: c.label,
-      icon: c.icon,
-      activeIcon: c.activeIcon,
-      disabledIcon: c.icon,
-      disabled: c.routeName == 'palette' && _appState.currentPalette == null
-    )).toList();
+  Future<void> _createPalette() async {
+    final p = await _appStateService.createPalette();
+    await _appStateService.setCurrentPalette(p);
   }
 
-  void _pageIndexChanged(int index)
-    => setState(() => _currentPageIndex = index); 
-
-  Future<void> _fabPressed() async {
-    await _appStateService.createPalette();
+  void _onMenuSelect(String value) {
+    if (value == "Create") {
+      _createPalette();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final args = PageArguments.of<StartPageArguments>(context);
+
     return StreamBuilder<AppState>(
       stream: _appStateService.appStateStream,
       initialData: _appStateService.snapshot,
-      builder: (context, appData) => scaffold<StartPageConfig,PageArguments>(
+      builder: (context, snapshot) => scaffold<StartPageConfig,StartPageArguments>(
         context: context,
         config: StartPageConfig(
-          fabIcon: Icons.add_box_outlined,
-          fabOnPressed: _fabPressed,
-          initialSelectedIndex: _currentPageIndex,
-          onSelectedIndexChanged: _pageIndexChanged,
-          pages: _buildPageList()
+          appStateSnapshot: snapshot.data,
+          fabMenuItems: _menuItems,
+          fabOnSelect: _onMenuSelect,
         ),
-        builder: (context, data, _) 
-          => Container(
-            child: _buildCurrentPage(context)
-          )
+        builder: (context, data, _) => Container(
+          child: Container()
+        )
       )
     );
   }
 }
 
-class StartPageConfig extends PageConfig 
-                         with PageConfig_HasSubPages,
-                              PageConfig_ScaffoldFloatingButton
+class StartPageArguments extends PageArguments {}
+
+class StartPageConfig extends PageConfig<StartPageArguments> 
+                         with PageConfig_ScaffoldHasFabMenu<StartPageArguments>, 
+                              PageConfig_ScaffoldShowNavigation<StartPageArguments>
 {
   StartPageConfig({
-    int initialSelectedIndex = 0,
-    Iterable<BottomNavigationPage> pages,
-    Function(int) onSelectedIndexChanged,
-    this.fabIcon,
-    this.fabOnPressed,
-  }) : this.navigationConfig = BottomNavigationConfig(
-    intialSelectedIndex: initialSelectedIndex,
-    pages: pages.toList(),
-    onSelectedIndexChanged: onSelectedIndexChanged
-  );
+    this.appStateSnapshot,
+    this.fabMenuItems,
+    this.fabOnSelect
+  });
 
-  final BottomNavigationConfig navigationConfig;
-  final IconData fabIcon;
-  final Function fabOnPressed;
+  final AppState appStateSnapshot;
+  final List<BottomSheetMenuItem<String>> fabMenuItems;
+  final void Function(String) fabOnSelect;
+  final String fabTitle = 'Dashboard actions';
+  final Color fabBackgroundColor = StartPage.pageAccent;
+  final Color fabIconColor = StartPage.onPageAccent;
+  final IconData fabTitleIcon = Icons.dashboard;
 }
 
 
