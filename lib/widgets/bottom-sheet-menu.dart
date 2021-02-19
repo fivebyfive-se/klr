@@ -29,7 +29,7 @@ class BottomSheetMenu<T> extends StatelessWidget {
           ListTile(
             leading: titleIcon,
             tileColor: titleBackgroundColor ?? Colors.transparent,
-            title: Txt.sub1(
+            title: Txt.subtitle2(
               title,
               style: TextStyle(color: titleColor ?? Klr.theme.secondaryAccent)
             )

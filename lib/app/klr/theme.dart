@@ -14,9 +14,11 @@ class KlrForty extends FivebyfiveTheme {
 class KlrTheme extends FivebyfiveTheme {
   static KlrColors klrs = KlrColors.getInstance();
 
-  KlrTheme()
+  KlrTheme(
+    FivebyfiveFontTheme fontTheme
+  )
     : super(
-      fontTheme: KlrFontTheme(),
+      fontTheme: fontTheme,
       background: klrs.grey05,
       foreground: klrs.grey95,
       foregroundDisabled: klrs.grey60,

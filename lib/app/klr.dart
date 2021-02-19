@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klr/app/klr/font-theme.dart';
 
 import 'package:klr/classes/fbf.dart';
 import 'package:klr/views/views.dart';
@@ -18,7 +19,8 @@ class Klr {
 
   static KlrColors colors = KlrColors.getInstance();
 
-  static FivebyfiveTheme theme = KlrTheme();
+  static FivebyfiveFontTheme fontTheme = KlrFontTheme();
+  static FivebyfiveTheme theme = KlrTheme(fontTheme);
 
   static ThemeData get themeData => theme.toThemeData();
   static TextTheme get textTheme => themeData.textTheme;

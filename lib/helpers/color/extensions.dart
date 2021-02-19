@@ -55,8 +55,11 @@ extension HSLColorExtensions on HSLColor {
   List<double> toList()
     => [this.hue, this.saturation, this.lightness, this.alpha];
 
+  String toHex({bool includeHash = false})
+    => this.toColor().toHex(includeHash: includeHash);
+
   String toCss({bool hex = true}) 
-    => hex ? this.toColor().toHex(includeHash: true) 
+    => hex ? this.toHex(includeHash: true) 
       : "hsla(${this.hue}, ${this.saturation}, ${this.lightness}, ${this.alpha})";
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
@@ -74,7 +75,7 @@ class PaletteColor extends BaseModel {
   static PaletteColor scaffold({String name})
     => PaletteColor(
       name: name ?? "New color",
-      color: HSLColor.fromAHSL(0, 0, 0, 0),
+      color: HSLColor.fromColor(Colors.grey),
       shadeDeltas: <double>[],
       transformations: ColorTransform.listOf()
     );

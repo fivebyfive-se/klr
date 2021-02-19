@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:klr/klr.dart';
+import 'package:klr/helpers/color.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/views/views.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/txt.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class PalettePage extends PageBase<PalettePageConfig> {
   static Color pageAccent = Klr.colors.orange99;
   static Color onPageAccent = Klr.colors.grey05; 
 
   static const String routeName = '/palette';
-  static const String title = 'Palette';
+  static const String title = 'palette';
 
   static BottomNavigationPage makeNavigationPage(AppState state)
     => BottomNavigationPage(
@@ -30,6 +33,7 @@ class PalettePage extends PageBase<PalettePageConfig> {
 
 class _PalettePageState extends State<PalettePage> {
   AppStateService _appStateService = AppStateService.getInstance();
+  Palette get _currPalette => _appStateService.snapshot.currentPalette;
 
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
@@ -46,8 +50,16 @@ class _PalettePageState extends State<PalettePage> {
     )
   ];
 
-  void _onMenuSelect(String value) {
+  Future<void> _createColor() async {
+    final color = await _appStateService.createColor();
+    _currPalette.colors.add(color);
+    await _currPalette.save();
+  }
 
+  void _onMenuSelect(String value) {
+    if (value == "Create") {
+      _createColor();
+    }
   }
 
   @override
@@ -64,8 +76,29 @@ class _PalettePageState extends State<PalettePage> {
           fabMenuItems: _menuItems,
           fabOnSelect: _onMenuSelect
         ),
-        builder: (context, data, _) => Container(
-          child: Container()
+        builder: (context, data, _) => Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Txt.title(_currPalette.name)
+            ),
+            Expanded(
+              flex: 11,
+              child: ListView(
+                children: <Widget>[
+                    ListTile(
+                      leading: Icon(LineAwesomeIcons.paint_roller),
+                      title: Txt.subtitle1('Colors'),
+                    ),
+                    ..._currPalette.colors.map((c) => ListTile(
+                      title: Text(c.name),
+                      subtitle: Text(c.color.toHex()),
+                      leading: Icon(LineAwesomeIcons.square_full, color: c.color.toColor())
+                    )).toList()
+                ]
+              )
+            )
+          ],
         )
       )
     );
@@ -73,24 +106,22 @@ class _PalettePageState extends State<PalettePage> {
 }
 
 class PalettePageArguments extends PageArguments {}
-
-class PalettePageConfig extends PageConfig<PalettePageArguments> 
-                         with PageConfig_ScaffoldHasFabMenu<PalettePageArguments>, 
-                              PageConfig_ScaffoldShowNavigation<PalettePageArguments>
+class PalettePageConfig extends DefaultPageConfig<PalettePageArguments> 
 {
   PalettePageConfig({
-    this.appStateSnapshot,
-    this.fabMenuItems,
-    this.fabOnSelect,
-  });
-
-  final AppState appStateSnapshot;
-  final List<BottomSheetMenuItem<String>> fabMenuItems;
-  final void Function(String) fabOnSelect;
-  final String fabTitle = 'Palette actions';
-  final Color fabBackgroundColor = PalettePage.pageAccent;
-  final Color fabIconColor = PalettePage.onPageAccent;
-  final IconData fabTitleIcon = Icons.palette;
+    AppState appStateSnapshot,
+    List<BottomSheetMenuItem<String>> fabMenuItems,
+    void Function(String) fabOnSelect,
+  }) : super(
+    appStateSnapshot: appStateSnapshot,
+    fabMenuItems: fabMenuItems,
+    fabOnSelect: fabOnSelect,
+    fabBackgroundColor: PalettePage.pageAccent,
+    fabIconColor: PalettePage.onPageAccent,
+    fabTitle: 'Palette actions',
+    fabTitleIcon: Icons.palette,
+    pageTitle: PalettePage.title
+  );
 }
 
 
