@@ -18,6 +18,9 @@ class AppState {
   final List<Harmony> harmonies;
   final AppStateStore stateStore;
 
+  int get numPalettes => palettes?.length ?? 0;
+  int get numHarmonies => harmonies?.length ?? 0;
+
   Palette get currentPalette 
     => stateStore.currentPalette == null || palettes == null || palettes.isEmpty 
       ? null
