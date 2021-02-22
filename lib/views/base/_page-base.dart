@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:klr/classes/fbf/routing/page-route.dart';
+import 'package:klr/klr.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -29,6 +31,20 @@ extension PageStateExtensions on State<PageBase> {
   }) => scaffoldPage<T,A>(
     context, config, PageArguments.of<A>(context), builder
   );
+
+  int get currentRouteIndex
+    => Klr.pages.pageRoutes.indexWhere((pr) => pr.routeName == widget.pageRoute);
+  
+  int get nextRouteIndex
+    => currentRouteIndex >= 0 && Klr.pages.pageRoutes.length > currentRouteIndex + 1 
+    ? currentRouteIndex + 1 : 0;
+  
+  FbfPageRoute get nextRoutePage => Klr.pages.pageRoutes[nextRouteIndex]; 
+
+  String        get nextRouteName => nextRoutePage.routeName;
+  WidgetBuilder get nextRouteBuilder => nextRoutePage.builder;
+
+  Size get viewportSize => MediaQuery.of(context).size;
 }
 
 

@@ -4,6 +4,10 @@ import 'package:klr/views/views.dart';
 class KlrPages extends FbfPageRouteList {
   KlrPages() : super(<FbfPageRoute>[
     FbfPageRoute(
+      routeName: SplashPage.routeName,
+      builder: (context) => SplashPage()
+    ),
+    FbfPageRoute(
       routeName: StartPage.routeName,
       builder: (context) => StartPage(),
     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:klr/klr.dart';
 import 'package:klr/helpers/color.dart';
 import 'package:klr/models/app-state.dart';
@@ -6,6 +7,9 @@ import 'package:klr/services/app-state-service.dart';
 import 'package:klr/views/views.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/dialogs/palette-color-dialog.dart';
+import 'package:klr/widgets/palette-color-widget.dart';
+import 'package:klr/widgets/togglable-text-editor.dart';
 import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -34,13 +38,19 @@ class PalettePage extends PageBase<PalettePageConfig> {
 class _PalettePageState extends State<PalettePage> {
   AppStateService _appStateService = AppStateService.getInstance();
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
-
+ 
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.add_box_outlined, color: Klr.theme.tertiaryAccent),
       title: "New color",
       subtitle: "Create a new color in this palette",
       value: "Create"
+    ),
+    BottomSheetMenuItem<String>(
+      icon: Icon(Icons.delete_forever, color: Klr.colors.red70),
+      title: "Delete palette",
+      subtitle: "Remove this palette",
+      value: "Delete"
     ),
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.cancel_outlined, color: Klr.theme.secondaryAccent),
@@ -55,10 +65,25 @@ class _PalettePageState extends State<PalettePage> {
     _currPalette.colors.add(color);
     await _currPalette.save();
   }
+  Future<void> _deletePalette() async {
+    await _currPalette.delete();
+    Navigator.pushNamed(context, StartPage.routeName);
+  }
+
+  Future<void> _selectHarmony(PaletteColor c, Harmony h) async {
+    c.harmony = (h == null) ? null : h.uuid;
+    c.transformations.clear();
+    if (h != null) {
+      c.transformations.addAll(h.transformations.toList());
+    }
+    await c.save();
+  }
 
   void _onMenuSelect(String value) {
     if (value == "Create") {
       _createColor();
+    } else if (value == "Delete") {
+      _deletePalette();
     }
   }
 
@@ -76,25 +101,36 @@ class _PalettePageState extends State<PalettePage> {
           fabMenuItems: _menuItems,
           fabOnSelect: _onMenuSelect
         ),
-        builder: (context, data, _) => Column(
+        builder: (context, data, _) => _currPalette == null ? null : Column(
           children: [
             Expanded(
               flex: 1,
-              child: Txt.title(_currPalette.name)
+              child: TogglableTextEditor(
+                initalText: _currPalette.name,
+                onChanged: (v) {
+                  _currPalette.name = v;
+                  _currPalette.save();
+                },
+              )
             ),
             Expanded(
-              flex: 11,
-              child: ListView(
-                children: <Widget>[
-                    ListTile(
-                      leading: Icon(LineAwesomeIcons.paint_roller),
-                      title: Txt.subtitle1('Colors'),
-                    ),
-                    ..._currPalette.colors.map((c) => ListTile(
-                      title: Text(c.name),
-                      subtitle: Text(c.color.toHex()),
-                      leading: Icon(LineAwesomeIcons.square_full, color: c.color.toColor())
-                    )).toList()
+              flex: 10,
+              child: GridView.count(
+                primary: false,
+                padding: const EdgeInsets.all(5),
+                crossAxisCount: 2,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                children: <Widget>[                   
+                  ..._currPalette.colors.map(
+                    (c) => PaletteColorWidget(
+                      paletteColor: c,
+                      onPressed: () {
+                        showPaletteColorDialog(context, c);
+                      },
+                      size: viewportSize.width / 10
+                    )
+                  ).toList()
                 ]
               )
             )

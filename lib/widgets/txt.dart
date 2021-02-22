@@ -58,38 +58,39 @@ class Txt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context)
-    => Text(text, style: typeToStyle(type).merge(style));
-}
+    => Text(text, style: typeStyle(type).merge(style));
 
-TextStyle typeToStyle(TxtType type) {
+  static TextStyle typeStyle(TxtType type) {
   final t = Klr.theme.fontTheme.textTheme;
-  switch (type) {
-    case TxtType.h6: return t.headline6;
-    case TxtType.h5: return t.headline5;
-    case TxtType.h4: return t.headline4;
-    case TxtType.h3: return t.headline3;
-    case TxtType.h2: return t.headline2;
-    case TxtType.h1: return t.headline1;
-    case TxtType.title:
-      return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.25));
-    case TxtType.subtitle1:
-      return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.20));
-    case TxtType.subtitle2:
-      return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.15));
-    case TxtType.subtitle3: return t.subtitle1;
-    case TxtType.subtitle4: return t.subtitle2;
-    case TxtType.overline: return t.overline;
-    case TxtType.strong:
-      return t.bodyText1.copyWith(fontWeight: FontWeight.w600);
-    case TxtType.em:
-      return t.bodyText1.copyWith(fontStyle: FontStyle.italic);
-    case TxtType.light:
-      return t.bodyText1.copyWith(fontWeight: FontWeight.w100);
-    case TxtType.paragraph:
-    default:
-      return t.bodyText1;
+    switch (type) {
+      case TxtType.h6: return t.headline6;
+      case TxtType.h5: return t.headline5;
+      case TxtType.h4: return t.headline4;
+      case TxtType.h3: return t.headline3;
+      case TxtType.h2: return t.headline2;
+      case TxtType.h1: return t.headline1;
+      case TxtType.title:
+        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.25));
+      case TxtType.subtitle1:
+        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.20));
+      case TxtType.subtitle2:
+        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.15));
+      case TxtType.subtitle3: return t.subtitle1;
+      case TxtType.subtitle4: return t.subtitle2;
+      case TxtType.overline: return t.overline;
+      case TxtType.strong:
+        return t.bodyText1.copyWith(fontWeight: FontWeight.w600);
+      case TxtType.em:
+        return t.bodyText1.copyWith(fontStyle: FontStyle.italic);
+      case TxtType.light:
+        return t.bodyText1.copyWith(fontWeight: FontWeight.w100);
+      case TxtType.paragraph:
+      default:
+        return t.bodyText1;
+    }
   }
 }
+
 
 enum TxtType {
   paragraph,

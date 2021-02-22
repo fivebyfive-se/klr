@@ -18,6 +18,7 @@ class PaletteColor extends BaseModel {
     this.transformations,
     this.shadeDeltas,
     this.displayIndex = 0,
+    this.harmony
   }) : super();
 
   PaletteColor.fromAdapter(
@@ -27,11 +28,13 @@ class PaletteColor extends BaseModel {
     HiveList<ColorTransform> transformations,
     List<double> shadeDeltas,
     int displayIndex,
+    String harmony,
   ) : name = name,
       color = hslColorFromList(channels),
       transformations = transformations,
-      shadeDeltas = shadeDeltas,
-      displayIndex = displayIndex,
+      shadeDeltas = shadeDeltas ?? <double>[],
+      displayIndex = displayIndex ?? 0,
+      harmony = harmony,
       super.fromAdapter(uuid);
 
   @HiveField(1)
@@ -48,6 +51,9 @@ class PaletteColor extends BaseModel {
 
   @HiveField(5)
   int displayIndex;
+
+  @HiveField(6)
+  String harmony; 
 
   List<HSLColor> get shades
     => shadeDeltas.map((d) => color.deltaLightness(d)).toList();

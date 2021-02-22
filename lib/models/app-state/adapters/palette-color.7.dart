@@ -19,6 +19,7 @@ class PaletteColorAdapter extends TypeAdapter<PaletteColor> {
 
       reader.readDoubleList(),
       reader.readInt(),
+      reader.readString()
     );
   }
 
@@ -33,5 +34,6 @@ class PaletteColorAdapter extends TypeAdapter<PaletteColor> {
 
     writer.writeDoubleList(obj.shadeDeltas);
     writer.writeInt(obj.displayIndex);
+    writer.writeString(obj.harmony ?? "");
   }
 }

@@ -39,8 +39,6 @@ class _KlrApp extends StatelessWidget {
       title: Klr.appTitle,
       theme: Klr.theme.toThemeData(),
       routes: Klr.pages.routes,
-      home: SplashPage(
-        nextBuilder: (ctx) => StartPage(),
-      ),
+      initialRoute: SplashPage.routeName,
     );
 }

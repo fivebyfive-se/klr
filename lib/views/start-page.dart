@@ -56,8 +56,8 @@ class _StartPageState extends State<StartPage> {
   ];
 
   Future<void> _createPalette() async {
-    final p = await _appStateService.createPalette();
-    await _appStateService.setCurrentPalette(p);
+    final p = await _appStateService.createBuiltinPalette();
+    // await _appStateService.setCurrentPalette(p);
   }
 
   void _onMenuSelect(String value) {

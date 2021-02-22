@@ -79,7 +79,7 @@ class ColorTransform extends BaseModel {
     => Hive.box<ColorTransform>(boxPath);
 
   static HiveList<ColorTransform> listOf()
-    => HiveList<ColorTransform>(boxOf());
+    => HiveList<ColorTransform>(boxOf(), objects: []);
 
   static ColorTransform scaffold()
     => ColorTransform();

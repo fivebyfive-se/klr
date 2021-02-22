@@ -49,6 +49,10 @@ class AppStateService {
     (await PaletteColor.ensureBoxOf()).listen(onBoxEvent);
     (await Palette.ensureBoxOf()).listen(onBoxEvent);
     (await AppStateStore.ensureBoxOf()).listen(onBoxEvent);
+
+    if (Harmony.boxOf().isEmpty) {
+      await BuiltinBuilder.buildHarmonies();
+    }
   }
 
   Future<ColorTransform> createColorTransform() async
@@ -66,6 +70,16 @@ class AppStateService {
   Future<void> setCurrentPalette(Palette p) async {
     snapshot.stateStore.currentPalette = p.uuid;
     await snapshot.stateStore.save();
+  }
+
+  Future<Palette> createBuiltinPalette() async {
+    final p = await BuiltinBuilder.buildPalette();
+    await setCurrentPalette(p);
+    return p;
+  }
+
+  Future<void> createHarmonies() async {
+
   }
 
   void dispose() {

@@ -18,14 +18,12 @@ class SplashPage extends PageBase<SplashPageConfig> {
 
   SplashPage({
     this.timeout = 5000,
-    this.transition = 1500,
-    this.nextBuilder
+    this.transition = 1500
   })
     : super("/");
 
   final int timeout;
   final int transition;
-  final WidgetBuilder nextBuilder;
     
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -47,7 +45,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   void _transition({bool isDimiss = false}) {
     final currentRouteName = ModalRoute.of(context).settings.name;
-    if (currentRouteName == 'start' || _transStarted) {
+    print(currentRouteName);
+    if (currentRouteName != SplashPage.routeName || _transStarted) {
       return;
     }
     _transStarted = true;
@@ -59,10 +58,13 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   Route _createRoute() => PageRouteBuilder(
     barrierDismissible: true,
-
+    opaque: false,
+    maintainState: true,
+    fullscreenDialog: true,
+    
     pageBuilder: (ctx, animation, secondAnimation)
-      => widget.nextBuilder.call(ctx),
-
+      => nextRouteBuilder.call(ctx),
+    settings: RouteSettings(name: nextRouteName),
     transitionDuration: _transDur,
     reverseTransitionDuration: _transDur.multiplyBy(2),
 
