@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:klr/app/klr.dart';
 import 'package:klr/helpers/color.dart';
 import 'package:klr/models/app-state.dart';
+import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/txt.dart';
 
 void showCssDialog(BuildContext context, Palette palette)
@@ -52,21 +53,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
       return AlertDialog(
         backgroundColor: Klr.theme.dialogBackground,
         actions: [
-          TextButton(
-            child: Txt.subtitle3("Close"),
-            onPressed: () => Navigator.pop(context),
-            style: ButtonStyle(
-              padding: MaterialStateProperty.all(
-                EdgeInsets.all(10.0)
-              ),
-              minimumSize: MaterialStateProperty.all(
-                Size(50,30)
-              ),
-              backgroundColor: MaterialStateProperty.all(
-                Klr.theme.primaryAccent
-              )
-            ),
-          )
+          btn("Close", onPressed: () => Navigator.pop(context))
         ],
         title: Row(
           children: [

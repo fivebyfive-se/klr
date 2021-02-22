@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:klr/app/klr.dart';
 import 'package:klr/widgets/txt.dart';
 
-typedef BottomSheetMenuItemBuilder<T> = BottomSheetMenuItem<T> Function(T item);
+typedef BottomSheetMenuItemBuilder<T>
+  = BottomSheetMenuItem<T> Function(T item);
 
 class BottomSheetMenu<T> extends StatelessWidget {
   BottomSheetMenu({
@@ -16,7 +17,7 @@ class BottomSheetMenu<T> extends StatelessWidget {
 
   final String title;
   final List<BottomSheetMenuItem<T>> items;
-  final void Function(T) onSelect;
+  final Function(T) onSelect;
   final Color titleColor;
   final Color titleBackgroundColor;
   final Widget titleIcon;
@@ -59,7 +60,7 @@ class BottomSheetMenu<T> extends StatelessWidget {
     Color titleColor,
     Color titleBackgroundColor,
     List<BottomSheetMenuItem<X>> items,
-    void Function(X) onSelect,
+    Function(X) onSelect,
   }) {
     showModalBottomSheet<void>(
       backgroundColor: Klr.theme.cardBackground,
@@ -83,4 +84,8 @@ class BottomSheetMenuItem<T> {
   final Widget icon;
   final String title;
   final String subtitle;
+}
+
+class BottomSheetMenuCommand {
+
 }

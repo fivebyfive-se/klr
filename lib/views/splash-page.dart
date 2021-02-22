@@ -11,6 +11,7 @@ import 'package:klr/widgets/logo.dart';
 import 'package:klr/helpers/size-helpers.dart' show size;
 
 import 'base/_page-base.dart';
+import 'start-page.dart';
 
 class SplashPage extends PageBase<SplashPageConfig> {
   static const String routeName = "/";
@@ -45,7 +46,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   void _transition({bool isDimiss = false}) {
     final currentRouteName = ModalRoute.of(context).settings.name;
-    print(currentRouteName);
     if (currentRouteName != SplashPage.routeName || _transStarted) {
       return;
     }
@@ -62,9 +62,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     maintainState: true,
     fullscreenDialog: true,
     
-    pageBuilder: (ctx, animation, secondAnimation)
-      => nextRouteBuilder.call(ctx),
-    settings: RouteSettings(name: nextRouteName),
+    pageBuilder: (ctx, animation, secondAnimation) => StartPage(),
+    settings: RouteSettings(name: StartPage.routeName),
     transitionDuration: _transDur,
     reverseTransitionDuration: _transDur.multiplyBy(2),
 

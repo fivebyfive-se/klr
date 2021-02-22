@@ -7,6 +7,7 @@ import 'package:klr/helpers/color.dart';
 import 'package:klr/helpers/iterable.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
+import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
 import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -68,7 +69,7 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
         }
         saveColor();
       };
-
+ 
       return AlertDialog(
             backgroundColor: Klr.theme.dialogBackground,
             title: TogglableTextEditor(
@@ -79,8 +80,8 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
               },
             ),
             actions: [
-              TextButton(
-                child: Txt.subtitle1("Close"),
+              btn(
+                "Close",
                 onPressed: () => Navigator.pop(context),
               )
             ],
@@ -89,76 +90,97 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
               height: viewportSize.height - viewportSize.height / 3,
               child: ListView(
                 children: <Widget>[
-                  ColorPicker(
-                    pickerColor: paletteColor.color.toColor(),
-                    onColorChanged: setColor,
-                    colorPickerWidth: viewportSize.width / 4,
-                    pickerAreaHeightPercent: 0.5,
-                    enableAlpha: true,
-                    displayThumbColor: true,
-                    showLabel: false,
-                    paletteType: PaletteType.hsl,
-                    pickerAreaBorderRadius: const BorderRadius.only(
-                      topLeft: const Radius.circular(2.0),
-                      topRight: const Radius.circular(2.0),
+                  Container(
+                    height: viewportSize.height / 6,
+                    child: ColorPicker(
+                      pickerColor: paletteColor.color.toColor(),
+                      onColorChanged: setColor,
+                      colorPickerWidth: viewportSize.width / 4,
+                      enableAlpha: true,
+                      displayThumbColor: true,
+                      showLabel: false,
+                      paletteType: PaletteType.hsl,
+                      pickerAreaBorderRadius: const BorderRadius.only(
+                        topLeft: const Radius.circular(4.0),
+                        topRight: const Radius.circular(4.0),
+                      ),
                     ),
                   ),
-                  Wrap(
-                    children: [
-                      Txt.subtitle2('Harmony/generator:'),
-                      Txt.subtitle2(' '),
-                      PopupMenuButton<String>(
-                        initialValue: paletteColor.harmony,
-                        child: Txt.subtitle2(harmonyNameById(paletteColor.harmony)),
-                        onSelected: selectHarmony,
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: "",
-                            child: Text('None')
-                          ),
-                          PopupMenuDivider(),
-                          ...harmonies.map((h) => PopupMenuItem(
-                            child: Text(h.name),
-                            value: h.uuid
-                          )).toList(),
-                      ]),
-                      
-                    ],
+                  Divider(),
+                  Container(
+                    height: viewportSize.height / 8,
+                    child: Wrap(
+                      children: [
+                        Txt.subtitle2('Harmony/generator:'),
+                        Txt.subtitle2(' '),
+                        PopupMenuButton<String>(
+                          initialValue: paletteColor.harmony,
+                          child: Txt.subtitle2(harmonyNameById(paletteColor.harmony)),
+                          onSelected: selectHarmony,
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: "",
+                              child: Text('None')
+                            ),
+                            PopupMenuDivider(),
+                            ...harmonies.map((h) => PopupMenuItem(
+                              child: Text(h.name),
+                              value: h.uuid
+                            )).toList(),
+                        ]),
+                        
+                      ],
+                    )
                   ),
-                  paletteColor.harmony == null ? null : Wrap(
-                    children: [
-                      ...paletteColor.transformedColors.map((t) => Icon(
-                        LineAwesomeIcons.square_full,
-                        color: t.toColor()
-                      ))
-                    ],
+                  Container(
+                    height: viewportSize.height / 8,
+                    child: paletteColor.harmony == null ? null
+                      : Wrap(
+                        children: [
+                          ...paletteColor.transformedColors.map(
+                              (t) => Icon(
+                                LineAwesomeIcons.square_full,
+                                color: t.toColor(),
+                                size: 32.0
+                              ))
+                        ],
+                      )
                   ),
-                  Txt.subtitle2("Shades:"),
-                  Wrap(
-                    children: [
-                      IconButton(
-                        icon: Icon(LineAwesomeIcons.minus_square, size: 24),
-                        onPressed: () => removeShade(-1),
-                      ),
-                      IconButton(
-                        icon: Icon(LineAwesomeIcons.plus_square, size: 24),
-                        onPressed: () => addShade(-1),
-                      ),
-                      ...paletteColor.shades.map((s) => Icon(
-                          LineAwesomeIcons.square_full,
-                          color: s.toColor()
+                  Divider(),
+                  Container(
+                    height: viewportSize.height / 8,
+                    child: Column(
+                      children: [
+                        Txt.subtitle2("Shades:"),
+                        Wrap(
+                          children: [
+                            IconButton(
+                              icon: Icon(LineAwesomeIcons.minus_square, size: 32.0),
+                              onPressed: () => removeShade(-1),
+                            ),
+                            IconButton(
+                              icon: Icon(LineAwesomeIcons.plus_square, size: 32.0),
+                              onPressed: () => addShade(-1),
+                            ),
+                            ...paletteColor.shades.map((s) => Icon(
+                                LineAwesomeIcons.square_full,
+                                color: s.toColor()
+                              )
+                            ),
+                            IconButton(
+                              icon: Icon(LineAwesomeIcons.plus_square, size: 32.0),
+                              onPressed: () => addShade(1),
+                            ),
+                            IconButton(
+                              icon: Icon(LineAwesomeIcons.minus_square, size: 32.0),
+                              onPressed: () => removeShade(1),
+                            ),
+                          ]
                         )
-                      ),
-                      IconButton(
-                        icon: Icon(LineAwesomeIcons.plus_square, size: 24),
-                        onPressed: () => addShade(1),
-                      ),
-                      IconButton(
-                        icon: Icon(LineAwesomeIcons.minus_square, size: 24),
-                        onPressed: () => removeShade(1),
-                      ),
-                    ]
-                  )
+                      ],
+                    )
+                  ),
+                  
                 ]
               )
             )

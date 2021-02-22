@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:klr/app/klr.dart';
 import 'package:klr/models/app-state.dart';
 
@@ -10,6 +9,7 @@ import 'package:klr/views/base/page-arguments.dart';
 import 'package:klr/views/palette-page.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/dialogs/image-picker-dialog.dart';
 import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -20,6 +20,8 @@ class StartPage extends PageBase<StartPageConfig> {
   static Color onPageAccent = Klr.colors.grey05; 
   static const String routeName = '/start';
   static const String title = 'dashboard';
+
+  static bool mounted = false;
 
   static BottomNavigationPage makeNavigationPage(AppState state)
     => BottomNavigationPage(
@@ -40,29 +42,54 @@ class _StartPageState extends State<StartPage> {
   AppStateService _appStateService = AppStateService.getInstance();
   AppState get _appState => _appStateService.snapshot;
 
+  static const String menuClearPalettes = "clear-all-palettes";
+  static const String menuClearAll      = "clear-everything";
+  static const String menuCancel        = "cancel";
+
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
-      icon: Icon(Icons.add_box_outlined, color: Klr.theme.primaryAccent),
-      title: "New palette",
-      subtitle: "Create a new color palette",
-      value: "Create"
+      icon: Icon(LineAwesomeIcons.alternate_trash, color: Klr.theme.primaryAccent),
+      title: "Clear",
+      subtitle: "Clear all palettes",
+      value: menuClearPalettes
+    ),
+    BottomSheetMenuItem<String>(
+      icon: Icon(LineAwesomeIcons.alternate_trash, color: Klr.theme.primaryAccent),
+      title: "Clear everything",
+      subtitle: "Clear all saved data",
+      value: menuClearAll
     ),
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.cancel_outlined, color: Klr.theme.secondaryAccent),
       title: "Cancel",
       subtitle: "Close this menu",
-      value: "Cancel"
+      value: menuCancel
     )
   ];
 
   Future<void> _createPalette() async {
-    final p = await _appStateService.createBuiltinPalette();
-    // await _appStateService.setCurrentPalette(p);
+      final p = await _appStateService.createBuiltinPalette();
+  }
+  Future<void> _clearPalettes() async {
+    await Palette.boxOf().clear();
+  }
+  Future<void> _clearAll() async {
+    await _appStateService.setCurrentPalette(null);
+    await Palette.boxOf().clear();
+    await PaletteColor.boxOf().clear();
+    await Harmony.boxOf().clear();
+    await ColorTransform.boxOf().clear();
+  }
+  Future<void> _showExtractDialog() async {
+    Navigator.pop(context);
+    showImagePickerDialog(context);
   }
 
   void _onMenuSelect(String value) {
-    if (value == "Create") {
-      _createPalette();
+    if (value == menuClearPalettes) {
+      _clearPalettes();
+    } else if (value == menuClearAll) {
+      _clearAll();
     }
   }
 
@@ -73,6 +100,12 @@ class _StartPageState extends State<StartPage> {
 
   bool _isPaletteSelected(Palette p) {
     return (_appState.currentPalette != null && _appState.currentPalette.uuid == p.uuid);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    StartPage.mounted = true;
   }
 
   @override
@@ -102,6 +135,7 @@ class _StartPageState extends State<StartPage> {
                     ListTile(
                       leading: Icon(LineAwesomeIcons.paint_brush),
                       title: Txt.subtitle1('Palettes'),
+                      subtitle: Text('Your saved palettes')
                     ),
                     ...snapshot.data.palettes.map((p) => ListTile(
                       leading: Icon(Icons.palette_outlined),
@@ -114,7 +148,35 @@ class _StartPageState extends State<StartPage> {
                       tileColor: _isPaletteSelected(p)  
                         ? Klr.theme.tertiaryAccent
                         : Klr.theme.cardBackground,
-                    )).toList()
+                    )).toList(),
+                    Divider(),
+                    ListTile(
+                      leading: Icon(LineAwesomeIcons.plus_square),
+                      title: Txt.subtitle2('Create new...'),
+                      subtitle: Text('')
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        LineAwesomeIcons.palette,
+                        color: Klr.theme.primaryAccent
+                      ),
+                      title: Text("Create from template"),
+                      subtitle: Text("Create an example palette"),
+                      onTap: () {
+                        _createPalette();
+                      },
+                      tileColor: Klr.theme.cardBackground,
+                    ),
+                    ListTile(
+                      leading: Icon(LineAwesomeIcons.image_1,
+                        color: Klr.theme.secondaryAccent),
+                      title: Text('Create from image'),
+                      subtitle: Text('Extract palette from image file'),
+                      onTap: () {
+                        _showExtractDialog();
+                      },
+                      tileColor: Klr.theme.cardBackground,
+                    )
                   ],
                 )
               )

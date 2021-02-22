@@ -7,11 +7,13 @@ import 'package:klr/services/app-state-service.dart';
 import 'package:klr/views/views.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/dialogs/css-dialog.dart';
 import 'package:klr/widgets/dialogs/palette-color-dialog.dart';
 import 'package:klr/widgets/palette-color-widget.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
 import 'package:klr/widgets/txt.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class PalettePage extends PageBase<PalettePageConfig> {
   static Color pageAccent = Klr.colors.orange99;
@@ -39,35 +41,31 @@ class _PalettePageState extends State<PalettePage> {
   AppStateService _appStateService = AppStateService.getInstance();
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
   bool _showGenerated = true;
+  static const String menuCreateColor = "create";
+  static const String menuDeletePalette = "delete";
+  static const String menuCancel = "cancel";
  
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.add_box_outlined, color: Klr.theme.tertiaryAccent),
       title: "New color",
       subtitle: "Create a new color in this palette",
-      value: "Create"
+      value: menuCreateColor
     ),
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.delete_forever, color: Klr.colors.red70),
       title: "Delete palette",
       subtitle: "Remove this palette",
-      value: "Delete"
+      value: menuDeletePalette
     ),
     BottomSheetMenuItem<String>(
       icon: Icon(Icons.cancel_outlined, color: Klr.theme.secondaryAccent),
       title: "Cancel",
       subtitle: "Close this menu",
-      value: "Cancel"
+      value: menuCancel
     )
   ];
 
-  Future<void> _createColor() async {
-    final color = await _appStateService.createColor();
-
-    _currPalette.colors.add(color);
-    await color.save();
-    await _currPalette.save();
-  }
 
   Future<void> _promoteColor(PaletteColor original, Color newColor, ColorType type) async {
     _appStateService.beginTransaction();
@@ -117,16 +115,16 @@ class _PalettePageState extends State<PalettePage> {
     _appStateService.endTransaction();
   }
 
-  Future<void> _deletePalette() async {
-    await _currPalette.delete();
-    Navigator.pushNamed(context, StartPage.routeName);
-  }
+  Future<void> _onMenuSelect(String value) async {
+    if (value == menuCreateColor) {
+      final color = await _appStateService.createColor();
 
-  void _onMenuSelect(String value) {
-    if (value == "Create") {
-      _createColor();
-    } else if (value == "Delete") {
-      _deletePalette();
+      _currPalette.colors.add(color);
+      await color.save();
+      await _currPalette.save();
+    } else if (value == menuDeletePalette) {
+      await _currPalette.delete();
+      Navigator.pushNamed(context, StartPage.routeName);
     }
   }
 
@@ -178,24 +176,36 @@ class _PalettePageState extends State<PalettePage> {
             ),
             Expanded(
               flex: 1,
-              child: TextButton(
-                child: Txt.subtitle1('View CSS'),
-                onPressed: () => showCssDialog(context, _currPalette),
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: [
+                  CheckboxListTile(
+                    value: _showGenerated,
+                    onChanged: (v) => setState(() => _showGenerated = v),
+                    title: Text('Show generated colors'),
+                    subtitle: Text('Automatic shades and harmonies'),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                  ListTile(
+                    leading: Icon(LineAwesomeIcons.css_3_logo),
+                    title: Text('Show CSS'),
+                    subtitle: Text('Generate and view CSS for this palette'),
+                    onTap: () => showCssDialog(context, _currPalette),
+                  )
+                ],
               )
             ),
-            CheckboxListTile(
-              value: _showGenerated,
-              onChanged: (v) => setState(() => _showGenerated = v),
-              title: Text('Show generated colors'),
-              subtitle: Text('Automatic shades and harmonies'),
-              controlAffinity: ListTileControlAffinity.leading,
-            )
-
           ],
         )
       )
     );
   }
+}
+
+enum PalettePageMenuAction {
+  cancel,
+  createColor,
+  deletePalette
 }
 
 class PalettePageArguments extends PageArguments {}

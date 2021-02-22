@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:klr/app/klr.dart';
 import 'package:klr/models/app-state.dart';
-import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
 
 import 'page-arguments.dart';

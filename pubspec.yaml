@@ -24,8 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   color_thief_flutter: ^1.0.2
+  file_picker: ^2.1.6
   flutter_colorpicker: ^0.3.5
-  flutter_layout_grid: ^0.11.4
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   line_awesome_flutter: ^1.0.1

@@ -74,11 +74,11 @@ extension HSLColorExtensions on HSLColor {
   String toCss({bool hex = true}) 
     => hex ? this.toHex(includeHash: true) 
       : ["hsla(", [
-          this.hue,
+          min(this.hue.roundToDouble(),359),
           this.saturation,
           this.lightness,
           this.alpha
-        ].map((d) => d.toStringAsFixed(2))
+        ].map((d) => d.toStringAsFixed(1))
           .toList().join(","),
         ")"].join("");
 }

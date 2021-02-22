@@ -32,18 +32,6 @@ extension PageStateExtensions on State<PageBase> {
     context, config, PageArguments.of<A>(context), builder
   );
 
-  int get currentRouteIndex
-    => Klr.pages.pageRoutes.indexWhere((pr) => pr.routeName == widget.pageRoute);
-  
-  int get nextRouteIndex
-    => currentRouteIndex >= 0 && Klr.pages.pageRoutes.length > currentRouteIndex + 1 
-    ? currentRouteIndex + 1 : 0;
-  
-  FbfPageRoute get nextRoutePage => Klr.pages.pageRoutes[nextRouteIndex]; 
-
-  String        get nextRouteName => nextRoutePage.routeName;
-  WidgetBuilder get nextRouteBuilder => nextRoutePage.builder;
-
   Size get viewportSize => MediaQuery.of(context).size;
 }
 
