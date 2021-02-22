@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:klr/klr.dart';
@@ -43,6 +45,29 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
         }
         saveColor();
       };
+      final addShade = (int dir) {
+        final currDeltas = paletteColor.shadeDeltas;
+        if (dir < 0) {
+          final shade = min(currDeltas.isEmpty ? 0 : currDeltas.min(), 0) - 12.5;
+          paletteColor.shadeDeltas = [shade, ...currDeltas];
+        } else {
+          final shade = max(currDeltas.isEmpty ? 0 : currDeltas.max(), 0) + 12.5;
+          paletteColor.shadeDeltas = [...currDeltas, shade];
+        }
+        saveColor();
+      };
+      final removeShade = (int dir) {
+        final currDeltas = paletteColor.shadeDeltas;
+        if (currDeltas.isNotEmpty) {
+          if (dir < 0) {
+            currDeltas.removeAt(0);
+          } else {
+            currDeltas.removeLast();
+          }
+          paletteColor.shadeDeltas = [...currDeltas];
+        }
+        saveColor();
+      };
 
       return AlertDialog(
             backgroundColor: Klr.theme.dialogBackground,
@@ -55,36 +80,36 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
             ),
             actions: [
               TextButton(
-                child: Text("Close"),
+                child: Txt.subtitle1("Close"),
                 onPressed: () => Navigator.pop(context),
               )
             ],
             content: Container(
-              width: viewportSize.width - 150,
-              height: viewportSize.height - 150,
+              width: viewportSize.width - viewportSize.width / 3,
+              height: viewportSize.height - viewportSize.height / 3,
               child: ListView(
                 children: <Widget>[
                   ColorPicker(
                     pickerColor: paletteColor.color.toColor(),
                     onColorChanged: setColor,
-                    colorPickerWidth: 250.0,
-                    pickerAreaHeightPercent: 0.7,
+                    colorPickerWidth: viewportSize.width / 4,
+                    pickerAreaHeightPercent: 0.5,
                     enableAlpha: true,
                     displayThumbColor: true,
-                    showLabel: true,
+                    showLabel: false,
                     paletteType: PaletteType.hsl,
                     pickerAreaBorderRadius: const BorderRadius.only(
                       topLeft: const Radius.circular(2.0),
                       topRight: const Radius.circular(2.0),
                     ),
                   ),
-                  Row(
+                  Wrap(
                     children: [
-                      Txt.subtitle1('Add harmonic generator:'),
-                      Txt.subtitle1(' '),
+                      Txt.subtitle2('Harmony/generator:'),
+                      Txt.subtitle2(' '),
                       PopupMenuButton<String>(
                         initialValue: paletteColor.harmony,
-                        child: Txt.subtitle1(harmonyNameById(paletteColor.harmony)),
+                        child: Txt.subtitle2(harmonyNameById(paletteColor.harmony)),
                         onSelected: selectHarmony,
                         itemBuilder: (context) => [
                           PopupMenuItem(
@@ -107,6 +132,32 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
                         color: t.toColor()
                       ))
                     ],
+                  ),
+                  Txt.subtitle2("Shades:"),
+                  Wrap(
+                    children: [
+                      IconButton(
+                        icon: Icon(LineAwesomeIcons.minus_square, size: 24),
+                        onPressed: () => removeShade(-1),
+                      ),
+                      IconButton(
+                        icon: Icon(LineAwesomeIcons.plus_square, size: 24),
+                        onPressed: () => addShade(-1),
+                      ),
+                      ...paletteColor.shades.map((s) => Icon(
+                          LineAwesomeIcons.square_full,
+                          color: s.toColor()
+                        )
+                      ),
+                      IconButton(
+                        icon: Icon(LineAwesomeIcons.plus_square, size: 24),
+                        onPressed: () => addShade(1),
+                      ),
+                      IconButton(
+                        icon: Icon(LineAwesomeIcons.minus_square, size: 24),
+                        onPressed: () => removeShade(1),
+                      ),
+                    ]
                   )
                 ]
               )

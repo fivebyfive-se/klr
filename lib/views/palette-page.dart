@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:klr/klr.dart';
 import 'package:klr/helpers/color.dart';
+import 'package:klr/helpers/iterable.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/views/views.dart';
@@ -10,8 +10,6 @@ import 'package:klr/widgets/bottom-sheet-menu.dart';
 import 'package:klr/widgets/dialogs/palette-color-dialog.dart';
 import 'package:klr/widgets/palette-color-widget.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
-import 'package:klr/widgets/txt.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class PalettePage extends PageBase<PalettePageConfig> {
   static Color pageAccent = Klr.colors.orange99;
@@ -62,21 +60,51 @@ class _PalettePageState extends State<PalettePage> {
 
   Future<void> _createColor() async {
     final color = await _appStateService.createColor();
+
     _currPalette.colors.add(color);
+    await color.save();
     await _currPalette.save();
   }
+
+  Future<void> _promoteColor(PaletteColor original, Color newColor, ColorType type) async {
+    _appStateService.beginTransaction();
+    var newName = original.name;
+    if (type == ColorType.shade) {
+      newName += " shade";
+      original.shadeDeltas = original.shadeDeltas
+        .where((d) => original.color.deltaLightness(d).toHex() != newColor.toHex()).toList();
+    } else if (type == ColorType.harmony) {
+      newName += " harmony";
+      original.transformations = original.transformations
+        .where((t) => t.applyTo(original.color).toHex() != newColor.toHex()).toList();
+    }
+    await original.save();
+
+    final currColors = _currPalette.colors
+      .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
+      .toList();
+
+    final newPaletteColor = await PaletteColor.scaffoldAndSave(name: newName, fromColor: newColor);
+    newPaletteColor.shadeDeltas = [];
+    int i = 0;
+
+    for (var col in currColors) {
+      col.displayIndex = i++;
+      if (col.uuid == original.uuid) {
+        newPaletteColor.displayIndex = i++;
+      }
+      await col.save();
+    }
+
+    await newPaletteColor.save();
+    _currPalette.colors.add(newPaletteColor);
+    await _currPalette.save();
+    _appStateService.endTransaction();
+  }
+
   Future<void> _deletePalette() async {
     await _currPalette.delete();
     Navigator.pushNamed(context, StartPage.routeName);
-  }
-
-  Future<void> _selectHarmony(PaletteColor c, Harmony h) async {
-    c.harmony = (h == null) ? null : h.uuid;
-    c.transformations.clear();
-    if (h != null) {
-      c.transformations.addAll(h.transformations.toList());
-    }
-    await c.save();
   }
 
   void _onMenuSelect(String value) {
@@ -115,22 +143,20 @@ class _PalettePageState extends State<PalettePage> {
             ),
             Expanded(
               flex: 10,
-              child: GridView.count(
-                primary: false,
-                padding: const EdgeInsets.all(5),
-                crossAxisCount: 2,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
+              child: Wrap(
                 children: <Widget>[                   
-                  ..._currPalette.colors.map(
-                    (c) => PaletteColorWidget(
-                      paletteColor: c,
-                      onPressed: () {
-                        showPaletteColorDialog(context, c);
-                      },
-                      size: viewportSize.width / 10
-                    )
-                  ).toList()
+                  ..._currPalette.colors
+                      .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
+                      .map(
+                        (c) => PaletteColorWidget(
+                          paletteColor: c,
+                          onPressed: () {
+                            showPaletteColorDialog(context, c);
+                          },
+                          onGeneratedPressed: _promoteColor,
+                          size: viewportSize.width / 10
+                        )
+                      ).toList()
                 ]
               )
             )

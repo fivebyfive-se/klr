@@ -83,5 +83,12 @@ class ColorTransform extends BaseModel {
 
   static ColorTransform scaffold()
     => ColorTransform();
+
+  static Future<ColorTransform> scaffoldAndSave() async {
+    final p = scaffold();
+    await boxOf().put(p.uuid, p);
+    await p.save();
+    return p;
+  }
 }
 

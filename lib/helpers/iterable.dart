@@ -11,11 +11,29 @@ extension IterableExtensions on Iterable {
     }
   }
 
-  Iterable<T> order<T>(int Function(T a, T b) comparator) sync* {
+  Iterable<T> order<T>(int Function(T a, T b) comparator) {
     final temp = [...(this ?? []).cast<T>()];
     temp.sort(comparator);
-    for (T item in temp) {
-      yield item;
+    return temp.toList();
+  }
+
+  T min<T extends num>() {
+    T min = this.first;
+    for (T item in this) {
+      if (item < min) {
+        min = item;
+      }
     }
+    return min;
+  }
+  
+  T max<T extends num>() {
+    T max = this.first;
+    for (T item in this) {
+      if (item > max) {
+        max = item;
+      }
+    }
+    return max;
   }
 }

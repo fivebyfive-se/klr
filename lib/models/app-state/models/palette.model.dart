@@ -57,4 +57,11 @@ class Palette extends BaseModel {
       name: name ?? "New palette",
       colors: PaletteColor.listOf()
     );
+
+  static Future<Palette> scaffoldAndSave({String name}) async {
+    final p = scaffold(name: name);
+    await boxOf().put(p.uuid, p);
+    await p.save();
+    return p;
+  }
 }

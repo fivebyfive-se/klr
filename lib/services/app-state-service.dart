@@ -11,6 +11,10 @@ import 'package:klr/models/app-state.dart';
 class AppStateService {
   static const String rootKey = "klrState";
 
+  bool get _inTransaction => _transactionCount > 0;
+
+  int _transactionCount = 0;
+
   @protected
   StreamController<AppState> _streamController = StreamController.broadcast();
 
@@ -25,8 +29,11 @@ class AppStateService {
         .get(rootKey, defaultValue: AppStateStore())
     );
 
-  @protected void _update()
-    => _streamController.add(_loadState());
+  @protected void _update() {
+    if (!_inTransaction) {
+      _streamController.add(_loadState());
+    }
+  }
 
   AppState get snapshot => _currentAppState ?? (_currentAppState = _loadState());
   Stream<AppState> get appStateStream => _streamController.stream;
@@ -41,8 +48,10 @@ class AppStateService {
     await Hive.initFlutter();
 
     final onBoxEvent = (BoxEvent ev) {
-      print(ev.key);
-      _update();
+      if (!_inTransaction) {
+        print(ev.key);
+        _update();
+      }
     };
     (await ColorTransform.ensureBoxOf()).listen(onBoxEvent);
     (await Harmony.ensureBoxOf()).listen(onBoxEvent);
@@ -53,6 +62,12 @@ class AppStateService {
     if (Harmony.boxOf().isEmpty) {
       await BuiltinBuilder.buildHarmonies();
     }
+  }
+
+  void beginTransaction() => _transactionCount++;
+  void endTransaction() {
+    _transactionCount--;
+    _update();
   }
 
   Future<ColorTransform> createColorTransform() async

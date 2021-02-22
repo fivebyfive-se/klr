@@ -1,5 +1,6 @@
 import 'package:klr/models/app-state.dart';
 import 'package:klr/helpers/color.dart';
+import 'package:klr/services/app-state-service.dart';
 
 import 'harmonies.dart';
 import 'palettes.dart';
@@ -8,19 +9,21 @@ export 'harmonies.dart';
 export 'palettes.dart';
 
 class BuiltinBuilder {
+  static AppStateService _service = appStateService();
+
   static Future<Palette> buildPalette() async {
-    final p = Palette.scaffold(name: "vhs60");
-    
+    _service.beginTransaction();
+    final p = await Palette.scaffoldAndSave(name: "vhs60");
+    int i = 0;
     for (var e in Palettes.vhs60.entries) {
-      final c = PaletteColor.scaffold(name: e.key);
+      final c = await PaletteColor.scaffoldAndSave(name: e.key);
       c.color = e.value.toHSL();
-      PaletteColor.boxOf().put(c.uuid, c);
+      c.displayIndex = i++;
       p.colors.add(c);
       await c.save();
     }
-    Palette.boxOf().put(p.uuid, p);
     await p.save();
-
+    _service.endTransaction();
     return p;
   }
 
@@ -28,34 +31,26 @@ class BuiltinBuilder {
     if (Harmony.boxOf().isNotEmpty) {
       return;
     }
+    _service.beginTransaction();
     for (var n in Harmonies.names) {
       final transforms = Harmonies.getHarmony(n);
-      final harmony = Harmony.scaffold(name: n);
-      Harmony.boxOf().put(harmony.uuid, harmony);
+      final harmony = await Harmony.scaffoldAndSave(name: n);
 
       for (var d in transforms) {
-        final transform = ColorTransform.scaffold();
+        final transform = await ColorTransform.scaffoldAndSave();
         if (d is num) {
           transform.deltaHue = d;
         } else if (d is List<double>) {
-          if (d.length > 0) {
-            transform.deltaHue = d[0];
-            if (d.length > 1) {
-              transform.deltaSaturation = d[1];
-              if (d.length > 2) {
-                transform.deltaLightness = d[2];
-                if (d.length > 3) {
-                  transform.deltaAlpha = d[3];
-                }
-              }
-            }
-          }
+            transform.deltaHue = d.length > 0 ? d[0] : 0;
+            transform.deltaSaturation = d.length > 1 ? d[1] : 0;
+            transform.deltaLightness = d.length > 2 ? d[2] : 0;
+            transform.deltaAlpha = d.length > 3 ? d[3] : 0;
         }
-        ColorTransform.boxOf().put(transform.uuid, transform);
         await transform.save();
         harmony.transformations.add(transform);
-        await harmony.save();
       }
+      await harmony.save();
     }
+    _service.endTransaction();
   }
 }

@@ -48,4 +48,11 @@ class Harmony extends BaseModel {
       name: name ?? "New harmony",
       transformations: ColorTransform.listOf()
     );
+
+  static Future<Harmony> scaffoldAndSave({String name}) async {
+    final p = scaffold(name: name);
+    await boxOf().put(p.uuid, p);
+    await p.save();
+    return p;
+  }
 }

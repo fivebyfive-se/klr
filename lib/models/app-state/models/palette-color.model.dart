@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
 import 'package:klr/helpers/color.dart';
+import 'package:klr/helpers/iterable.dart';
 
 import './color-transform.model.dart';
 import '_base-model.dart';
@@ -56,7 +57,9 @@ class PaletteColor extends BaseModel {
   String harmony; 
 
   List<HSLColor> get shades
-    => shadeDeltas.map((d) => color.deltaLightness(d)).toList();
+    => [0, ...shadeDeltas]
+      .order<double>((a, b) => a.compareTo(b))
+      .map((d) => color.deltaLightness(d)).toList();
 
   List<HSLColor> get transformedColors
     => transformations.map((t) => t.applyTo(color)).toList();
@@ -78,11 +81,18 @@ class PaletteColor extends BaseModel {
   static HiveList<PaletteColor> listOf()
     => HiveList<PaletteColor>(boxOf(), objects: []);
 
-  static PaletteColor scaffold({String name})
+  static PaletteColor scaffold({String name, Color fromColor})
     => PaletteColor(
       name: name ?? "New color",
-      color: HSLColor.fromColor(Colors.grey),
-      shadeDeltas: <double>[],
+      color: HSLColor.fromColor(fromColor ?? Colors.grey),
+      shadeDeltas: <double>[-12.5, 12.5],
       transformations: ColorTransform.listOf()
     );
+
+  static Future<PaletteColor> scaffoldAndSave({String name, Color fromColor}) async {
+    final p = scaffold(name: name, fromColor: fromColor);
+    await boxOf().put(p.uuid, p);
+    await p.save();
+    return p;
+  }
 }
