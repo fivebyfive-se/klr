@@ -93,6 +93,17 @@ flutter:
         - asset: fonts/BeVietnam-ExtraBoldItalic.ttf
           weight: 800
           style: italic
+    - family: SpaceMono
+      fonts:
+        - asset: fonts/SpaceMono-Regular.ttf
+        - asset: fonts/SpaceMono-Italic.ttf
+          style: italic
+        - asset: fonts/SpaceMono-Bold.ttf
+          weight: 700
+        - asset: fonts/SpaceMono-BoldItalic.ttf
+          style: italic
+          weight: 700
+
   assets:
     - images/fivebyfive.png
     - images/logo.png

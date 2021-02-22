@@ -13,16 +13,16 @@ class BuiltinBuilder {
 
   static Future<Palette> buildPalette() async {
     _service.beginTransaction();
-    final p = await Palette.scaffoldAndSave(name: "vhs60");
     int i = 0;
+    List<PaletteColor> colors = [];
     for (var e in Palettes.vhs60.entries) {
       final c = await PaletteColor.scaffoldAndSave(name: e.key);
       c.color = e.value.toHSL();
       c.displayIndex = i++;
-      p.colors.add(c);
       await c.save();
+      colors.add(c);
     }
-    await p.save();
+    final p = await Palette.scaffoldAndSave(name: "VHS-60", colors: colors);
     _service.endTransaction();
     return p;
   }

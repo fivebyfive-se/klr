@@ -7,9 +7,11 @@ import 'package:klr/services/app-state-service.dart';
 import 'package:klr/views/views.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/dialogs/css-dialog.dart';
 import 'package:klr/widgets/dialogs/palette-color-dialog.dart';
 import 'package:klr/widgets/palette-color-widget.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
+import 'package:klr/widgets/txt.dart';
 
 class PalettePage extends PageBase<PalettePageConfig> {
   static Color pageAccent = Klr.colors.orange99;
@@ -36,6 +38,7 @@ class PalettePage extends PageBase<PalettePageConfig> {
 class _PalettePageState extends State<PalettePage> {
   AppStateService _appStateService = AppStateService.getInstance();
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
+  bool _showGenerated = true;
  
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
@@ -68,11 +71,18 @@ class _PalettePageState extends State<PalettePage> {
 
   Future<void> _promoteColor(PaletteColor original, Color newColor, ColorType type) async {
     _appStateService.beginTransaction();
+    
     var newName = original.name;
+    var before = false;
+
     if (type == ColorType.shade) {
       newName += " shade";
-      original.shadeDeltas = original.shadeDeltas
-        .where((d) => original.color.deltaLightness(d).toHex() != newColor.toHex()).toList();
+      final shade = original.shadeDeltas
+        .firstWhere((d) => original.color.deltaLightness(d).toHex() != newColor.toHex());
+      original.shadeDeltas = original.shadeDeltas.where((d) => d != shade).toList();
+      if (shade < 0) {
+        before = true;
+      }
     } else if (type == ColorType.harmony) {
       newName += " harmony";
       original.transformations = original.transformations
@@ -89,8 +99,13 @@ class _PalettePageState extends State<PalettePage> {
     int i = 0;
 
     for (var col in currColors) {
+      if (col.uuid == original.uuid && before) {
+        newPaletteColor.displayIndex = i++;
+      }
+
       col.displayIndex = i++;
-      if (col.uuid == original.uuid) {
+      
+      if (col.uuid == original.uuid && !before) {
         newPaletteColor.displayIndex = i++;
       }
       await col.save();
@@ -154,12 +169,28 @@ class _PalettePageState extends State<PalettePage> {
                             showPaletteColorDialog(context, c);
                           },
                           onGeneratedPressed: _promoteColor,
+                          showGenerated: _showGenerated,
                           size: viewportSize.width / 10
                         )
                       ).toList()
                 ]
               )
+            ),
+            Expanded(
+              flex: 1,
+              child: TextButton(
+                child: Txt.subtitle1('View CSS'),
+                onPressed: () => showCssDialog(context, _currPalette),
+              )
+            ),
+            CheckboxListTile(
+              value: _showGenerated,
+              onChanged: (v) => setState(() => _showGenerated = v),
+              title: Text('Show generated colors'),
+              subtitle: Text('Automatic shades and harmonies'),
+              controlAffinity: ListTileControlAffinity.leading,
             )
+
           ],
         )
       )

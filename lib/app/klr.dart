@@ -22,8 +22,9 @@ class Klr {
   static FivebyfiveFontTheme fontTheme = KlrFontTheme();
   static FivebyfiveTheme theme = KlrTheme(fontTheme);
 
-  static ThemeData get themeData => theme.toThemeData();
+  static ThemeData get themeData => theme.themeData;
   static TextTheme get textTheme => themeData.textTheme;
+  static CodeTheme get codeTheme => themeData.codeTheme;
 
   static FbfPageRouteList pages = KlrPages();
 
@@ -37,7 +38,7 @@ class _KlrApp extends StatelessWidget {
   Widget build(BuildContext context) 
     => MaterialApp(
       title: Klr.appTitle,
-      theme: Klr.theme.toThemeData(),
+      theme: Klr.theme.themeData,
       routes: Klr.pages.routes,
       initialRoute: SplashPage.routeName,
     );

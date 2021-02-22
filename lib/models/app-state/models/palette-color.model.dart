@@ -78,14 +78,14 @@ class PaletteColor extends BaseModel {
   static Box<PaletteColor> boxOf()
     => Hive.box<PaletteColor>(boxPath);
 
-  static HiveList<PaletteColor> listOf()
-    => HiveList<PaletteColor>(boxOf(), objects: []);
+  static HiveList<PaletteColor> listOf({List<PaletteColor> objects})
+    => HiveList<PaletteColor>(boxOf(), objects: objects ?? []);
 
   static PaletteColor scaffold({String name, Color fromColor})
     => PaletteColor(
       name: name ?? "New color",
       color: HSLColor.fromColor(fromColor ?? Colors.grey),
-      shadeDeltas: <double>[-12.5, 12.5],
+      shadeDeltas: <double>[-10, 10],
       transformations: ColorTransform.listOf()
     );
 

@@ -42,8 +42,21 @@ extension HSLColorExtensions on HSLColor {
     return this.withHue(ryb ? rybToHsl(newHue) : newHue);
   }
 
-  HSLColor deltaLightness(double delta)
-    => this.withLightness(deltaRatio(this.lightness, delta));
+  HSLColor deltaLightness(double delta) {
+    final deltaL = delta / 100.0;
+    var newLightness = this.lightness + deltaL;
+    var deltaS = (newLightness > 1.0)
+      ? -(newLightness - 1.0)
+        : (newLightness < 0.0)
+          ? newLightness.abs() : 0;
+
+    return (
+      deltaS != 0 
+        ? this.deltaSaturation(deltaS * 100.0) 
+        : this
+      )
+      .withLightness(deltaRatio(this.lightness, delta));
+  }
 
   HSLColor deltaSaturation(double delta)
     => this.withSaturation(deltaRatio(this.saturation, delta));
@@ -60,11 +73,18 @@ extension HSLColorExtensions on HSLColor {
 
   String toCss({bool hex = true}) 
     => hex ? this.toHex(includeHash: true) 
-      : "hsla(${this.hue}, ${this.saturation}, ${this.lightness}, ${this.alpha})";
+      : ["hsla(", [
+          this.hue,
+          this.saturation,
+          this.lightness,
+          this.alpha
+        ].map((d) => d.toStringAsFixed(2))
+          .toList().join(","),
+        ")"].join("");
 }
 
 double deltaRatio(double value, double delta)
-  => max(min(value * 100 + delta, 100.0), 0) / 100.0; 
+  => max(min(value + (delta / 100.0), 1.0), 0); 
 
 double rotateValue(double value, double delta, double max, {double min = 0}) {
   final res = value + delta;

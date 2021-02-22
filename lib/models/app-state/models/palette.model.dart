@@ -38,6 +38,7 @@ class Palette extends BaseModel {
     => (other is Palette) 
       ? displayIndex.compareTo(other.displayIndex)
       : super.compareTo(other);
+  
 
   static Future<Box<Palette>> ensureBoxOf() async {
     if (Hive.isBoxOpen(boxPath)) {
@@ -49,17 +50,20 @@ class Palette extends BaseModel {
   static Box<Palette> boxOf()
     => Hive.box<Palette>(boxPath);
 
-  static HiveList<Palette> listOf()
-    => HiveList<Palette>(boxOf());
+  static HiveList<Palette> listOf({List<Palette> objects})
+    => HiveList<Palette>(boxOf(), objects: objects ?? []);
 
-  static Palette scaffold({String name})
+  static Palette scaffold({String name, List<PaletteColor> colors})
     => Palette(
       name: name ?? "New palette",
-      colors: PaletteColor.listOf()
+      colors: PaletteColor.listOf(objects: colors)
     );
 
-  static Future<Palette> scaffoldAndSave({String name}) async {
-    final p = scaffold(name: name);
+  static Future<Palette> scaffoldAndSave({
+    String name,
+    List<PaletteColor> colors
+  }) async {
+    final p = scaffold(name: name, colors: colors);
     await boxOf().put(p.uuid, p);
     await p.save();
     return p;

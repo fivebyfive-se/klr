@@ -15,8 +15,8 @@ class Harmonies  {
     'Split Compl. (clockwise)': [150, 300, [150,-5,10], [300,5,-10]],
     'Split Compl. (counter-cw)': [60, 210, [60,-10,10], [210,10,-10]],
     
-    'Triadic': [120, 240],
-    'Clash': [90, 270],
+    'Triadic': [120, 240, [120,-5,10], [240,5,-10]],
+    'Clash': [90, 270, [90,10,-5], [270,-5,10]],
     'Tetradic': [90, 180, 270],
     
     'Four Tone (clockwise)': [60, 180, 240],

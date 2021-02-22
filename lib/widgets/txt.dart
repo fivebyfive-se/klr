@@ -53,6 +53,13 @@ class Txt extends StatelessWidget {
   Txt.light(String text, {TextStyle style})
     : this(text, TxtType.light, style: style);
 
+  Txt.code(String text, {TextStyle style})
+    : this(text, TxtType.code, style: style);
+  Txt.codeSubtitle1(String text, {TextStyle style})
+    : this(text, TxtType.codeSubtitle1, style: style);
+  Txt.codeSubtitle2(String text, {TextStyle style})
+    : this(text, TxtType.codeSubtitle2, style: style);
+
   // TextStyle get computedStyle 
   //   => typeToStyle(type).merge(style ?? TextStyle());
 
@@ -61,7 +68,9 @@ class Txt extends StatelessWidget {
     => Text(text, style: typeStyle(type).merge(style));
 
   static TextStyle typeStyle(TxtType type) {
-  final t = Klr.theme.fontTheme.textTheme;
+    final t = Klr.textTheme;
+    final c = Klr.codeTheme;
+
     switch (type) {
       case TxtType.h6: return t.headline6;
       case TxtType.h5: return t.headline5;
@@ -69,21 +78,32 @@ class Txt extends StatelessWidget {
       case TxtType.h3: return t.headline3;
       case TxtType.h2: return t.headline2;
       case TxtType.h1: return t.headline1;
+
       case TxtType.title:
         return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.25));
       case TxtType.subtitle1:
         return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.20));
       case TxtType.subtitle2:
         return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.15));
+
       case TxtType.subtitle3: return t.subtitle1;
       case TxtType.subtitle4: return t.subtitle2;
       case TxtType.overline: return t.overline;
+
       case TxtType.strong:
         return t.bodyText1.copyWith(fontWeight: FontWeight.w600);
       case TxtType.em:
         return t.bodyText1.copyWith(fontStyle: FontStyle.italic);
       case TxtType.light:
         return t.bodyText1.copyWith(fontWeight: FontWeight.w100);
+
+      case TxtType.code:
+        return c.bodyText1;
+      case TxtType.codeSubtitle1:
+        return c.subtitle1;
+      case TxtType.codeSubtitle2:
+        return c.subtitle2;
+
       case TxtType.paragraph:
       default:
         return t.bodyText1;
@@ -108,5 +128,8 @@ enum TxtType {
   overline,
   strong,
   em,
-  light
+  light,
+  code,
+  codeSubtitle1,
+  codeSubtitle2,
 }

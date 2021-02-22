@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'package:klr/classes/range.dart';
+import 'code-theme.dart';
+export 'code-theme.dart';
+
 
 typedef TextThemeBuilder = TextTheme Function(TextTheme);
 
 class FivebyfiveFontTheme {
   FivebyfiveFontTheme(
     this.fontHeadings,
-    this.fontBody, {
+    this.fontBody, 
+    this.fontCode, {
       double minFontSize = 10.5,
       double maxFontSize
   }) : minFontSize = minFontSize,
@@ -16,6 +20,7 @@ class FivebyfiveFontTheme {
 
   final String fontHeadings;
   final String fontBody;
+  final String fontCode;
   final double minFontSize;
   final double maxFontSize; 
 
@@ -31,6 +36,7 @@ class FivebyfiveFontTheme {
   double calcFontSize(double ratio) 
     => fontSizeRange.lerp(ratio);
 
+  CodeTheme _codeTheme;
   TextTheme _textTheme;
   TextStyle _lastStyle;
 
@@ -83,7 +89,31 @@ class FivebyfiveFontTheme {
     letterSpacing: letterSpacing
   );
 
+  TextStyle code({
+    double fontRatio,
+    double fontSize,
+    FontWeight fontWeight,
+    FontStyle fontStyle,
+    double letterSpacing,
+  }) => _style(
+    fontRatio: fontRatio,
+    fontFamily: fontCode,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    fontStyle: fontStyle,
+    letterSpacing: letterSpacing
+  );
+
   TextTheme get textTheme => _textTheme ?? (_textTheme = _createTextTheme());
+  CodeTheme get codeTheme => _codeTheme ?? (_codeTheme = _createCodeTheme());
+
+  @protected
+  CodeTheme _createCodeTheme() => CodeTheme(
+    subtitle1: textTheme.subtitle1.copyWith(fontFamily: fontCode),
+    subtitle2: textTheme.subtitle2.copyWith(fontFamily: fontCode),
+    bodyText1: textTheme.bodyText1.copyWith(fontFamily: fontCode),
+    bodyText2: textTheme.bodyText2.copyWith(fontFamily: fontCode)
+  ); 
 
   @protected
   TextTheme _createTextTheme() =>
@@ -129,7 +159,6 @@ class FivebyfiveFontTheme {
         fontRatio: 0,
         fontWeight: FontWeight.w100
       ),
-  );
-    
+    );   
 }
 

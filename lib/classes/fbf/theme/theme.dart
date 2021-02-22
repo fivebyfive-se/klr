@@ -73,7 +73,6 @@ class FivebyfiveTheme {
 
   final FivebyfiveFontTheme fontTheme;
 
-
   final Brightness brightness;
 
   final ColorTriad primary;
@@ -118,41 +117,47 @@ class FivebyfiveTheme {
   Color get focusAccent => isDark ? focus.light : focus.dark;
   Color get highlightAccent => isDark ? highlight.light : highlight.dark;
 
+  @protected
+  ThemeData _themeData;
 
-  ThemeData toThemeData() => ThemeData(
-    brightness:      brightness,
-    backgroundColor: background,
-    canvasColor:     background,
+  ThemeData get themeData => _themeData ?? (
+    _themeData = ThemeData(
+      brightness:      brightness,
+      backgroundColor: background,
+      canvasColor:     background,
 
-    primaryColor:    primary.base,
-    primaryColorDark: primary.dark,
-    primaryColorLight: primary.light,
+      primaryColor:    primary.base,
+      primaryColorDark: primary.dark,
+      primaryColorLight: primary.light,
 
-    accentColor:     secondary.base,
+      accentColor:     secondary.base,
 
-    splashColor:     tertiary.base,
-    focusColor:      focus.base,
-    
-    errorColor:      error,
-    
-    cardColor:       cardBackground,
-    buttonColor:     primary.base,
+      splashColor:     tertiary.base,
+      focusColor:      focus.base,
+      
+      errorColor:      error,
+      
+      cardColor:       cardBackground,
+      buttonColor:     primary.base,
 
-    dialogBackgroundColor: dialogBackground,
-    
-    textTheme: fontTheme.textTheme,
-    fontFamily: fontTheme.fontBody,
-    
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-    appBarTheme: AppBarTheme(
-      backgroundColor: appBarBackground,
-      foregroundColor: appBarForeground,
-    ),
+      dialogBackgroundColor: dialogBackground,
+      
+      textTheme: fontTheme.textTheme,
+      fontFamily: fontTheme.fontBody,
+      
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      appBarTheme: AppBarTheme(
+        backgroundColor: appBarBackground,
+        foregroundColor: appBarForeground,
+      ),
 
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: tertiary.base,
-      focusColor: tertiaryAccent,
-      hoverColor: tertiaryAccent
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: tertiary.base,
+        focusColor: tertiaryAccent,
+        hoverColor: tertiaryAccent
+      )
+    ).withCodeTheme(
+      fontTheme.codeTheme
     )
   );
 }

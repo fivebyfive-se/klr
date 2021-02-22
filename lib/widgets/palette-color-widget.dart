@@ -7,12 +7,14 @@ import 'package:klr/widgets/txt.dart';
 
 class PaletteColorWidget extends StatelessWidget {
   PaletteColorWidget({
-    this.paletteColor,
     this.onPressed,
     this.onGeneratedPressed,
-    this.size = 50
+    this.paletteColor,
+    this.size = 50,
+    this.showGenerated,
   });
 
+  final bool showGenerated;
   final PaletteColor paletteColor;
   final double size;
   final void Function() onPressed;
@@ -34,7 +36,7 @@ class PaletteColorWidget extends StatelessWidget {
     final btn = (Color c, double sz, ColorType type) {
       final lum = c.computeLuminance();
       final fg = lum < 0.5 ? Klr.theme.foreground : Klr.theme.background;
-      final height = isCurrColor(c) ? sz : sz / 2;
+      final height = isCurrColor(c) ? sz : sz / (type == ColorType.shade ? 1.5 : 2);
       return TextButton(
         onPressed: isCurrColor(c) 
           ? onPressed : 
@@ -54,11 +56,13 @@ class PaletteColorWidget extends StatelessWidget {
       child: Wrap(
         alignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
+        children: showGenerated ? [
           ...shades.map(
             (c) => btn(c, size, isCurrColor(c) ? ColorType.original : ColorType.shade)
           ).toList(),
           ...generatedColors.map((c) => btn(c, size, ColorType.harmony)).toList()
+        ] : [
+          btn(color, size, ColorType.original)
         ],
       )
     );
