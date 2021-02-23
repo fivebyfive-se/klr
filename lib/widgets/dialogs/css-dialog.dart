@@ -53,7 +53,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
       return AlertDialog(
         backgroundColor: Klr.theme.dialogBackground,
         actions: [
-          btn("Close", onPressed: () => Navigator.pop(context))
+          btnChoice("Close", onPressed: () => Navigator.pop(context))
         ],
         title: Row(
           children: [
@@ -66,6 +66,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
                 },
                 title: Text('Use CSS variables'),
                 controlAffinity: ListTileControlAffinity.leading,
+                activeColor: colorChoice(),
               )
             ),
             Expanded(flex: 1,
@@ -77,6 +78,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
                 },
                 title: Text('Use hexadecimal colors'),
                 controlAffinity: ListTileControlAffinity.leading,
+                activeColor: colorChoice(),
               )
             ),
           ]

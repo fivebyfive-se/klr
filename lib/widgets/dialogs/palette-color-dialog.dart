@@ -24,7 +24,16 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
     .order<Harmony>((a, b) => a.name.compareTo(b.name)).toList();
   final harmonyById = (String id) => harmonies.firstWhere((h) => h.uuid == id);
   final harmonyNameById = (String id) => id == null || id == "" ? 'None' : harmonyById(id).name;
-
+  final minusIcon = () => Icon(
+    LineAwesomeIcons.minus_square,
+    size: 32.0,
+    color: colorRemove()
+  );
+  final plusIcon = () =>  Icon(
+    LineAwesomeIcons.minus_square,
+    size: 32.0,
+    color: colorAction()
+  );
   return StatefulBuilder(
     builder: (context, setState) {
       final saveColor = () {
@@ -80,7 +89,7 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
               },
             ),
             actions: [
-              btn(
+              btnChoice(
                 "Close",
                 onPressed: () => Navigator.pop(context),
               )
@@ -155,11 +164,11 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
                         Wrap(
                           children: [
                             IconButton(
-                              icon: Icon(LineAwesomeIcons.minus_square, size: 32.0),
+                              icon: minusIcon(),
                               onPressed: () => removeShade(-1),
                             ),
                             IconButton(
-                              icon: Icon(LineAwesomeIcons.plus_square, size: 32.0),
+                              icon: plusIcon(),
                               onPressed: () => addShade(-1),
                             ),
                             ...paletteColor.shades.map((s) => Icon(
@@ -168,11 +177,11 @@ StatefulBuilder buildPaletteColorDialog(BuildContext context, PaletteColor palet
                               )
                             ),
                             IconButton(
-                              icon: Icon(LineAwesomeIcons.plus_square, size: 32.0),
+                              icon: plusIcon(),
                               onPressed: () => addShade(1),
                             ),
                             IconButton(
-                              icon: Icon(LineAwesomeIcons.minus_square, size: 32.0),
+                              icon: minusIcon(),
                               onPressed: () => removeShade(1),
                             ),
                           ]

@@ -7,7 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:klr/klr.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
+import 'package:klr/views/palette-page.dart';
+import 'package:klr/views/start-page.dart';
 import 'package:klr/widgets/btn.dart';
+import 'package:klr/widgets/togglable-text-editor.dart';
+import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 void showImagePickerDialog(BuildContext context)
@@ -21,17 +25,16 @@ StatefulBuilder buildImagePickerDialog(context) {
   final viewportSize = MediaQuery.of(context).size;
   Image loadedImage;
   String imageName;
-  bool isPaletteLoading = false;
-  bool isImageLoading = false;
+  bool isLoading = false;
   List<Color> colors = [];
 
   return StatefulBuilder(
     builder: (context, setState) {
-      final setLoading = ({bool image, bool palette}) {
-          isPaletteLoading = palette ?? isPaletteLoading;
-          isImageLoading = image ?? isImageLoading;
-          setState(() {});
+      final setLoading = (bool loading) {
+        isLoading = loading;
+        setState(() {});
       };
+
       final getColors = () async {
         colors.clear();
         final img = await getImageFromProvider(loadedImage.image);
@@ -39,24 +42,24 @@ StatefulBuilder buildImagePickerDialog(context) {
         for (var rgb in palette) {
           colors.add(Color.fromARGB(0xff, rgb.first, rgb[1], rgb.last));
         }
-        setLoading(palette: false);
+        setLoading(false);
       };
-      final pickFile = () async {
 
-        setLoading(image: true, palette: true);
-        loadedImage = null;
+      final pickFile = () async {
+        setLoading(true);
+        loadedImage = imageName = null;
         final result = await FilePicker.platform.pickFiles(
           type: FileType.image,
           allowMultiple: false
         );
         if(result != null) {
-          imageName = result.files.first.name ?? "image";
+          imageName = (result.files.first.name ?? "image")
+            .replaceFirst(RegExp(r'\.[a-z]+$'), '');
           loadedImage = Image.memory(result.files.first.bytes);
           //imageFile = File(result.files.single.path);
-          setLoading(image: false);
           await getColors();
         } else {
-          setLoading(image: false, palette: false);
+          setLoading(false);
           // User canceled the picker
         }
       };
@@ -72,18 +75,18 @@ StatefulBuilder buildImagePickerDialog(context) {
         );
         await _service.setCurrentPalette(palette);
         Navigator.pop(context);
+        Navigator.pushNamed(context, PalettePage.routeName);
       };
 
       return AlertDialog(
         backgroundColor: Klr.theme.dialogBackground,
         actions: [
           colors.isEmpty ? null : 
-            btn(
+            btnAction(
               "Create palette",
               onPressed: createPalette,
-              backgroundColor: Klr.theme.tertiaryAccent
             ),
-          btn("Close", onPressed: () => Navigator.pop(context)),
+          btnChoice("Close", onPressed: () => Navigator.pop(context)),
         ],
         content: Container(
           width: viewportSize.width - viewportSize.width / 3,
@@ -92,15 +95,25 @@ StatefulBuilder buildImagePickerDialog(context) {
             children: [
               Container(
                 alignment: Alignment.center,
-                child: btn(
+                child: btnAction(
                   'Load image',
                   onPressed: () => pickFile(),
-                  backgroundColor: Klr.theme.focusAccent
                 )
               ),
               Container(
                 alignment: Alignment.center,
-                child: isPaletteLoading 
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: imageName == null ? null : TogglableTextEditor(
+                  initalText: imageName,
+                  onChanged: (v) {
+                    imageName = v;
+                    setState((){});
+                  },
+                )
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: isLoading 
                   ? RefreshProgressIndicator(
                     strokeWidth: 5.0,
                   ) : Wrap(
@@ -118,10 +131,7 @@ StatefulBuilder buildImagePickerDialog(context) {
               ),
               Container(
                   alignment: Alignment.center,
-                  child: isImageLoading 
-                  ? RefreshProgressIndicator(
-                    strokeWidth: 5.0,
-                  ) : loadedImage
+                  child: isLoading ? null : loadedImage
               )
             ],
           )

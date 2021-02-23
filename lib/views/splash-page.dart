@@ -90,6 +90,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
+    if (StartPage.mounted) {
+      Navigator.pushNamed(context, StartPage.routeName);
+    }
     _splashDur = parseDuration(widget.timeout);
     _transDur  = parseDuration(widget.transition);
     _decoDur   = _splashDur.add(_transDur);
@@ -100,7 +104,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         
     )..repeat(reverse: true);
 
-    super.initState();
 
     Future.delayed(_splashDur, _transition);
   }

@@ -6,8 +6,10 @@ class KlrFontTheme extends FivebyfiveFontTheme {
   static const fontSerif = 'BodoniModa';
   static const fontMono  = 'SpaceMono';
 
-  KlrFontTheme() : super(fontSerif, fontSans, fontMono,
+  KlrFontTheme() : super(
+    fontSerif, fontSans, fontMono,
     minFontSize: Klr.sizeBase,
+    textColor: Klr.colors.grey95
   //maxFontSize: Klr.sizeBase * Klr.sizeBase
   );
 }

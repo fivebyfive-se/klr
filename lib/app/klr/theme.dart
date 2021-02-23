@@ -28,40 +28,40 @@ class KlrTheme extends FivebyfiveTheme {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter
       ),
-      cardBackground: klrs.grey20,
+      cardBackground: klrs.steel20,
       cardForeground: klrs.grey95,
 
-      dialogBackground: klrs.grey17,
+      dialogBackground: klrs.steel25,
       dialogForeground: klrs.grey95,
 
       error: Colors.red,
       warning: Colors.orange[800],
 
       primary: ColorTriad(klrs.pink70, klrs.pink55, klrs.pink90),
-      secondary: ColorTriad(klrs.orange80, klrs.orange80, klrs.orange95),
-      tertiary: ColorTriad(klrs.purple80, klrs.purple70, klrs.purple95),
+      secondary: ColorTriad(klrs.purple95, klrs.purple90, klrs.purple99),
+      tertiary: ColorTriad(klrs.red90, klrs.red80, klrs.red95),
 
-      focus: ColorTriad(klrs.blue70, klrs.blue65, klrs.blue95),
-      highlight: ColorTriad(klrs.green80, klrs.green60, klrs.green95),
+      highlight: ColorTriad(klrs.blue95, klrs.blue90, klrs.blue99),
+      focus: ColorTriad(klrs.yellow90, klrs.yellow80, klrs.yellow90),
 
       appBarBackground: klrs.grey35,
       appBarForeground: klrs.bamboo90,
 
-      bottomNavBackground: klrs.grey25,
+      bottomNavBackground: klrs.grey10,
       bottomNavForeground: klrs.grey80,
-      bottomNavSelected: klrs.pink95,
+      bottomNavSelected: klrs.purple99,
       bottomNavDisabled: klrs.grey50,
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.orange99, klrs.pink20.withAlpha(0)],
+          colors: [klrs.yellow70, klrs.pink20.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.purple60, klrs.pink40, klrs.pink20],
+          colors: [klrs.red40, klrs.pink30, klrs.purple45],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),

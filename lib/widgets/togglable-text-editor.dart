@@ -42,7 +42,9 @@ class _TogglableTextEditorState extends State<TogglableTextEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return _editingText 
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: _editingText 
       ? TextField(
           controller: _controller,
           focusNode: _focusNode,
@@ -54,6 +56,7 @@ class _TogglableTextEditorState extends State<TogglableTextEditor> {
           style: Txt.typeStyle(TxtType.subtitle1).merge(widget.style)
         ),
         onPressed: _edit,
-      );
+      )
+    );
   }
 }

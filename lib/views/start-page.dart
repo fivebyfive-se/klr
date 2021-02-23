@@ -9,11 +9,14 @@ import 'package:klr/views/base/page-arguments.dart';
 import 'package:klr/views/palette-page.dart';
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
+import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/dialogs/image-picker-dialog.dart';
+import 'package:klr/widgets/tile.dart';
 import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'base/_page-base.dart';
+import 'splash-page.dart';
 
 class StartPage extends PageBase<StartPageConfig> {
   static Color pageAccent = Klr.colors.pink95;
@@ -48,19 +51,19 @@ class _StartPageState extends State<StartPage> {
 
   List<BottomSheetMenuItem<String>> get _menuItems => [
     BottomSheetMenuItem<String>(
-      icon: Icon(LineAwesomeIcons.alternate_trash, color: Klr.theme.primaryAccent),
+      icon: Icon(LineAwesomeIcons.alternate_trash, color: colorRemove()),
       title: "Clear",
       subtitle: "Clear all palettes",
       value: menuClearPalettes
     ),
     BottomSheetMenuItem<String>(
-      icon: Icon(LineAwesomeIcons.alternate_trash, color: Klr.theme.primaryAccent),
+      icon: Icon(LineAwesomeIcons.alternate_trash, color: colorRemove()),
       title: "Clear everything",
       subtitle: "Clear all saved data",
       value: menuClearAll
     ),
     BottomSheetMenuItem<String>(
-      icon: Icon(Icons.cancel_outlined, color: Klr.theme.secondaryAccent),
+      icon: Icon(Icons.cancel_outlined, color: colorChoice()),
       title: "Cancel",
       subtitle: "Close this menu",
       value: menuCancel
@@ -102,6 +105,7 @@ class _StartPageState extends State<StartPage> {
     return (_appState.currentPalette != null && _appState.currentPalette.uuid == p.uuid);
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -111,7 +115,7 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     final args = PageArguments.of<StartPageArguments>(context);
-
+    
     return StreamBuilder<AppState>(
       stream: _appStateService.appStateStream,
       initialData: _appStateService.snapshot,
@@ -125,57 +129,40 @@ class _StartPageState extends State<StartPage> {
         builder: (context, data, _) => Column(
             children: [
               Expanded(
-                flex: 1,
-                child: Txt.title(StartPage.title)
-              ),
-              Expanded(
                 flex: 11,
                 child: ListView(
                   children: <Widget>[
-                    ListTile(
-                      leading: Icon(LineAwesomeIcons.paint_brush),
-                      title: Txt.subtitle1('Palettes'),
-                      subtitle: Text('Your saved palettes')
+                    titleTile(
+                      icon: LineAwesomeIcons.palette,
+                      title: 'Palettes',
+                      subtitle: 'Your saved color schemes'
                     ),
-                    ...snapshot.data.palettes.map((p) => ListTile(
-                      leading: Icon(Icons.palette_outlined),
-                      title: Text(p.name),
-                      subtitle: Text("${p.colors.length} colors"),
-                      trailing: Icon(Icons.edit),
-                      onTap: () {
-                        _selectPalette(p);
-                      },
-                      tileColor: _isPaletteSelected(p)  
-                        ? Klr.theme.tertiaryAccent
-                        : Klr.theme.cardBackground,
-                    )).toList(),
+                    ...snapshot.data.palettes.map(
+                        (p) => choiceTile(
+                          icon: Icons.palette_outlined,
+                          title: p.name,
+                          subtitle: "${p.colors.length} colors",
+                          onTap: () {
+                            _selectPalette(p);
+                          },
+                          selected: _isPaletteSelected(p)  
+                        )).toList(),
                     Divider(),
-                    ListTile(
-                      leading: Icon(LineAwesomeIcons.plus_square),
-                      title: Txt.subtitle2('Create new...'),
-                      subtitle: Text('')
+                    titleTile(
+                      title: 'Create',
+                      icon: LineAwesomeIcons.plus_circle
                     ),
-                    ListTile(
-                      leading: Icon(
-                        LineAwesomeIcons.palette,
-                        color: Klr.theme.primaryAccent
-                      ),
-                      title: Text("Create from template"),
-                      subtitle: Text("Create an example palette"),
-                      onTap: () {
-                        _createPalette();
-                      },
-                      tileColor: Klr.theme.cardBackground,
+                    actionTile(
+                      icon:LineAwesomeIcons.palette,
+                      title: "Create from template",
+                      subtitle: "Create an example palette",
+                      onTap: () => _createPalette(),
                     ),
-                    ListTile(
-                      leading: Icon(LineAwesomeIcons.image_1,
-                        color: Klr.theme.secondaryAccent),
-                      title: Text('Create from image'),
-                      subtitle: Text('Extract palette from image file'),
-                      onTap: () {
-                        _showExtractDialog();
-                      },
-                      tileColor: Klr.theme.cardBackground,
+                    actionTile(
+                      icon: LineAwesomeIcons.image_1,
+                      title: 'Create from image',
+                      subtitle: 'Extract palette from an image file',
+                      onTap: () => _showExtractDialog(),
                     )
                   ],
                 )

@@ -14,15 +14,18 @@ class FivebyfiveFontTheme {
     this.fontBody, 
     this.fontCode, {
       double minFontSize = 10.5,
-      double maxFontSize
+      double maxFontSize,
+      Color textColor
   }) : minFontSize = minFontSize,
-      maxFontSize = maxFontSize ?? (minFontSize * minFontSize);
+      maxFontSize = maxFontSize ?? (minFontSize * minFontSize),
+      textColor = textColor ?? Colors.white;
 
   final String fontHeadings;
   final String fontBody;
   final String fontCode;
   final double minFontSize;
   final double maxFontSize; 
+  final Color textColor;
 
   @protected
   NumRange _sizeRange;
@@ -56,7 +59,8 @@ class FivebyfiveFontTheme {
               : fontSize,
             fontWeight: fontWeight,
             fontStyle: fontStyle,
-            letterSpacing: letterSpacing
+            letterSpacing: letterSpacing,
+            color: textColor
           );
 
   TextStyle heading({

@@ -12,8 +12,11 @@ class PaletteColorWidget extends StatelessWidget {
     this.paletteColor,
     this.size = 50,
     this.showGenerated,
+    this.containerColor = Colors.transparent
+
   });
 
+  final Color containerColor;
   final bool showGenerated;
   final PaletteColor paletteColor;
   final double size;
@@ -52,14 +55,19 @@ class PaletteColorWidget extends StatelessWidget {
       );
     };
     return Container(
-      height: size + 10,
+      height: size,
+      padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+      decoration: BoxDecoration(
+        // color: color,
+        border: BorderDirectional(
+          bottom: BorderSide(color: containerColor, width: 4.0)
+        )
+      ),
       child: Wrap(
         alignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: showGenerated ? [
-          ...shades.map(
-            (c) => btn(c, size, isCurrColor(c) ? ColorType.original : ColorType.shade)
-          ).toList(),
+          btn(color, size, ColorType.original),
           ...generatedColors.map((c) => btn(c, size, ColorType.harmony)).toList()
         ] : [
           btn(color, size, ColorType.original)

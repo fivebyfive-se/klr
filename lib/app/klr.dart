@@ -40,6 +40,6 @@ class _KlrApp extends StatelessWidget {
       title: Klr.appTitle,
       theme: Klr.theme.themeData,
       routes: Klr.pages.routes,
-      initialRoute: SplashPage.routeName,
+      initialRoute: StartPage.routeName,
     );
 }

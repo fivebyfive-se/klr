@@ -66,8 +66,8 @@ class KlrColors {
   Color purple70 = Color(0xff4A12B3);
   Color purple80 = Color(0xff6229CC);
   Color purple90 = Color(0xff7641D9);
-  Color purple95 = Color(0xff8449F2);
-  Color purple99 = Color(0xff9258FC);
+  Color purple95 = Color(0xff8C55F2);
+  Color purple99 = Color(0xff9A65FC);
 
   Color blue20 = Color(0xff002233);
   Color blue30 = Color(0xff00334D);
@@ -91,11 +91,14 @@ class KlrColors {
   Color green95 = Color(0xff5BF23D);
   Color green99 = Color(0xff69FC4C);
 
-  Color red40 = Color(0xff662B1F);
-  Color red50 = Color(0xff803526);
-  Color red60 = Color(0xff99402E);
-  Color red70 = Color(0xffB34A36);
-  Color red80 = Color(0xffCC553D);
+  Color red40 = Color(0xff660A34);
+  Color red50 = Color(0xff801344);
+  Color red60 = Color(0xff991751);
+  Color red70 = Color(0xffB3366E);
+  Color red80 = Color(0xffCC3D7D);
+  Color red90 = Color(0xffE65093);
+  Color red95 = Color(0xffF2559C);
+  Color red99 = Color(0xffFF66AB);
 
   static KlrColors _instance;
 
