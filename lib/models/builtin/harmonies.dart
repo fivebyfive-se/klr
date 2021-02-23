@@ -10,13 +10,13 @@ class Harmonies  {
     => _definitions[name];
 
   static const Map<String, List<dynamic>> _definitions = {
-    'Complementary': [180, [0,10,-30], [0,-10,0], [180,-20,30]],
-    'Split Complementary': [150, 320, [150,-10,10], [300,10,-20] ],
-    'Split Compl. (clockwise)': [150, 300, [150,-5,10], [300,5,-10]],
-    'Split Compl. (counter-cw)': [60, 210, [60,-10,10], [210,10,-10]],
+    'Complementary': [180, [0,10,-30], [0,-15,0], [180,-20,30]],
+    'Split Complementary': [150, 320, [150,-15,10], [300,10,-20] ],
+    'Split Compl. (clockwise)': [150, 300, [150,-15,10], [300,10,-15]],
+    'Split Compl. (counter-cw)': [60, 210, [60,-15,10], [210,10,-10]],
     
-    'Triadic': [120, 240, [120,-5,10], [240,5,-10]],
-    'Clash': [90, 270, [90,10,-5], [270,-5,10]],
+    'Triadic': [120, 240, [120,-5,15], [240,5,-15]],
+    'Clash': [90, 270, [90,10,-12], [270,-12,10]],
     'Tetradic': [90, 180, 270],
     
     'Four Tone (clockwise)': [60, 180, 240],

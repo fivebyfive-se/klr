@@ -89,49 +89,53 @@ StatefulBuilder buildImagePickerDialog(context) {
           btnChoice("Close", onPressed: () => Navigator.pop(context)),
         ],
         content: Container(
-          width: viewportSize.width - viewportSize.width / 3,
-          height: viewportSize.height - viewportSize.height / 3,
-          child: ListView(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                child: btnAction(
-                  'Load image',
-                  onPressed: () => pickFile(),
-                )
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: imageName == null ? null : TogglableTextEditor(
-                  initalText: imageName,
-                  onChanged: (v) {
-                    imageName = v;
-                    setState((){});
-                  },
-                )
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: isLoading 
-                  ? RefreshProgressIndicator(
-                    strokeWidth: 5.0,
-                  ) : Wrap(
-                    alignment: WrapAlignment.center,
-                    children: [
-                      ...colors.map(
-                        (c) => Icon(
-                          LineAwesomeIcons.square_full,
-                          color: c,
-                          size: 64.0
-                        )
-                      ).toList(),
-                    ],
+          width: viewportSize.width / 1.5,
+          height: viewportSize.height / 2,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate(<Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: btnAction(
+                      'Load image',
+                      onPressed: () => pickFile(),
+                    )
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: imageName == null ? null : TogglableTextEditor(
+                      initalText: imageName,
+                      onChanged: (v) {
+                        imageName = v;
+                        setState((){});
+                      },
+                    )
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: isLoading 
+                      ? RefreshProgressIndicator(
+                        strokeWidth: 5.0,
+                      ) : Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          ...colors.map(
+                            (c) => Icon(
+                              LineAwesomeIcons.square_full,
+                              color: c,
+                              size: 64.0
+                            )
+                          ).toList(),
+                        ],
+                      )
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: isLoading ? null : loadedImage
                   )
-              ),
-              Container(
-                  alignment: Alignment.center,
-                  child: isLoading ? null : loadedImage
+                ])
               )
             ],
           )

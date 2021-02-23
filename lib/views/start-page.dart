@@ -11,6 +11,7 @@ import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
 import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/dialogs/image-picker-dialog.dart';
+import 'package:klr/widgets/layout.dart';
 import 'package:klr/widgets/tile.dart';
 import 'package:klr/widgets/txt.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -112,6 +113,7 @@ class _StartPageState extends State<StartPage> {
     StartPage.mounted = true;
   }
 
+
   @override
   Widget build(BuildContext context) {
     final args = PageArguments.of<StartPageArguments>(context);
@@ -126,51 +128,52 @@ class _StartPageState extends State<StartPage> {
           fabMenuItems: _menuItems,
           fabOnSelect: _onMenuSelect,
         ),
-        builder: (context, data, _) => Column(
-            children: [
-              Expanded(
-                flex: 11,
-                child: ListView(
-                  children: <Widget>[
-                    titleTile(
-                      icon: LineAwesomeIcons.palette,
-                      title: 'Palettes',
-                      subtitle: 'Your saved color schemes'
-                    ),
-                    ...snapshot.data.palettes.map(
-                        (p) => choiceTile(
-                          icon: Icons.palette_outlined,
-                          title: p.name,
-                          subtitle: "${p.colors.length} colors",
-                          onTap: () {
-                            _selectPalette(p);
-                          },
-                          selected: _isPaletteSelected(p)  
-                        )).toList(),
-                    Divider(),
-                    titleTile(
-                      title: 'Create',
-                      icon: LineAwesomeIcons.plus_circle
-                    ),
-                    actionTile(
-                      icon:LineAwesomeIcons.palette,
-                      title: "Create from template",
-                      subtitle: "Create an example palette",
-                      onTap: () => _createPalette(),
-                    ),
-                    actionTile(
-                      icon: LineAwesomeIcons.image_1,
-                      title: 'Create from image',
-                      subtitle: 'Extract palette from an image file',
-                      onTap: () => _showExtractDialog(),
-                    )
-                  ],
+        builder: (context, data, _)
+          => CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: titleTile(
+                  icon: LineAwesomeIcons.palette,
+                  title: 'Palettes',
+                  subtitle: 'Your saved color schemes'
                 )
-              )
+              ),
+              listToGrid(
+                snapshot.data.palettes.map((p) => choiceTile(
+                  icon: Icons.palette_outlined,
+                  title: p.name,
+                  subtitle: "${p.colors.length} colors",
+                  onTap: () {
+                    _selectPalette(p);
+                  },
+                  selected: _isPaletteSelected(p)  
+                )).toList()
+              ),
+              sliverSpacer(),
+              SliverToBoxAdapter(
+                child: titleTile(
+                  title: 'Create',
+                  icon: LineAwesomeIcons.plus_circle
+                ),
+              ),
+              listToGrid([                                
+                actionTile(
+                  icon:LineAwesomeIcons.palette,
+                  title: "Create from template",
+                  subtitle: "Create an example palette",
+                  onTap: () => _createPalette(),
+                ),
+                actionTile(
+                  icon: LineAwesomeIcons.image_1,
+                  title: 'Create from image',
+                  subtitle: 'Extract palette from an image file',
+                  onTap: () => _showExtractDialog(),
+                )
+              ])
             ],
           )
         )
-    );
+      );
   }
 }
 

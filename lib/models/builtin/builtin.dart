@@ -40,7 +40,7 @@ class BuiltinBuilder {
         final transform = await ColorTransform.scaffoldAndSave();
         if (d is num) {
           transform.deltaHue = d;
-        } else if (d is List<double>) {
+        } else if (d is List<num>) {
             transform.deltaHue = d.length > 0 ? d[0] : 0;
             transform.deltaSaturation = d.length > 1 ? d[1] : 0;
             transform.deltaLightness = d.length > 2 ? d[2] : 0;

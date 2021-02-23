@@ -54,14 +54,14 @@ class KlrTheme extends FivebyfiveTheme {
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.yellow70, klrs.pink20.withAlpha(0)],
+          colors: [klrs.yellow90, klrs.red40.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.red40, klrs.pink30, klrs.purple45],
+          colors: [klrs.grey17, klrs.pink20, klrs.pink55, klrs.purple99],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),

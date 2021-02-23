@@ -73,6 +73,8 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
   @override
   Widget build(BuildContext context) {
     return _paletteColor == null ? Container() : Container(
+      height: 200,
+      padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
         children: <Widget>[
           Expanded(

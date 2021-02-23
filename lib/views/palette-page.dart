@@ -9,7 +9,7 @@ import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
 import 'package:klr/widgets/btn.dart';
 import 'package:klr/widgets/dialogs/css-dialog.dart';
-import 'package:klr/widgets/dialogs/palette-color-dialog.dart';
+import 'package:klr/widgets/layout.dart';
 import 'package:klr/widgets/palette-color-editor.dart';
 import 'package:klr/widgets/palette-color-widget.dart';
 import 'package:klr/widgets/tile.dart';
@@ -71,49 +71,13 @@ class _PalettePageState extends State<PalettePage> {
   ];
 
 
-  Future<void> _promoteColor(PaletteColor original, Color newColor, ColorType type) async {
+  Future<void> _promoteColor(HSLColor color) async {
     _appStateService.beginTransaction();
-    
-    var newName = original.name;
-    var before = false;
-
-    if (type == ColorType.shade) {
-      newName += " shade";
-      final shade = original.shadeDeltas
-        .firstWhere((d) => original.color.deltaLightness(d).toHex() != newColor.toHex());
-      original.shadeDeltas = original.shadeDeltas.where((d) => d != shade).toList();
-      if (shade < 0) {
-        before = true;
-      }
-    } else if (type == ColorType.harmony) {
-      newName += " harmony";
-      original.transformations = original.transformations
-        .where((t) => t.applyTo(original.color).toHex() != newColor.toHex()).toList();
-    }
-    await original.save();
-
-    final currColors = _currPalette.colors
-      .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
-      .toList();
-
-    final newPaletteColor = await PaletteColor.scaffoldAndSave(name: newName, fromColor: newColor);
-    newPaletteColor.shadeDeltas = [];
-    int i = 0;
-
-    for (var col in currColors) {
-      if (col.uuid == original.uuid && before) {
-        newPaletteColor.displayIndex = i++;
-      }
-
-      col.displayIndex = i++;
-      
-      if (col.uuid == original.uuid && !before) {
-        newPaletteColor.displayIndex = i++;
-      }
-      await col.save();
-    }
-
-    await newPaletteColor.save();
+    final newPaletteColor = await PaletteColor.scaffoldAndSave(
+      name: color.toHex(),
+      fromColor: color.toColor()
+    );
+    newPaletteColor.displayIndex = _currPalette.colors.map((c) => c.displayIndex).max() + 1;
     _currPalette.colors.add(newPaletteColor);
     await _currPalette.save();
     _appStateService.endTransaction();
@@ -140,6 +104,37 @@ class _PalettePageState extends State<PalettePage> {
     }
   }
 
+  Widget _colorBox({
+    Color color,
+    Function() onPressed,
+    bool chosen = false,
+    Color mark
+  }) {
+    final textColor = color.computeLuminance() <= 0.45 
+      ? Klr.theme.foreground
+      : Klr.theme.background;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          border: chosen ? BorderDirectional(
+            bottom: BorderSide(
+              width: 4.0, 
+              color: Klr.theme.foreground
+            ) 
+          ) : null,
+          boxShadow: mark != null ? [
+            BoxShadow(color: mark.withAlpha(0x80), blurRadius: 1.0, spreadRadius: 5.0)
+          ] : []
+        ),
+        child: btn(
+          color.toHex(includeHash: true),
+          backgroundColor: color,
+          onPressed: onPressed,
+          style: Klr.textTheme.bodyText1.copyWith(color: textColor)
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AppState>(
@@ -152,102 +147,122 @@ class _PalettePageState extends State<PalettePage> {
           fabMenuItems: _menuItems,
           fabOnSelect: _onMenuSelect
         ),
-        builder: (context, data, _) => _currPalette == null ? null : Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: TogglableTextEditor(
-                initalText: _currPalette.name,
-                onChanged: (v) {
-                  _currPalette.name = v;
-                  _currPalette.save();
-                },
-              )
-            ),
-            Expanded(
-              flex: 6,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                children: <Widget>[                   
-                  ..._currPalette.colors
-                      .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
+        builder: (context, data, _) 
+          => _currPalette == null
+            ? null 
+            : CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: ListTile(
+                    leading: Icon(LineAwesomeIcons.palette),
+                    title: TogglableTextEditor(
+                      initalText: _currPalette.name,
+                      onChanged: (v) {
+                        _currPalette.name = v;
+                        _currPalette.save();
+                      },
+                    )
+                  )
+                ),
+
+              sliverSpacer(),
+
+              listToGrid(
+                  <Widget>[                   
+                  ..._currPalette
+                      .sortedColors
                       .map(
-                        (c) => PaletteColorWidget(
-                          paletteColor: c,
+                        (c) => _colorBox(
+                          color: c.color.toColor(), 
                           onPressed: () => setState(() => _selectedColor = c),
-                          onGeneratedPressed: _promoteColor,
-                          showGenerated: _showGenerated,
-                          size: viewportSize.width / 10,
-                          containerColor: _selectedColor != null && _selectedColor.uuid == c.uuid
-                            ? Klr.theme.foreground
-                            : Colors.transparent,
-                        )
-                      ).toList(),
-                      Container(width: viewportSize.width / 20),
-                      Container(
-                        height: viewportSize.width / 20,
-                        padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
-                        alignment: Alignment.centerRight,
-                        child: btnIcon(
-                          'New',
-                          icon: LineAwesomeIcons.plus,
-                          backgroundColor: colorAction(darker: true),
-                          onPressed: () => _createColor()
-                        )
-                      )
-                ]
-              )
-            ),
-            Expanded(
-                flex: 3,
-                child: PaletteColorEditor(
+                          chosen: _selectedColor?.uuid == c.uuid,
+                          mark: _showGenerated && c.transformations.isNotEmpty 
+                            ? c.color.toColor() : null
+                        )).toList(),
+                ],
+                crossAxisCount: 7,
+                mainAxisExtent: null,
+                crossAxisSpacing: defaultPaddingLength() / 4
+              ),
+              ...(_showGenerated 
+                ? _currPalette.transformedColors.entries.map(
+                    (entry) {
+                      final pc = _currPalette.colors
+                        .firstWhere((c) => c.uuid == entry.key);
+                      return listToGrid(
+                        entry.value.map((col) => _colorBox(
+                          color: col.toColor(),
+                          onPressed: () => _promoteColor(col),
+                          mark: pc.color.toColor(),
+                        )).toList(),
+                        crossAxisCount: 7,
+                        mainAxisExtent: 64.0,
+                        crossAxisSpacing: defaultPaddingLength() / 4
+                      );
+                    }).toList()
+                : []),
+              
+              sliverSpacer(),
+
+              SliverToBoxAdapter(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: btnIcon(
+                    'New',
+                    icon: LineAwesomeIcons.plus,
+                    backgroundColor: colorAction(darker: true),
+                    onPressed: () => _createColor()
+                  )
+                )
+              ),
+
+              sliverSpacer(),
+
+              listToList([
+                PaletteColorEditor(
                   paletteColor: _selectedColor,
                   onDelete: () => setState(() => _selectedColor = null),
                 )
-            ),
-            // Expanded(
-            //   flex: 1,
-            //   child: Row(
-            //     children: [
-            //       Expanded(
-            //         flex: 1,
-            //         child: btnIcon(
-            //           'New color...',
-            //           icon: LineAwesomeIcons.plus,
-            //           backgroundColor: colorAction(),
-            //           onPressed: () => _createColor()
-            //         )
-            //       )
-            //     ],
-            //   )
-            // ),
-            Expanded(
-              flex: 2,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: checkboxTile(
-                      value: _showGenerated,
-                      onChange: (v) => setState(() => _showGenerated = v),
-                      title: 'Show generated colors',
-                      subtitle: '(automatic shades/harmonies)'
-                    )
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: actionTile(
-                      icon: LineAwesomeIcons.css_3_logo,
-                      title: 'Show CSS',
-                      subtitle: 'Generate and view CSS for this palette',
-                      onTap: () => showCssDialog(context, _currPalette),
-                    )
-                  )
-                ]
-              ),
-          )
-        ]
-      ))  
+              ]),
+
+              sliverSpacer(size: 128.0),
+
+              listToGrid(<Widget>[
+                checkboxTile(
+                  value: _showGenerated,
+                  onChange: (v) => setState(() => _showGenerated = v),
+                  title: 'Show generated colors',
+                  subtitle: '(automatic shades/harmonies)'
+                ),
+                actionTile(
+                  icon: LineAwesomeIcons.css_3_logo,
+                  title: 'Show CSS',
+                  subtitle: 'Generate and view CSS for this palette',
+                  onTap: () => showCssDialog(context, _currPalette),
+                )
+              ]),
+
+              sliverSpacer(),
+
+              listToList(<Widget>[
+                titleTile(
+                  icon: LineAwesomeIcons.info,
+                  title: 'Help'
+                ),
+                infoTile(
+                  icon: LineAwesomeIcons.paint_roller,
+                  title: 'Colors',
+                  subtitle: 'To edit a color, click on it in the grid above'
+                    'Any smaller boxes are *generated colors*, which are not'
+                    'editable by default, but can be made so by tapping them'
+                    
+                )
+              ]),
+
+              sliverSpacer()
+            
+              
+        ]))  
     );
   }
 }

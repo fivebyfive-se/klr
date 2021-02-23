@@ -50,12 +50,8 @@ extension HSLColorExtensions on HSLColor {
         : (newLightness < 0.0)
           ? newLightness.abs() : 0;
 
-    return (
-      deltaS != 0 
-        ? this.deltaSaturation(deltaS * 100.0) 
-        : this
-      )
-      .withLightness(deltaRatio(this.lightness, delta));
+    return this.deltaSaturation(deltaS * 100.0) 
+            .withLightness(deltaRatio(this.lightness, delta));
   }
 
   HSLColor deltaSaturation(double delta)

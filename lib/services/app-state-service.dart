@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/helpers/iterable.dart';
 
 class AppStateService {
   static const String rootKey = "klrState";
@@ -23,7 +24,8 @@ class AppStateService {
 
   @protected AppState _loadState()
     => _currentAppState = AppState(
-      palettes: Palette.boxOf().values.toList(),
+      palettes: Palette.boxOf().values
+        .order<Palette>((a,b) => a.displayIndex.compareTo(b.displayIndex)).toList(),
       harmonies: Harmony.boxOf().values.toList(),
       stateStore: AppStateStore.boxOf()
         .get(rootKey, defaultValue: AppStateStore())

@@ -1,4 +1,7 @@
+import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
+
+import 'package:klr/helpers/iterable.dart';
 
 import './palette-color.model.dart';
 import '_base-model.dart';
@@ -33,6 +36,18 @@ class Palette extends BaseModel {
 
   @HiveField(3)
   int displayIndex;
+
+  List<PaletteColor> get sortedColors
+    => colors
+        .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
+        .toList();
+
+  Map<String,List<HSLColor>> get transformedColors
+    => Map.fromEntries(
+          sortedColors.map(
+            (c) => MapEntry<String,List<HSLColor>>(c.uuid,c.transformedColors)
+          )
+        );
 
   @override int compareTo(BaseModel other)
     => (other is Palette) 
