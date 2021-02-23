@@ -117,6 +117,48 @@ class FivebyfiveTheme {
   Color get focusAccent => isDark ? focus.light : focus.dark;
   Color get highlightAccent => isDark ? highlight.light : highlight.dark;
 
+  Map<String,TextStyle> _codeHighlightTheme;
+
+  Map<String,TextStyle> get codeHighlightTheme
+    => _codeHighlightTheme ?? (_codeHighlightTheme = {
+    'root':
+        TextStyle(color: foreground, backgroundColor: background),
+    'comment': TextStyle(color: foregroundDisabled, fontStyle: FontStyle.italic),
+    'quote': TextStyle(color: focusAccent, fontStyle: FontStyle.italic),
+    'keyword': TextStyle(color: highlightAccent, fontWeight: FontWeight.bold),
+    'selector-tag':
+        TextStyle(color: highlightAccent, fontWeight: FontWeight.bold),
+    'subst': TextStyle(color: highlightAccent, fontWeight: FontWeight.normal),
+    'number': TextStyle(color: primaryAccent),
+    'literal': TextStyle(color: secondaryAccent),
+    'variable': TextStyle(color: tertiaryAccent),
+    'template-variable': TextStyle(color: tertiary.base),
+    'string': TextStyle(color: focusAccent),
+    'doctag': TextStyle(color: focus.base),
+    'title': TextStyle(color: focus.base, fontWeight: FontWeight.bold),
+    'section': TextStyle(color: focus.base, fontWeight: FontWeight.bold),
+    'selector-id':
+        TextStyle(color: highlight.base, fontWeight: FontWeight.bold),
+    'type': TextStyle(color: highlight.dark, fontWeight: FontWeight.bold),
+    'tag': TextStyle(color: highlightAccent, fontWeight: FontWeight.normal),
+    'name': TextStyle(color: highlight.base, fontWeight: FontWeight.normal),
+    'attribute':
+        TextStyle(color: highlight.dark, fontWeight: FontWeight.normal),
+    'regexp': TextStyle(color: focusAccent),
+    'link': TextStyle(color: primary.dark),
+    'symbol': TextStyle(color: tertiaryAccent),
+    'bullet': TextStyle(color: highlightAccent),
+    'built_in': TextStyle(color: tertiary.base),
+    'builtin-name': TextStyle(color: tertiary.dark),
+    'meta': TextStyle(color: secondaryAccent, fontWeight: FontWeight.bold),
+    'deletion': TextStyle(backgroundColor: error),
+    'addition': TextStyle(backgroundColor: highlightAccent),
+    'emphasis': TextStyle(fontStyle: FontStyle.italic),
+    'strong': TextStyle(fontWeight: FontWeight.bold),
+  });
+ 
+
+
   @protected
   ThemeData _themeData;
 

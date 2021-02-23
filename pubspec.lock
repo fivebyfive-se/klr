@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  csv:
+    dependency: "direct main"
+    description:
+      name: csv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -111,6 +118,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.5"
+  flutter_highlight:
+    dependency: "direct main"
+    description:
+      name: flutter_highlight
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -128,6 +142,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  highlight:
+    dependency: transitive
+    description:
+      name: highlight
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   hive:
     dependency: "direct main"
     description:
@@ -149,6 +170,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  kdtree:
+    dependency: "direct main"
+    description:
+      name: kdtree
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   line_awesome_flutter:
     dependency: "direct main"
     description:

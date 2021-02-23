@@ -78,7 +78,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
       child: Row(
         children: <Widget>[
           Expanded(
-            flex: 8,
+            flex: 6,
             child: ColorPicker(
               pickerColor: _paletteColor.color.toColor(),
               onColorChanged: _setColor,
@@ -128,9 +128,16 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
                   ]),
                 ),
                 ListTile(
-                  trailing: Icon(LineAwesomeIcons.backspace, color: colorRemove()),
-                  title: Text('Remove color', style: styleColorRemove()),
-                  onTap: _deleteColor,
+                  trailing: btnIcon(
+                    'Remove color',
+                    icon: LineAwesomeIcons.backspace,
+                    backgroundColor: Colors.transparent,
+                    borderColor: colorRemove(),
+                    iconColor: colorRemove(),
+                    style: styleColorRemove(),
+                    onPressed: () => _deleteColor(),
+                    baseSize: 10.0
+                  ),
                 )
               
               

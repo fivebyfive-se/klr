@@ -20,11 +20,11 @@ class KlrTheme extends FivebyfiveTheme {
     : super(
       fontTheme: fontTheme,
       background: klrs.grey05,
-      foreground: klrs.grey95,
-      foregroundDisabled: klrs.grey60,
+      foreground: klrs.grey99,
+      foregroundDisabled: klrs.grey80,
 
       backgroundGradient: LinearGradient(
-        colors: [klrs.grey17, klrs.grey05],
+        colors: [klrs.grey20, klrs.grey10],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter
       ),
@@ -44,24 +44,24 @@ class KlrTheme extends FivebyfiveTheme {
       highlight: ColorTriad(klrs.blue95, klrs.blue90, klrs.blue99),
       focus: ColorTriad(klrs.yellow90, klrs.yellow80, klrs.yellow90),
 
-      appBarBackground: klrs.grey35,
-      appBarForeground: klrs.bamboo90,
+      appBarBackground: klrs.steel40,
+      appBarForeground: klrs.bamboo99,
 
-      bottomNavBackground: klrs.grey10,
-      bottomNavForeground: klrs.grey80,
-      bottomNavSelected: klrs.purple99,
+      bottomNavBackground: klrs.steel35,
+      bottomNavForeground: klrs.grey95,
+      bottomNavSelected: klrs.pink99,
       bottomNavDisabled: klrs.grey50,
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.yellow90, klrs.red40.withAlpha(0)],
+          colors: [klrs.purple60, klrs.grey20.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.grey17, klrs.pink20, klrs.pink55, klrs.purple99],
+          colors: [klrs.steel15, klrs.pink70, klrs.steel35],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),

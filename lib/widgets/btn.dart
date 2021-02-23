@@ -24,24 +24,38 @@ Widget btnRemove(String label, {
   backgroundColor: colorRemove(darker: true)
 );
 
-ButtonStyle btnStyle({Color backgroundColor}) 
+ButtonStyle btnStyle({
+  Color backgroundColor,
+  Color borderColor,
+  double baseSize = 16
+}) 
   => ButtonStyle(
   padding: MaterialStateProperty.all(
-    EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0)
+    EdgeInsets.symmetric(horizontal: baseSize * 2, vertical: baseSize)
+  ),
+  side: MaterialStateProperty.all(
+    BorderSide(color: borderColor ?? backgroundColor, width: 2.0)
   ),
   backgroundColor: MaterialStateProperty.all(
     backgroundColor ?? Klr.theme.primaryAccent
   ),
-  minimumSize: MaterialStateProperty.all(Size(100.0, 30.0)),
+  
+  minimumSize: MaterialStateProperty.all(Size(baseSize * 3, baseSize * 2)),
 );
 
 Widget btn(String label, {
   Function() onPressed,
   Color backgroundColor,
+  Color borderColor,
+  double baseSize = 16.0,
   TextStyle style
 }) 
   => ElevatedButton(
-    style: btnStyle(backgroundColor: backgroundColor),
+    style: btnStyle(
+      backgroundColor: backgroundColor, 
+      borderColor: borderColor, 
+      baseSize: baseSize
+    ),
     child: Text(label, style: Txt.typeStyle(TxtType.subtitle3).merge(style)),
     onPressed: onPressed,
   );
@@ -50,12 +64,22 @@ Widget btnIcon(String label, {
   IconData icon,
   Function() onPressed,
   Color backgroundColor,
-  TextStyle style
+  Color borderColor,
+  Color iconColor,
+  TextStyle style,
+  double baseSize = 16.0,
 }) => ElevatedButton.icon(
-  style: btnStyle(backgroundColor: backgroundColor),
+  style: btnStyle(
+    backgroundColor: backgroundColor,
+    baseSize: baseSize,
+    borderColor: borderColor
+  ),
   onPressed: onPressed,
-  icon: Icon(icon),
-  label: Text(label, style: Txt.typeStyle(TxtType.subtitle3).merge(style)),
+  icon: Icon(icon, size: baseSize * 2, color: iconColor),
+  label: Text(
+    label, 
+    style: Txt.typeStyle(TxtType.subtitle3).merge(style)
+  ),
 );
 
 TextStyle styleColorAction() 

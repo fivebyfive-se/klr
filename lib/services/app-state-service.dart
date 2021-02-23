@@ -51,7 +51,6 @@ class AppStateService {
 
     final onBoxEvent = (BoxEvent ev) {
       if (!_inTransaction) {
-        print(ev.key);
         _update();
       }
     };

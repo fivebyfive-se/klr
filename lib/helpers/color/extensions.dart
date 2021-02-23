@@ -16,6 +16,14 @@ extension ColorExtensions on Color {
   }
   HSLColor toHSL() => HSLColor.fromColor(this);
 
+  Color invert()
+    => Color.fromARGB(
+      this.alpha,
+      0xff - this.red,
+      0xff - this.green,
+      0xff - this.blue
+    );
+
   Color deltaHue(double degrees, { bool ryb = false })
     => this.toHSL().deltaHue(degrees, ryb: ryb).toColor();
 

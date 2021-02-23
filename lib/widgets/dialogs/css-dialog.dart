@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/github.dart';
+
 import 'package:klr/app/klr.dart';
+
 import 'package:klr/helpers/color.dart';
+
 import 'package:klr/models/app-state.dart';
+
 import 'package:klr/widgets/btn.dart';
-import 'package:klr/widgets/txt.dart';
+import 'package:klr/widgets/layout.dart';
 
 void showCssDialog(BuildContext context, Palette palette)
   => showDialog(
@@ -11,35 +18,27 @@ void showCssDialog(BuildContext context, Palette palette)
     builder: (context) => buildCssDialog(context, palette)
   );
 
-List<TextSpan> paletteToCss(Palette palette, {bool useCssVars = false, bool useHex = true}) {
-    final output = <TextSpan>[];
-    final ts = ({String text, TextStyle style}) => TextSpan(text: text, style: style);
-    final t = (String text) => ts(
-      text: text,
-      style: Txt.typeStyle(TxtType.code).copyWith(color: Klr.theme.foreground)
-    );
-    final c = (HSLColor c) => ts(
-      text: c.toCss(hex: useHex),
-      style: Txt.typeStyle(TxtType.code).copyWith(color: c.toColor())
-    );
-    final line = (List<TextSpan> s) => TextSpan(children: s);
+List<String> paletteToCss(Palette palette, {bool useCssVars = false, bool useHex = true}) {
+    final output = <String>[];
+    final c = (HSLColor c) => c.toCss(hex: useHex);
+    final line = (List<String> parts) => parts.join('');
 
     final buildCss = (name, color) =>
       (useCssVars) 
-        ? line([t("--$name: "), c(color), t(";")])
-        : line([t(".$name {\n"), t("    color: "), c(color), t(";\n}")]); 
+        ? ["--$name: " + c(color) + ";"]
+        : [".$name {", "    color: " + c(color) + ";", "}"]; 
 
     for (var c in palette.colors) {
       final cssName = "color-" + c.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
-      output.add(buildCss(cssName, c.color));
+      output.addAll(buildCss(cssName, c.color));
       int n = 0;
       for (var s in [...c.shades, ...c.transformedColors]) {
         n++;
-        output.add(buildCss("$cssName-$n", s));
+        output.addAll(buildCss("$cssName-$n", s));
       }
     }
     return (useCssVars) 
-      ? [t("::root{"), ...output, t("}")]
+      ? ["::root{", ...output, "}"]
       : output;
   }
 
@@ -60,10 +59,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
             Expanded(flex: 1,
               child: CheckboxListTile(
                 value: useCssVars,
-                onChanged: (v) {
-                  useCssVars = v;
-                  setState(() {});
-                },
+                onChanged: (v) => setState(() => useCssVars = v),
                 title: Text('Use CSS variables'),
                 controlAffinity: ListTileControlAffinity.leading,
                 activeColor: colorChoice(),
@@ -72,10 +68,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
             Expanded(flex: 1,
               child: CheckboxListTile(
                 value: useHex,
-                onChanged: (v) {
-                  useHex = v;
-                  setState(() {});
-                },
+                onChanged: (v) => setState(() => useHex = v),
                 title: Text('Use hexadecimal colors'),
                 controlAffinity: ListTileControlAffinity.leading,
                 activeColor: colorChoice(),
@@ -84,18 +77,21 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
           ]
         ),
         content: Container(
-            width: viewportSize.width - viewportSize.width / 3,
-            height: viewportSize.height - viewportSize.height / 3,
-          child: ListView(
-            children: [
-              ...paletteToCss(palette, useCssVars: useCssVars, useHex: useHex)
-                .map((l) => RichText(
-                  text: l
-                )).toList(),
-            
-          ]
+          width: viewportSize.width - viewportSize.width / 3,
+          height: viewportSize.height - viewportSize.height / 2.5,
+          color: Klr.theme.background,
+          padding: EdgeInsets.all(defaultPaddingLength()),
+          child: SingleChildScrollView(
+            child: HighlightView(
+              paletteToCss(palette, useCssVars: useCssVars, useHex: useHex)
+                .join("\n"),
+              language: "css",
+              theme: Klr.theme.codeHighlightTheme,
+              textStyle: Klr.codeTheme.bodyText1,
+            )
+          )
         )
-      )
+      
     );
   }
 );

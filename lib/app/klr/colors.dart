@@ -14,6 +14,7 @@ class KlrColors {
   Color grey70 = Color(0xffB39F91);
   Color grey80 = Color(0xffCCB5A5);
   Color grey95 = Color(0xffF2D7C4);
+  Color grey99 = Color(0xffFFE9D9);
 
   Color bamboo30 = Color(0xff4D3926);
   Color bamboo40 = Color(0xff664D33);
@@ -30,10 +31,17 @@ class KlrColors {
   Color yellow80 = Color(0xffCC9E14);
   Color yellow90 = Color(0xffE6B217);
 
+  Color steel15 = Color(0xff1B1E26);
   Color steel20 = Color(0xff242833);  
   Color steel25 = Color(0xff2D3240);
   Color steel35 = Color(0xff3E4759);
-
+  Color steel40 = Color(0xff475266);
+  Color steel50 = Color(0xff596680);
+  Color steel60 = Color(0xff737F99);
+  Color steel70 = Color(0xff8695B3);
+  Color steel80 = Color(0xff99AACC);
+  Color steel90 = Color(0xffACBFE6);
+  Color steel95 = Color(0xffC2D2F2);
 
   Color teal20 = Color(0xff0A3329);
   Color teal30 = Color(0xff0F4D3D);
@@ -60,6 +68,7 @@ class KlrColors {
   Color pink80 = Color(0xffCC29B1);
   Color pink90 = Color(0xffE645CB);
   Color pink95 = Color(0xffF261DA);
+  Color pink99 = Color(0xffFF80EA);
 
   Color purple45 = Color(0xff371773);
   Color purple60 = Color(0xff3F0F99);

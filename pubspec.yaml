@@ -24,10 +24,13 @@ dependencies:
   flutter:
     sdk: flutter
   color_thief_flutter: ^1.0.2
+  csv: ^4.1.0
   file_picker: ^2.1.6
   flutter_colorpicker: ^0.3.5
+  flutter_highlight: ^0.6.0
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
+  kdtree: ^0.1.0
   line_awesome_flutter: ^1.0.1
   provider: ^4.3.3
   url_launcher: ^5.7.10
@@ -110,6 +113,7 @@ flutter:
     - images/logo_e.png
     - images/logo_eb.png
     - images/logo_ebb.png
+    - data/colornames.csv
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -35,6 +35,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   AnimationController _controller;
   bool _transStarted = false;
 
+  String get _targetRouteName => Klr.pages.pageRoutes.first.routeName;
+  WidgetBuilder get _targetBuilder => Klr.pages.pageRoutes.first.builder;
+
   Duration _splashDur;
   Duration _transDur;
   Duration _decoDur;
@@ -62,8 +65,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     maintainState: true,
     fullscreenDialog: true,
     
-    pageBuilder: (ctx, animation, secondAnimation) => StartPage(),
-    settings: RouteSettings(name: StartPage.routeName),
+    pageBuilder: (ctx, animation, secondAnimation) => _targetBuilder.call(ctx),
+    settings: RouteSettings(name: _targetRouteName),
     transitionDuration: _transDur,
     reverseTransitionDuration: _transDur.multiplyBy(2),
 
@@ -91,9 +94,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    if (StartPage.mounted) {
-      Navigator.pushNamed(context, StartPage.routeName);
-    }
+
     _splashDur = parseDuration(widget.timeout);
     _transDur  = parseDuration(widget.transition);
     _decoDur   = _splashDur.add(_transDur);

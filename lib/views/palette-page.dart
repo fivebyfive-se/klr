@@ -57,12 +57,6 @@ class _PalettePageState extends State<PalettePage> {
       value: menuCreateColor
     ),
     BottomSheetMenuItem<String>(
-      icon: Icon(Icons.delete_forever, color: colorRemove()),
-      title: "Delete palette",
-      subtitle: "Remove this palette",
-      value: menuDeletePalette
-    ),
-    BottomSheetMenuItem<String>(
       icon: Icon(Icons.cancel_outlined, color: colorChoice()),
       title: "Cancel",
       subtitle: "Close this menu",
@@ -113,14 +107,16 @@ class _PalettePageState extends State<PalettePage> {
     final textColor = color.computeLuminance() <= 0.45 
       ? Klr.theme.foreground
       : Klr.theme.background;
+    final chosenBorder = BorderSide(
+        width: 4.0, 
+        color: Klr.theme.cardForeground
+      );
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           border: chosen ? BorderDirectional(
-            bottom: BorderSide(
-              width: 4.0, 
-              color: Klr.theme.foreground
-            ) 
+            bottom: chosenBorder,
+            top: chosenBorder
           ) : null,
           boxShadow: mark != null ? [
             BoxShadow(color: mark.withAlpha(0x80), blurRadius: 1.0, spreadRadius: 5.0)
@@ -165,7 +161,7 @@ class _PalettePageState extends State<PalettePage> {
                   )
                 ),
 
-              sliverSpacer(),
+              // sliverSpacer(),
 
               listToGrid(
                   <Widget>[                   

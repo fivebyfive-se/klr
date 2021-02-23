@@ -84,8 +84,8 @@ class _StartPageState extends State<StartPage> {
     await Harmony.boxOf().clear();
     await ColorTransform.boxOf().clear();
   }
+
   Future<void> _showExtractDialog() async {
-    Navigator.pop(context);
     showImagePickerDialog(context);
   }
 
@@ -112,7 +112,6 @@ class _StartPageState extends State<StartPage> {
     super.initState();
     StartPage.mounted = true;
   }
-
 
   @override
   Widget build(BuildContext context) {
