@@ -13,9 +13,9 @@ class FivebyfiveTheme {
     this.foreground = Colors.white,
     this.foregroundDisabled = Colors.grey,
 
-    this.primary,
-    this.secondary,
-    this.tertiary,
+    this.primaryTriad,
+    this.secondaryTriad,
+    this.tertiaryTriad,
 
     this.appBarBackground,
     this.appBarForeground,
@@ -44,16 +44,16 @@ class FivebyfiveTheme {
     Color warning,
 
   }) :
-      this.focus = focus ?? primary,
-      this.highlight = highlight ?? secondary,
+      this.focusTriad = focus ?? primaryTriad,
+      this.highlightTriad = highlight ?? secondaryTriad,
 
       this.backgroundGradient = backgroundGradient 
         ?? background.gradientTo(background.withAlpha(0x80)),
 
       this.logoBackgroundGradient = logoBackgroundGradient
-        ?? primary.base.gradientTo(secondary.base),
+        ?? primaryTriad.base.gradientTo(secondaryTriad.base),
       this.drawerBackgroundGradient = drawerBackgroundGradient
-        ?? focus.base.gradientTo(tertiary.light),
+        ?? focus.base.gradientTo(tertiaryTriad.light),
       this.splashGradientStart = splashGradientStart ?? logoBackgroundGradient,
       this.splashGradientEnd   = splashGradientEnd ?? logoBackgroundGradient.reverse(),
 
@@ -64,7 +64,7 @@ class FivebyfiveTheme {
 
       this.bottomNavBackground = bottomNavBackground ?? cardBackground,
       this.bottomNavForeground = bottomNavForeground ?? cardForeground,
-      this.bottomNavSelected = bottomNavSelected ?? highlight?.light ?? secondary.light,
+      this.bottomNavSelected = bottomNavSelected ?? highlight?.light ?? secondaryTriad.light,
       this.bottomNavDisabled = bottomNavDisabled ?? foregroundDisabled,
 
       this.error = error ?? Colors.redAccent,
@@ -75,12 +75,12 @@ class FivebyfiveTheme {
 
   final Brightness brightness;
 
-  final ColorTriad primary;
-  final ColorTriad secondary;
-  final ColorTriad tertiary;
+  final ColorTriad primaryTriad;
+  final ColorTriad secondaryTriad;
+  final ColorTriad tertiaryTriad;
 
-  final ColorTriad focus;
-  final ColorTriad highlight;
+  final ColorTriad focusTriad;
+  final ColorTriad highlightTriad;
   
   final Color background;
   final Color foreground;
@@ -111,12 +111,20 @@ class FivebyfiveTheme {
 
   bool get isDark => brightness == Brightness.dark;
 
-  Color get primaryAccent => isDark ? primary.light : primary.dark;
-  Color get secondaryAccent => isDark ? secondary.light : secondary.dark;
-  Color get tertiaryAccent => isDark ? tertiary.light : tertiary.dark;
-  Color get focusAccent => isDark ? focus.light : focus.dark;
-  Color get highlightAccent => isDark ? highlight.light : highlight.dark;
+  Color get primary => primaryTriad.base;
+  Color get secondary => secondaryTriad.base;
+  Color get tertiary => tertiaryTriad.base;
+  Color get focus => focusTriad.base;
+  Color get highlight => highlightTriad.base;
 
+  Color get primaryAccent => isDark ? primaryTriad.light : primaryTriad.dark;
+  Color get secondaryAccent => isDark ? secondaryTriad.light : secondaryTriad.dark;
+  Color get tertiaryAccent => isDark ? tertiaryTriad.light : tertiaryTriad.dark;
+  Color get focusAccent => isDark ? focusTriad.light : focusTriad.dark;
+  Color get highlightAccent => isDark ? highlightTriad.light : highlightTriad.dark;
+
+
+  @protected
   Map<String,TextStyle> _codeHighlightTheme;
 
   Map<String,TextStyle> get codeHighlightTheme
@@ -132,24 +140,24 @@ class FivebyfiveTheme {
     'number': TextStyle(color: primaryAccent),
     'literal': TextStyle(color: secondaryAccent),
     'variable': TextStyle(color: tertiaryAccent),
-    'template-variable': TextStyle(color: tertiary.base),
+    'template-variable': TextStyle(color: tertiaryTriad.base),
     'string': TextStyle(color: focusAccent),
-    'doctag': TextStyle(color: focus.base),
-    'title': TextStyle(color: focus.base, fontWeight: FontWeight.bold),
-    'section': TextStyle(color: focus.base, fontWeight: FontWeight.bold),
+    'doctag': TextStyle(color: focusTriad.base),
+    'title': TextStyle(color: focusTriad.base, fontWeight: FontWeight.bold),
+    'section': TextStyle(color: focusTriad.base, fontWeight: FontWeight.bold),
     'selector-id':
-        TextStyle(color: highlight.base, fontWeight: FontWeight.bold),
-    'type': TextStyle(color: highlight.dark, fontWeight: FontWeight.bold),
+        TextStyle(color: highlightTriad.base, fontWeight: FontWeight.bold),
+    'type': TextStyle(color: highlightTriad.dark, fontWeight: FontWeight.bold),
     'tag': TextStyle(color: highlightAccent, fontWeight: FontWeight.normal),
-    'name': TextStyle(color: highlight.base, fontWeight: FontWeight.normal),
+    'name': TextStyle(color: highlightTriad.base, fontWeight: FontWeight.normal),
     'attribute':
-        TextStyle(color: highlight.dark, fontWeight: FontWeight.normal),
+        TextStyle(color: highlightTriad.dark, fontWeight: FontWeight.normal),
     'regexp': TextStyle(color: focusAccent),
-    'link': TextStyle(color: primary.dark),
+    'link': TextStyle(color: primaryTriad.dark),
     'symbol': TextStyle(color: tertiaryAccent),
     'bullet': TextStyle(color: highlightAccent),
-    'built_in': TextStyle(color: tertiary.base),
-    'builtin-name': TextStyle(color: tertiary.dark),
+    'built_in': TextStyle(color: tertiaryTriad.base),
+    'builtin-name': TextStyle(color: tertiaryTriad.dark),
     'meta': TextStyle(color: secondaryAccent, fontWeight: FontWeight.bold),
     'deletion': TextStyle(backgroundColor: error),
     'addition': TextStyle(backgroundColor: highlightAccent),
@@ -168,19 +176,19 @@ class FivebyfiveTheme {
       backgroundColor: background,
       canvasColor:     background,
 
-      primaryColor:    primary.base,
-      primaryColorDark: primary.dark,
-      primaryColorLight: primary.light,
+      primaryColor:    primaryTriad.base,
+      primaryColorDark: primaryTriad.dark,
+      primaryColorLight: primaryTriad.light,
 
-      accentColor:     secondary.base,
+      accentColor:     secondaryTriad.base,
 
-      splashColor:     tertiary.base,
-      focusColor:      focus.base,
+      splashColor:     tertiaryTriad.base,
+      focusColor:      focusTriad.base,
       
       errorColor:      error,
       
       cardColor:       cardBackground,
-      buttonColor:     primary.base,
+      buttonColor:     primaryTriad.base,
 
       dialogBackgroundColor: dialogBackground,
       
@@ -194,7 +202,7 @@ class FivebyfiveTheme {
       ),
 
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: tertiary.base,
+        backgroundColor: tertiaryTriad.base,
         focusColor: tertiaryAccent,
         hoverColor: tertiaryAccent
       )

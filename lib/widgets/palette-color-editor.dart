@@ -74,7 +74,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
   Widget build(BuildContext context) {
     return _paletteColor == null ? Container() : Container(
       height: 200,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: Klr.edge.y(2),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -136,7 +136,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
                     iconColor: colorRemove(),
                     style: styleColorRemove(),
                     onPressed: () => _deleteColor(),
-                    baseSize: 10.0
+                    baseSize: 1
                   ),
                 )
               

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:klr/app/klr/font-theme.dart';
 
 import 'package:klr/classes/fbf.dart';
+import 'package:klr/classes/fbf/theme/layout-theme.dart';
 import 'package:klr/views/views.dart';
 
 import 'klr/colors.dart';
@@ -19,6 +20,10 @@ class Klr {
 
   static KlrColors colors = KlrColors.getInstance();
 
+  static FivebyfiveLayoutTheme layoutTheme = FivebyfiveLayoutTheme(
+    baseSize: 8.0,
+    baseBorderWidth: 2.0
+  );
   static FivebyfiveFontTheme fontTheme = KlrFontTheme();
   static FivebyfiveTheme theme = KlrTheme(fontTheme);
 
@@ -26,12 +31,19 @@ class Klr {
   static TextTheme get textTheme => themeData.textTheme;
   static CodeTheme get codeTheme => themeData.codeTheme;
 
+  static FbfLayoutBorder get border => layoutTheme.border;
+  static FbfLayoutEdge   get edge   => layoutTheme.edgeInsets;
+
+  static double size([double f = 1.0]) => layoutTheme.size(f);
+  static double borderWidth([double f = 1.0]) => layoutTheme.borderWidth(f);
+
   static FbfPageRouteList pages = KlrPages();
 
-  static const iconSizeXLarge = 32.5;
-  static const iconSizeLarge  = 21.0;
-
-  static const sizeBase       = 10.5;
+  static const double iconSizeXLarge = 32.0;
+  static const double iconSizeLarge  = 24.0;
+  static const double baseSize       = 8.0;
+  static const double baseBorderSize = 2.0;
+  static const double baseFontSize   = 10.0;
 }
 
 class _KlrApp extends StatelessWidget {

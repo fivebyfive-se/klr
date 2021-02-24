@@ -27,34 +27,42 @@ Widget btnRemove(String label, {
 ButtonStyle btnStyle({
   Color backgroundColor,
   Color borderColor,
-  double baseSize = 16
+  double baseSize = 2.0,
+  double width,
+  double height 
 }) 
   => ButtonStyle(
   padding: MaterialStateProperty.all(
-    EdgeInsets.symmetric(horizontal: baseSize * 2, vertical: baseSize)
+    Klr.edge.xy(baseSize, baseSize / 2)
   ),
   side: MaterialStateProperty.all(
-    BorderSide(color: borderColor ?? backgroundColor, width: 2.0)
+    BorderSide(color: borderColor ?? backgroundColor, width: Klr.baseBorderSize)
   ),
   backgroundColor: MaterialStateProperty.all(
     backgroundColor ?? Klr.theme.primaryAccent
   ),
   
-  minimumSize: MaterialStateProperty.all(Size(baseSize * 3, baseSize * 2)),
+  minimumSize: MaterialStateProperty.all(
+    Size(width ?? 200, height ?? 50)
+  ),
 );
 
 Widget btn(String label, {
   Function() onPressed,
   Color backgroundColor,
   Color borderColor,
-  double baseSize = 16.0,
-  TextStyle style
+  double baseSize = 2.0,
+  TextStyle style,
+  double width,
+  double height
 }) 
   => ElevatedButton(
     style: btnStyle(
       backgroundColor: backgroundColor, 
       borderColor: borderColor, 
-      baseSize: baseSize
+      baseSize: baseSize,
+      width: width,
+      height: height
     ),
     child: Text(label, style: Txt.typeStyle(TxtType.subtitle3).merge(style)),
     onPressed: onPressed,
@@ -67,7 +75,7 @@ Widget btnIcon(String label, {
   Color borderColor,
   Color iconColor,
   TextStyle style,
-  double baseSize = 16.0,
+  double baseSize = 2.0,
 }) => ElevatedButton.icon(
   style: btnStyle(
     backgroundColor: backgroundColor,
@@ -75,7 +83,7 @@ Widget btnIcon(String label, {
     borderColor: borderColor
   ),
   onPressed: onPressed,
-  icon: Icon(icon, size: baseSize * 2, color: iconColor),
+  icon: Icon(icon, size: Klr.size(2 * baseSize), color: iconColor),
   label: Text(
     label, 
     style: Txt.typeStyle(TxtType.subtitle3).merge(style)
@@ -88,7 +96,7 @@ TextStyle styleColorActionDarker()
   => TextStyle(color: colorAction(darker: true));
 
 Color colorAction({bool darker = false})
-  => darker ? Klr.theme.primary.base : Klr.theme.primaryAccent;
+  => darker ? Klr.theme.primary : Klr.theme.primaryAccent;
 
 TextStyle styleColorChoice() 
   => TextStyle(color: colorChoice());
@@ -96,7 +104,7 @@ TextStyle styleColorChoiceDarker()
   => TextStyle(color: colorChoice(darker: true));
 
 Color colorChoice({bool darker = false})
-  => darker ? Klr.theme.secondary.base : Klr.theme.secondaryAccent;
+  => darker ? Klr.theme.secondary : Klr.theme.secondaryAccent;
 
 TextStyle styleColorRemove() 
   => TextStyle(color: colorRemove());
@@ -104,7 +112,7 @@ TextStyle styleColorRemoveDarker()
   => TextStyle(color: colorRemove(darker: true));
 
 Color colorRemove({bool darker = false})
-  => darker ? Klr.theme.tertiary.base : Klr.theme.tertiaryAccent;
+  => darker ? Klr.theme.tertiary : Klr.theme.tertiaryAccent;
 
 TextStyle styleColorInfo() 
   => TextStyle(color: colorInfo());
@@ -112,4 +120,4 @@ TextStyle styleColorInfoDarker()
   => TextStyle(color: colorInfo(darker: true));
 
 Color colorInfo({bool darker = false})
-  => darker ? Klr.theme.highlight.base : Klr.theme.highlightAccent;
+  => darker ? Klr.theme.highlight : Klr.theme.highlightAccent;

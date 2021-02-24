@@ -8,10 +8,8 @@ import 'package:klr/helpers/animaton.dart'
         DurationExtensions;
 import 'package:klr/helpers/color.dart';
 import 'package:klr/widgets/logo.dart';
-import 'package:klr/helpers/size-helpers.dart' show size;
 
 import 'base/_page-base.dart';
-import 'start-page.dart';
 
 class SplashPage extends PageBase<SplashPageConfig> {
   static const String routeName = "/";
@@ -133,7 +131,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             )
           ),
           Positioned(
-            bottom: size(2),
+            bottom: Klr.size(2),
             width: _viewportSize.width / 5,
             height: _viewportSize.height / 5,
             child: Align(

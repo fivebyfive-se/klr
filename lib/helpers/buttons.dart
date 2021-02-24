@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:klr/klr.dart';
-import 'package:klr/helpers/size-helpers.dart';
 
 import 'package:klr/widgets/txt.dart';
 
@@ -24,7 +23,7 @@ Widget btnLabelIcon({
   labelColor = labelColor ?? Klr.theme.foreground;
 
   return FlatButton.icon(
-    color: backgroundColor ?? Klr.theme.primary.base,
+    color: backgroundColor ?? Klr.theme.primaryTriad.base,
     icon: Icon(icon, color: iconColor ?? labelColor),
     label: btnLabel(label: label, labelColor: labelColor),
     onPressed: onPressed,
@@ -37,7 +36,7 @@ Widget btnIcon({
   void Function() onPressed,
   Color color
 }) => IconButton(
-  icon: Icon(icon, color: color ?? Klr.theme.primary.light),
+  icon: Icon(icon, color: color ?? Klr.theme.primaryTriad.light),
   onPressed: onPressed
 );
 
@@ -49,11 +48,11 @@ Widget btnDialog({
   Color foregroundColor
 })
   => btnLabelIcon(
-    backgroundColor: color ?? Klr.theme.primary.light,
+    backgroundColor: color ?? Klr.theme.primaryTriad.light,
     icon: icon,
     iconColor: foregroundColor ?? Klr.theme.background,
     label: label,
     labelColor: foregroundColor ?? Klr.theme.background,
     onPressed: onPressed,
-    padding: padding(horizontal: 2, vertical: 1),
+    padding: Klr.edge.xy(2, 1),
   );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:klr/klr.dart';
-import 'package:klr/helpers/size-helpers.dart';
 import 'package:klr/views/base/page-arguments.dart';
 
 import 'package:klr/views/views.dart';
@@ -48,7 +47,7 @@ Widget scaffoldPage<C extends PageConfig,A extends PageArguments>(
       : Container(
           width: viewportSize.width,
           height: viewportSize.height - appBar.preferredSize.height,
-          padding: padding(horizontal: 1, vertical: 1),
+          padding: Klr.edge.all(1),
           decoration: BoxDecoration(
             gradient: Klr.theme.backgroundGradient
           ),

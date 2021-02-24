@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
 import 'package:klr/klr.dart';
+
 import 'package:klr/helpers/color.dart';
 import 'package:klr/helpers/iterable.dart';
+
 import 'package:klr/models/app-state.dart';
+
 import 'package:klr/services/app-state-service.dart';
+
 import 'package:klr/views/views.dart';
+
 import 'package:klr/widgets/bottom-navigation.dart';
 import 'package:klr/widgets/bottom-sheet-menu.dart';
-import 'package:klr/widgets/btn.dart';
-import 'package:klr/widgets/dialogs/css-dialog.dart';
-import 'package:klr/widgets/layout.dart';
-import 'package:klr/widgets/palette-color-editor.dart';
-import 'package:klr/widgets/palette-color-widget.dart';
-import 'package:klr/widgets/tile.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
-import 'package:klr/widgets/txt.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:klr/widgets/btn.dart';
+import 'package:klr/widgets/layout.dart';
+import 'package:klr/widgets/tile.dart';
+import 'package:klr/widgets/dialogs/css-dialog.dart';
+import 'package:klr/widgets/palette-color-editor.dart';
 
 class PalettePage extends PageBase<PalettePageConfig> {
   static Color pageAccent = Klr.colors.orange99;
@@ -107,26 +112,22 @@ class _PalettePageState extends State<PalettePage> {
     final textColor = color.computeLuminance() <= 0.45 
       ? Klr.theme.foreground
       : Klr.theme.background;
-    final chosenBorder = BorderSide(
-        width: 4.0, 
-        color: Klr.theme.cardForeground
-      );
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
+      padding: Klr.edge.all(1),
         decoration: BoxDecoration(
-          border: chosen ? BorderDirectional(
-            bottom: chosenBorder,
-            top: chosenBorder
-          ) : null,
+          border: chosen ? Klr.border.y(2, Klr.theme.cardForeground) : null,
           boxShadow: mark != null ? [
-            BoxShadow(color: mark.withAlpha(0x80), blurRadius: 1.0, spreadRadius: 5.0)
+            BoxShadow(color: mark.withAlpha(0x80), 
+              blurRadius: Klr.borderWidth(1),
+              spreadRadius: Klr.borderWidth(2)
+            )
           ] : []
         ),
         child: btn(
           color.toHex(includeHash: true),
           backgroundColor: color,
           onPressed: onPressed,
-          style: Klr.textTheme.bodyText1.copyWith(color: textColor)
+          style: Klr.textTheme.bodyText1.copyWith(color: textColor),
         )
     );
   }
@@ -177,8 +178,8 @@ class _PalettePageState extends State<PalettePage> {
                         )).toList(),
                 ],
                 crossAxisCount: 7,
-                mainAxisExtent: null,
-                crossAxisSpacing: defaultPaddingLength() / 4
+                mainAxisExtent: Klr.size(14),
+                crossAxisSpacing: Klr.borderWidth()
               ),
               ...(_showGenerated 
                 ? _currPalette.transformedColors.entries.map(
@@ -192,8 +193,8 @@ class _PalettePageState extends State<PalettePage> {
                           mark: pc.color.toColor(),
                         )).toList(),
                         crossAxisCount: 7,
-                        mainAxisExtent: 64.0,
-                        crossAxisSpacing: defaultPaddingLength() / 4
+                        mainAxisExtent: Klr.size(7),
+                        crossAxisSpacing: Klr.borderWidth()
                       );
                     }).toList()
                 : []),
@@ -221,7 +222,7 @@ class _PalettePageState extends State<PalettePage> {
                 )
               ]),
 
-              sliverSpacer(size: 128.0),
+              sliverSpacer(size: Klr.size(8)),
 
               listToGrid(<Widget>[
                 checkboxTile(

@@ -8,7 +8,7 @@ class KlrFontTheme extends FivebyfiveFontTheme {
 
   KlrFontTheme() : super(
     fontSerif, fontSans, fontMono,
-    minFontSize: Klr.sizeBase,
+    minFontSize: Klr.baseFontSize,
     textColor: Klr.colors.grey95
   //maxFontSize: Klr.sizeBase * Klr.sizeBase
   );

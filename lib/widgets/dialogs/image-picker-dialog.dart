@@ -3,9 +3,7 @@ import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:klr/models/named-color.dart';
 import 'package:klr/services/color-name-service.dart';
-import 'package:klr/widgets/layout.dart';
 import 'package:klr/widgets/txt.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:klr/klr.dart';
 
@@ -102,9 +100,7 @@ StatefulBuilder buildImagePickerDialog(context) {
               SliverList(
                 delegate: SliverChildListDelegate(<Widget>[
                   Container(
-                    padding: EdgeInsets.only(
-                      bottom: defaultPaddingLength() / 2
-                    ),
+                    padding: Klr.edge.only(bottom: 0.5),
                     child: suggestions.isEmpty 
                       ? null 
                       : Txt.subtitle3('Colors')
@@ -113,15 +109,15 @@ StatefulBuilder buildImagePickerDialog(context) {
                     alignment: Alignment.center,
                     child: isLoading 
                       ? RefreshProgressIndicator(
-                        strokeWidth: 5.0,
+                        strokeWidth: Klr.borderWidth(2),
                       ) : Wrap(
                         alignment: WrapAlignment.center,
                         children: [
                           ...suggestions.map(
                             (sug) => Container(
                               alignment: Alignment.center,
-                              margin: EdgeInsets.all(4.0),
-                              padding: EdgeInsets.all(8.0),
+                              margin: Klr.edge.all(0.5),
+                              padding: Klr.edge.all(),
                               width: viewportSize.width / 9,
                               height: viewportSize.width / 9,
                               decoration: BoxDecoration(
@@ -143,7 +139,7 @@ StatefulBuilder buildImagePickerDialog(context) {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    padding: verticalPadding(length: defaultPaddingLength() / 2),
+                    padding: Klr.edge.y(0.5),
                     child: isLoading || imageName == null ? null : TogglableTextEditor(
                       initalText: imageName,
                       onChanged: (v) {
@@ -160,7 +156,7 @@ StatefulBuilder buildImagePickerDialog(context) {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    padding: verticalPadding(),
+                    padding: Klr.edge.y(),
                     child: isLoading ? null : btnAction(
                       'Load image',
                       onPressed: () => pickFile(),

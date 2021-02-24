@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:klr/klr.dart';
 import 'package:klr/helpers/color.dart';
-import 'package:klr/helpers/size-helpers.dart';
 import 'package:klr/widgets/logo.dart';
 import 'package:klr/widgets/txt.dart';
 
@@ -28,7 +27,7 @@ Drawer scaffoldDrawer<C extends PageConfig,A extends PageArguments>(
         child: ListView(
         children: [
           DrawerHeader(
-            padding: EdgeInsets.only(top: size(3), bottom: size(2)),            
+            padding: Klr.edge.only(top: 2, bottom: 3),            
             decoration: Klr.theme.logoBackgroundGradient.toDeco(),
             child: Logo(logo: Logos.logoBorder),
           ),
@@ -43,7 +42,7 @@ Drawer scaffoldDrawer<C extends PageConfig,A extends PageArguments>(
           drawerSubheadingTile(
             title: "Links",
             icon: LineAwesomeIcons.alternate_external_link,
-            color: Klr.theme.secondary.light
+            color: Klr.theme.secondaryTriad.light
           ),
           drawerUrlLinkTile(
             icon: LineAwesomeIcons.github,
@@ -85,7 +84,7 @@ Widget drawerNavLinkTile({
 }) => drawerLinkTile(
   icon: icon, title: title, subtitle: subtitle,
   color: isActive 
-    ? Klr.theme.primary.light
+    ? Klr.theme.primaryTriad.light
     : Klr.theme.foreground,
   onTap: onTap
 );
@@ -108,8 +107,8 @@ Widget drawerLinkTile({
 Widget drawerSubheadingTile({String title, String subtitle, IconData icon, Color color}) {
   return ListTile(
     trailing: icon == null ? null
-      : Icon(icon, size: Klr.iconSizeLarge, color: color ?? Klr.theme.primary.light),
-    title: Txt.h4(title, style: TextStyle(color: color ?? Klr.theme.primary.light)),
+      : Icon(icon, size: Klr.iconSizeLarge, color: color ?? Klr.theme.primaryTriad.light),
+    title: Txt.h4(title, style: TextStyle(color: color ?? Klr.theme.primaryTriad.light)),
     subtitle: subtitle == null ? null 
       : Txt.light(subtitle),
     shape: RoundedRectangleBorder(side: BorderSide.none),

@@ -80,7 +80,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
           width: viewportSize.width - viewportSize.width / 3,
           height: viewportSize.height - viewportSize.height / 2.5,
           color: Klr.theme.background,
-          padding: EdgeInsets.all(defaultPaddingLength()),
+          padding: Klr.edge.all(),
           child: SingleChildScrollView(
             child: HighlightView(
               paletteToCss(palette, useCssVars: useCssVars, useHex: useHex)

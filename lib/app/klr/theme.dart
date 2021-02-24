@@ -37,9 +37,9 @@ class KlrTheme extends FivebyfiveTheme {
       error: Colors.red,
       warning: Colors.orange[800],
 
-      primary: ColorTriad(klrs.pink70, klrs.pink55, klrs.pink90),
-      secondary: ColorTriad(klrs.purple95, klrs.purple90, klrs.purple99),
-      tertiary: ColorTriad(klrs.red90, klrs.red80, klrs.red95),
+      primaryTriad: ColorTriad(klrs.pink70, klrs.pink55, klrs.pink90),
+      secondaryTriad: ColorTriad(klrs.purple95, klrs.purple90, klrs.purple99),
+      tertiaryTriad: ColorTriad(klrs.red90, klrs.red80, klrs.red95),
 
       highlight: ColorTriad(klrs.blue95, klrs.blue90, klrs.blue99),
       focus: ColorTriad(klrs.yellow90, klrs.yellow80, klrs.yellow90),
