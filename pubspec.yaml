@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  archive: ^2.0.13
   color_thief_flutter: ^1.0.2
   csv: ^4.1.0
   file_picker: ^2.1.6
