@@ -1,4 +1,5 @@
-import 'package:klr/classes/fbf.dart';
+import 'package:fbf/flutter.dart';
+
 import 'package:klr/views/views.dart';
 
 class KlrPages extends FbfPageRouteList {

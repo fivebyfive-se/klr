@@ -3,12 +3,11 @@ import 'package:klr/views/base/page-arguments.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:fbf/flutter_color.dart';
 
 import 'package:klr/klr.dart';
-import 'package:klr/helpers/color.dart';
 import 'package:klr/widgets/logo.dart';
 import 'package:klr/widgets/txt.dart';
-
 import 'package:klr/views/views.dart';
 
 

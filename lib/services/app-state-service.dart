@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:fbf/dart_extensions.dart';
+
 import 'package:klr/models/app-state.dart';
-import 'package:klr/helpers/iterable.dart';
 
 class AppStateService {
   static const String rootKey = "klrState";

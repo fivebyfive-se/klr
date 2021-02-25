@@ -1,7 +1,7 @@
 import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
-import 'package:klr/helpers/iterable.dart';
+import 'package:fbf/dart_extensions.dart';
 
 import './palette-color.model.dart';
 import '_base-model.dart';

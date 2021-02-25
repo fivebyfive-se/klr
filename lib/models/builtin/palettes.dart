@@ -1,6 +1,7 @@
 import 'package:flutter/painting.dart';
+import 'package:fbf/flutter_color.dart';
+
 import 'package:klr/models/app-state.dart';
-import 'package:klr/helpers/color.dart';
 
 class Palettes {
   static Map<String, Color> vhs60 = {

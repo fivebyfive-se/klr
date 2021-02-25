@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:klr/app/klr/font-theme.dart';
 
-import 'package:klr/classes/fbf.dart';
-import 'package:klr/classes/fbf/theme/layout-theme.dart';
+import 'package:fbf/flutter.dart';
+
 import 'package:klr/views/views.dart';
 
 import 'klr/colors.dart';

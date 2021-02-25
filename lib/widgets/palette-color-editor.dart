@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
+import 'package:fbf/dart_extensions.dart';
+import 'package:fbf/flutter_color.dart';
+
 import 'package:klr/app/klr.dart';
-import 'package:klr/helpers/color.dart';
-import 'package:klr/helpers/iterable.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'btn.dart';
 import 'togglable-text-editor.dart';

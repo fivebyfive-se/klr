@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
-import 'package:klr/helpers/color.dart';
-import 'package:klr/helpers/iterable.dart';
+import 'package:fbf/dart_extensions.dart';
+import 'package:fbf/flutter_color.dart';
 
 import './color-transform.model.dart';
 import '_base-model.dart';

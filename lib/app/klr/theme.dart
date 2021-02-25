@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-
-import 'package:klr/classes/fbf.dart';
-import 'package:klr/helpers/color.dart';
+import 'package:fbf/flutter.dart';
 
 import 'colors.dart';
-import 'font-theme.dart';
 
 class KlrForty extends FivebyfiveTheme {
   static KlrColors klrs = KlrColors.getInstance();

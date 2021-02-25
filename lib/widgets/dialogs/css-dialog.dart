@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/github.dart';
+
+import 'package:fbf/flutter_color.dart';
 
 import 'package:klr/app/klr.dart';
-
-import 'package:klr/helpers/color.dart';
-
 import 'package:klr/models/app-state.dart';
-
 import 'package:klr/widgets/btn.dart';
-import 'package:klr/widgets/layout.dart';
 
 void showCssDialog(BuildContext context, Palette palette)
   => showDialog(

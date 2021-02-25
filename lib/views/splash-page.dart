@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:klr/klr.dart';
 
-import 'package:klr/helpers/animaton.dart'
+import 'package:fbf/flutter_animation.dart'
   show  makeAnimatable, 
         parseDuration,
         DurationExtensions;
-import 'package:klr/helpers/color.dart';
+import 'package:fbf/flutter_color.dart';
+
 import 'package:klr/widgets/logo.dart';
 
 import 'base/_page-base.dart';

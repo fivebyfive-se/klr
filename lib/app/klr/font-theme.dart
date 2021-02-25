@@ -1,5 +1,5 @@
 import 'package:klr/app/klr.dart';
-import 'package:klr/classes/fbf.dart';
+import 'package:fbf/flutter_theme.dart';
 
 class KlrFontTheme extends FivebyfiveFontTheme {
   static const fontSans  = 'BeVietnam';

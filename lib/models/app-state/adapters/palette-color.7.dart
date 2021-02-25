@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import 'package:klr/helpers/color.dart';
+import 'package:fbf/flutter_color.dart';
 
 import '../models.dart';
 

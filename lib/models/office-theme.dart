@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 
 import 'package:uuid/uuid.dart';
 
-import 'package:klr/helpers/iterable.dart';
+import 'package:fbf/dart_extensions.dart';
 
 class OfficeTheme {
   OfficeTheme({
@@ -32,68 +32,108 @@ class OfficeColorScheme {
   final List<OfficeColor> colors;
 
   static OfficeColorScheme get defaultScheme =>
-    OfficeColorScheme(
-      name: 'KlrDefaultColors',
-      colors: <OfficeColor>[
-        OfficeColor.dark1(Colors.black),
-        OfficeColor.light1(Colors.white),
-        OfficeColor.dark2(Colors.black),
-        OfficeColor.light2(Colors.white),
-        OfficeColor.accent1(Colors.black),
-        OfficeColor.accent2(Colors.black),
-        OfficeColor.accent3(Colors.black),
-        OfficeColor.accent4(Colors.black),
-        OfficeColor.accent5(Colors.black),
-        OfficeColor.accent6(Colors.black),
-        OfficeColor.link(Colors.black),
-        OfficeColor.linkFol(Colors.black),
+    OfficeColorScheme.fromColors(
+      'KlrDefaultColors',
+      <Color>[
+        Colors.black,
+        Colors.white,
+        Colors.black,
+        Colors.white,
+        Colors.black,
+        Colors.black,
+        Colors.black,
+        Colors.black,
+        Colors.black,
+        Colors.black,
+        Colors.black,
+        Colors.black,
       ]
     );
 
+
+  static OfficeColorScheme fromColors(String name, List<Color> colors)
+    =>  OfficeColorScheme(
+      name: name,
+      colors: colors.mapIndex<Color,OfficeColor>(
+        (c, i) => OfficeColor(OfficeColors.nameByIndex(i), c)
+      )
+    );
 
   static OfficeColorScheme automatic(String name, List<Color> sourceColors) {
     if (sourceColors.length < 2) {
       return null;
     }
 
-    final sorted = sourceColors.schwartz(
+    final colorsByLuminance = sourceColors.schwartz(
       decorator: (c) => c.computeLuminance(),
       comparer: (a, b) => (a - b).round(),
     );
 
-
-    final dark1  = sorted.removeAt(0);
-    final light1 = sorted.removeLast();
-    final dark2  = sorted.popOr(dark1);
-    final light2 = sorted.unshiftOr(light1);
-
-    final accent1 = sorted.popOr(dark2);
-    final accent2 = sorted.popOr(accent1);
-    final accent3 = sorted.popOr(accent2);
-    final accent4 = sorted.popOr(accent3);
-    final accent5 = sorted.popOr(accent4);
-    final accent6 = sorted.popOr(accent5);
-    final link = sorted.popOr(accent6);
-    final linkFol = sorted.popOr(link);
-
-    return OfficeColorScheme(
-      name: name,
-      colors: <OfficeColor>[
-        OfficeColor.dark1(dark1),
-        OfficeColor.light1(light1),
-        OfficeColor.dark2(dark2),
-        OfficeColor.light2(light2),
-        OfficeColor.accent1(accent1),
-        OfficeColor.accent2(accent2),
-        OfficeColor.accent3(accent3),
-        OfficeColor.accent4(accent4),
-        OfficeColor.accent5(accent5),
-        OfficeColor.accent6(accent6),
-        OfficeColor.link(link),
-        OfficeColor.linkFol(linkFol),
-      ]
+    final List<Color> sorted = []; 
+    sorted.add(colorsByLuminance.removeFirst()); // dark1
+    sorted.add(colorsByLuminance.removeLast());  // light1
+    sorted.add(colorsByLuminance.removeFirst()); // dark2
+    sorted.add(colorsByLuminance.removeLast());  // light2
+    sorted.addAll(
+      colorsByLuminance.extend<Color>(
+        OfficeColors.numColors - sorted.length,
+        colorsByLuminance.isEmpty ? sorted.first : colorsByLuminance.last
+      )
     );
+
+    return OfficeColorScheme.fromColors(name, sorted);
   }
+}
+
+class OfficeColors {
+  static const String dark1 = 'dk1';
+  static const String light1 = 'lt1';
+  static const String dark2 = 'dk2';
+  static const String light2 = 'lt2';
+  static const String accent1 = 'accent1';
+  static const String accent2 = 'accent2';
+  static const String accent3 = 'accent3';
+  static const String accent4 = 'accent4';
+  static const String accent5 = 'accent5';
+  static const String accent6 = 'accent6';
+  static const String hlink = 'hlink';
+  static const String folHlink = 'folHlink'; 
+
+  static const List<String> names = [
+    OfficeColors.dark1,
+    OfficeColors.light1,
+    OfficeColors.dark2,
+    OfficeColors.light2,
+    OfficeColors.accent1,
+    OfficeColors.accent2,
+    OfficeColors.accent3,
+    OfficeColors.accent4,
+    OfficeColors.accent5,
+    OfficeColors.accent6,
+    OfficeColors.hlink,
+    OfficeColors.folHlink,
+  ];
+
+  static int get numColors => names.length;
+  static String nameByIndex(int index) => names[index];
+  static String friendlyNameByIndex(int index) 
+    => friendly[names[index]];
+
+  static const Map<String,String> friendly = {
+    OfficeColors.dark1: 'Text background - dark 1',
+    OfficeColors.light1: 'Text background - light 1',
+    OfficeColors.dark2: 'Text background - dark 2',
+    OfficeColors.light2: 'Text background - light 2',
+    OfficeColors.accent1: 'Accent 1',
+    OfficeColors.accent2: 'Accent 2',
+    OfficeColors.accent3: 'Accent 3',
+    OfficeColors.accent4: 'Accent 4',
+    OfficeColors.accent5: 'Accent 5',
+    OfficeColors.accent6: 'Accent 6',
+    OfficeColors.hlink: 'Hyperlink',
+    OfficeColors.folHlink: 'Followed hyperlink',
+  };
+ 
 }
 
 class OfficeColor {
@@ -101,51 +141,36 @@ class OfficeColor {
     this.name,
     this.color,
     [String friendlyName,]
-  ) : this.friendlyName = friendlyName ?? name;
-  
+  ) : this.friendlyName = friendlyName ?? OfficeColors.friendly[name];
+
   final String name;
   final String friendlyName;
   final Color color;
 
-  static const names = [
-    'dk1',
-    'lt1',
-    'dk2',
-    'lt2',
-    'accent1',
-    'accent2',
-    'accent3',
-    'accent4',
-    'accent5',
-    'accent6',
-    'hlink',
-    'folHlink',
-  ];
-
   static OfficeColor dark1(Color color)
-    => OfficeColor('dk1', color, 'Text background - dark 1');
+    => OfficeColor(OfficeColors.dark1, color);
   static OfficeColor light1(Color color)
-    => OfficeColor('lt1', color, 'Text background - light 1');
+    => OfficeColor(OfficeColors.light1, color);
   static OfficeColor dark2(Color color)
-    => OfficeColor('dk2', color, 'Text background - dark 2');
+    => OfficeColor(OfficeColors.dark2, color);
   static OfficeColor light2(Color color)
-    => OfficeColor('lt2', color, 'Text background - light 2');
+    => OfficeColor(OfficeColors.light2, color);
   static OfficeColor accent1(Color color)
-    => OfficeColor('accent1', color, 'Accent 1');
+    => OfficeColor(OfficeColors.accent1, color);
   static OfficeColor accent2(Color color)
-    => OfficeColor('accent2', color, 'Accent 2');
+    => OfficeColor(OfficeColors.accent2, color);
   static OfficeColor accent3(Color color)
-    => OfficeColor('accent3', color, 'Accent 3');
+    => OfficeColor(OfficeColors.accent3, color);
   static OfficeColor accent4(Color color)
-    => OfficeColor('accent4', color, 'Accent 4');
+    => OfficeColor(OfficeColors.accent4, color);
   static OfficeColor accent5(Color color)
-    => OfficeColor('accent5', color, 'Accent 5');
+    => OfficeColor(OfficeColors.accent5, color);
   static OfficeColor accent6(Color color)
-    => OfficeColor('accent6', color, 'Accent 6');
-  static OfficeColor link(Color color)
-    => OfficeColor('hlink', color, 'Hyperlink');
-  static OfficeColor linkFol(Color color)
-    => OfficeColor('folHlink', color, 'Followed hyperlink');
+    => OfficeColor(OfficeColors.accent6, color);
+  static OfficeColor hlink(Color color)
+    => OfficeColor(OfficeColors.hlink, color);
+  static OfficeColor folHlink(Color color)
+    => OfficeColor(OfficeColors.folHlink, color);
 }
 
 class OfficeFontScheme {
