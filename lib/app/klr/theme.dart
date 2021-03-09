@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:fbf/flutter.dart';
+import 'package:klr/app/klr/font-theme.dart';
 
 import 'colors.dart';
 
-class KlrForty extends FivebyfiveTheme {
+class KlrForty extends FbfTheme {
   static KlrColors klrs = KlrColors.getInstance();
 }
 
-class KlrTheme extends FivebyfiveTheme {
+class KlrTheme extends FbfTheme {
   static KlrColors klrs = KlrColors.getInstance();
 
-  KlrTheme(
-    FivebyfiveFontTheme fontTheme
-  )
+  KlrTheme()
     : super(
-      fontTheme: fontTheme,
+      fontTheme: KlrFontTheme(),
+      layoutTheme: FbfLayoutTheme(
+        baseSize: 8.0,
+        baseBorderWidth: 2.0
+      ),
       background: klrs.grey05,
       foreground: klrs.grey99,
       foregroundDisabled: klrs.grey80,

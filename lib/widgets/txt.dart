@@ -65,11 +65,12 @@ class Txt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context)
-    => Text(text, style: typeStyle(type).merge(style));
+    => Text(text, style: typeStyle(context, type).merge(style));
 
-  static TextStyle typeStyle(TxtType type) {
-    final t = Klr.textTheme;
-    final c = Klr.codeTheme;
+  TextStyle typeStyle(BuildContext context, TxtType type) {
+    final f = KlrConfig.of(context).fontTheme;
+    final t = KlrConfig.of(context).textTheme;
+    final c = KlrConfig.of(context).codeTheme;
 
     switch (type) {
       case TxtType.h6: return t.headline6;
@@ -80,11 +81,11 @@ class Txt extends StatelessWidget {
       case TxtType.h1: return t.headline1;
 
       case TxtType.title:
-        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.25));
+        return t.subtitle1.copyWith(fontSize: f.calcFontSize(.25));
       case TxtType.subtitle1:
-        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.20));
+        return t.subtitle1.copyWith(fontSize: f.calcFontSize(.20));
       case TxtType.subtitle2:
-        return t.subtitle1.copyWith(fontSize: Klr.fontTheme.calcFontSize(.15));
+        return t.subtitle1.copyWith(fontSize: f.calcFontSize(.15));
 
       case TxtType.subtitle3: return t.subtitle1;
       case TxtType.subtitle4: return t.subtitle2;

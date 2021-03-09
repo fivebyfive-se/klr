@@ -53,7 +53,7 @@ class _TogglableTextEditorState extends State<TogglableTextEditor> {
       : TextButton(
         child: Text(
           _controller.text,
-          style: Txt.typeStyle(TxtType.subtitle1).merge(widget.style)
+          style: TextStyle().merge(widget.style)
         ),
         onPressed: _edit,
       )

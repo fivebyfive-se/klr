@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:klr/models/named-color.dart';
-import 'package:klr/services/color-name-service.dart';
-import 'package:klr/widgets/txt.dart';
+
+import 'package:fbf/fbf.dart';
 
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
-
+import 'package:klr/models/named-color.dart';
 import 'package:klr/services/app-state-service.dart';
-
+import 'package:klr/services/color-name-service.dart';
 import 'package:klr/views/palette-page.dart';
-
-import 'package:klr/widgets/btn.dart';
+import 'package:klr/widgets/txt.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
 
 void showImagePickerDialog(BuildContext context)
@@ -22,7 +20,7 @@ void showImagePickerDialog(BuildContext context)
     builder: (context) => buildImagePickerDialog(context)
   );
 
-StatefulBuilder buildImagePickerDialog(context) {
+Widget buildImagePickerDialog(context) {
   final _service = appStateService();
   final _nameService = colorNameService();
   final viewportSize = MediaQuery.of(context).size;
@@ -31,8 +29,8 @@ StatefulBuilder buildImagePickerDialog(context) {
   bool isLoading = false;
   List<NameSuggestions> suggestions = [];
 
-  return StatefulBuilder(
-    builder: (context, setState) {
+  return KlrStatefulBuilder(
+    builder: (context, klr, setState) {
       final setLoading = (bool loading) {
         isLoading = loading;
         setState(() {});
@@ -86,11 +84,11 @@ StatefulBuilder buildImagePickerDialog(context) {
       };
 
       return AlertDialog(
-        backgroundColor: Klr.theme.dialogBackground,
+        backgroundColor: klr.theme.dialogBackground,
         actions: [
           suggestions.isEmpty ? null : 
-            btnAction("Create palette",onPressed: createPalette,),
-            isLoading ? null : btnChoice("Close", onPressed: () => Navigator.pop(context)),
+            FbfBtn.action("Create palette", onPressed: createPalette),
+            isLoading ? null : FbfBtn.choice("Close", onPressed: () => Navigator.pop(context)),
         ],
         content: Container(
           width: viewportSize.width / 1.5,
@@ -100,7 +98,7 @@ StatefulBuilder buildImagePickerDialog(context) {
               SliverList(
                 delegate: SliverChildListDelegate(<Widget>[
                   Container(
-                    padding: Klr.edge.only(bottom: 0.5),
+                    padding: klr.edge.only(bottom: 0.5),
                     child: suggestions.isEmpty 
                       ? null 
                       : Txt.subtitle3('Colors')
@@ -109,15 +107,15 @@ StatefulBuilder buildImagePickerDialog(context) {
                     alignment: Alignment.center,
                     child: isLoading 
                       ? RefreshProgressIndicator(
-                        strokeWidth: Klr.borderWidth(2),
+                        strokeWidth: klr.borderWidth(2),
                       ) : Wrap(
                         alignment: WrapAlignment.center,
                         children: [
                           ...suggestions.map(
                             (sug) => Container(
                               alignment: Alignment.center,
-                              margin: Klr.edge.all(0.5),
-                              padding: Klr.edge.all(),
+                              margin: klr.edge.all(0.5),
+                              padding: klr.edge.all(),
                               width: viewportSize.width / 9,
                               height: viewportSize.width / 9,
                               decoration: BoxDecoration(
@@ -126,10 +124,10 @@ StatefulBuilder buildImagePickerDialog(context) {
                               ),
                               child: Text(
                                 sug.suggestion,
-                                style: Klr.textTheme.bodyText1
+                                style: klr.textTheme.bodyText1
                                   .copyWith(
                                     color: sug.color.computeLuminance() < 0.45 
-                                      ? Klr.theme.foreground : Klr.theme.background
+                                      ? klr.theme.foreground : klr.theme.background
                                   )
                               )
                             )
@@ -139,14 +137,14 @@ StatefulBuilder buildImagePickerDialog(context) {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    padding: Klr.edge.y(0.5),
+                    padding: klr.edge.y(0.5),
                     child: isLoading || imageName == null ? null : TogglableTextEditor(
                       initalText: imageName,
                       onChanged: (v) {
                         imageName = v;
                         setState((){});
                       },
-                      style: Klr.textTheme.subtitle2,
+                      style: klr.textTheme.subtitle2,
                     )
                   ),
 
@@ -156,8 +154,8 @@ StatefulBuilder buildImagePickerDialog(context) {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    padding: Klr.edge.y(),
-                    child: isLoading ? null : btnAction(
+                    padding: klr.edge.y(),
+                    child: isLoading ? null : FbfBtn.action(
                       'Load image',
                       onPressed: () => pickFile(),
                     )

@@ -10,5 +10,5 @@ Future main() async {
   await appStateService().init();
   await colorNameService().init();
 
-  runApp(Klr.makeApp());
+  runApp(KlrApp());
 }

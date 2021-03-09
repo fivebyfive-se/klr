@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-import 'package:uuid/uuid.dart';
-
-import 'package:fbf/dart_extensions.dart';
+import 'package:fbf/dart.dart';
+import 'package:fbf/flutter.dart';
 
 class OfficeTheme {
   OfficeTheme({
@@ -12,8 +11,8 @@ class OfficeTheme {
     OfficeFontScheme fontScheme,
   }) :  this.colorScheme = colorScheme,
         this.fontScheme = fontScheme ?? OfficeFontScheme.defaultFontScheme,
-        this.id = Uuid().v4(),
-        this.vid = Uuid().v4();
+        this.id = Uuid.v4(),
+        this.vid = Uuid.v4();
 
   final String id;
   final String vid;
@@ -31,25 +30,11 @@ class OfficeColorScheme {
   final String name;
   final List<OfficeColor> colors;
 
-  static OfficeColorScheme get defaultScheme =>
-    OfficeColorScheme.fromColors(
-      'KlrDefaultColors',
-      <Color>[
-        Colors.black,
-        Colors.white,
-        Colors.black,
-        Colors.white,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        Colors.black,
-      ]
+  String toXml()
+    => _tag('clrScheme',
+      attrs: {'name': name },
+      content: colors.map((c) => c.toXml()).toList()
     );
-
 
   static OfficeColorScheme fromColors(String name, List<Color> colors)
     =>  OfficeColorScheme(
@@ -120,20 +105,19 @@ class OfficeColors {
     => friendly[names[index]];
 
   static const Map<String,String> friendly = {
-    OfficeColors.dark1: 'Text background - dark 1',
-    OfficeColors.light1: 'Text background - light 1',
-    OfficeColors.dark2: 'Text background - dark 2',
-    OfficeColors.light2: 'Text background - light 2',
-    OfficeColors.accent1: 'Accent 1',
-    OfficeColors.accent2: 'Accent 2',
-    OfficeColors.accent3: 'Accent 3',
-    OfficeColors.accent4: 'Accent 4',
-    OfficeColors.accent5: 'Accent 5',
-    OfficeColors.accent6: 'Accent 6',
-    OfficeColors.hlink: 'Hyperlink',
+    OfficeColors.dark1:    'Text background - dark 1',
+    OfficeColors.light1:   'Text background - light 1',
+    OfficeColors.dark2:    'Text background - dark 2',
+    OfficeColors.light2:   'Text background - light 2',
+    OfficeColors.accent1:  'Accent 1',
+    OfficeColors.accent2:  'Accent 2',
+    OfficeColors.accent3:  'Accent 3',
+    OfficeColors.accent4:  'Accent 4',
+    OfficeColors.accent5:  'Accent 5',
+    OfficeColors.accent6:  'Accent 6',
+    OfficeColors.hlink:    'Hyperlink',
     OfficeColors.folHlink: 'Followed hyperlink',
   };
- 
 }
 
 class OfficeColor {
@@ -146,6 +130,11 @@ class OfficeColor {
   final String name;
   final String friendlyName;
   final Color color;
+
+  String toXml() 
+    => _tag(name, content: [
+      _tag('srgbClr', attrs: { 'val': color.toHex()})
+    ]);
 
   static OfficeColor dark1(Color color)
     => OfficeColor(OfficeColors.dark1, color);
@@ -183,6 +172,21 @@ class OfficeFontScheme {
   final String majorFont;
   final String minorFont;
 
+  String toHex() {
+    final face = (t,f)
+      => _tag("$t", content: [
+          _tag("latin", attrs: {"typeface": f}),
+          '<a:ea typeface=""/><a:cs typeface=""/>'
+        ]);
+    return _tag('fontScheme',
+      attrs: { 'name': name },
+      content: [
+        face('minorFont', minorFont),
+        face('majorFont', majorFont)
+      ]
+    );
+  }
+
   static OfficeFontScheme get defaultFontScheme
     => OfficeFontScheme(
       name: 'KlrDefaultFonts',
@@ -190,3 +194,21 @@ class OfficeFontScheme {
       minorFont: 'Arial'
     );
 }
+
+String _attr(Map<String,String> attrs)
+  => attrs.entries.map(
+    (e) => "${e.key}=\"${e.value}\""
+  ).join(" ");
+
+
+String _tag(
+  String tagName,
+  {Map<String,String> attrs,
+  List<String> content}
+  ) {
+    return "<a:$tagName " + 
+      (attrs != null ? _attr(attrs) : "") +
+      (content == null || content.isEmpty ? "/>" 
+        : (">" + content.join("") + "</a:$tagName>")
+      );
+  }

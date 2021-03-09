@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_highlight/flutter_highlight.dart';
 
-import 'package:fbf/flutter_color.dart';
+import 'package:fbf/fbf.dart';
 
 import 'package:klr/app/klr.dart';
 import 'package:klr/models/app-state.dart';
-import 'package:klr/widgets/btn.dart';
 
 void showCssDialog(BuildContext context, Palette palette)
   => showDialog(
@@ -38,17 +37,17 @@ List<String> paletteToCss(Palette palette, {bool useCssVars = false, bool useHex
       : output;
   }
 
-StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
+Widget buildCssDialog(BuildContext context, Palette palette) {
   final viewportSize = MediaQuery.of(context).size;
   var useCssVars = false;
   var useHex = true;
 
-  return StatefulBuilder(
-    builder: (context, setState) {
+  return KlrStatefulBuilder(
+    builder: (context, klr, setState) {
       return AlertDialog(
-        backgroundColor: Klr.theme.dialogBackground,
+        backgroundColor: klr.theme.dialogBackground,
         actions: [
-          btnChoice("Close", onPressed: () => Navigator.pop(context))
+          FbfBtn.choice("Close", onPressed: () => Navigator.pop(context))
         ],
         title: Row(
           children: [
@@ -58,7 +57,7 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
                 onChanged: (v) => setState(() => useCssVars = v),
                 title: Text('Use CSS variables'),
                 controlAffinity: ListTileControlAffinity.leading,
-                activeColor: colorChoice(),
+                activeColor: klr.theme.secondary,
               )
             ),
             Expanded(flex: 1,
@@ -67,27 +66,27 @@ StatefulBuilder buildCssDialog(BuildContext context, Palette palette) {
                 onChanged: (v) => setState(() => useHex = v),
                 title: Text('Use hexadecimal colors'),
                 controlAffinity: ListTileControlAffinity.leading,
-                activeColor: colorChoice(),
+                activeColor: klr.theme.secondary,
               )
             ),
           ]
         ),
         content: Container(
-          width: viewportSize.width - viewportSize.width / 3,
-          height: viewportSize.height - viewportSize.height / 2.5,
-          color: Klr.theme.background,
-          padding: Klr.edge.all(),
-          child: SingleChildScrollView(
-            child: HighlightView(
-              paletteToCss(palette, useCssVars: useCssVars, useHex: useHex)
-                .join("\n"),
-              language: "css",
-              theme: Klr.theme.codeHighlightTheme,
-              textStyle: Klr.codeTheme.bodyText1,
+            width: viewportSize.width - viewportSize.width / 3,
+            height: viewportSize.height - viewportSize.height / 2.5,
+            color: klr.theme.background,
+            padding: klr.edge.all(),
+            child: SingleChildScrollView(
+              child: HighlightView(
+                paletteToCss(palette, useCssVars: useCssVars, useHex: useHex)
+                  .join("\n"),
+                language: "css",
+                theme: klr.theme.codeHighlightTheme,
+                textStyle: klr.codeTheme.bodyText1,
+              )
             )
           )
-        )
-      
+        
     );
   }
 );

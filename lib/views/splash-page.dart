@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:fbf/flutter.dart';
+
 import 'package:klr/klr.dart';
-
-import 'package:fbf/flutter_animation.dart'
-  show  makeAnimatable, 
-        parseDuration,
-        DurationExtensions;
-import 'package:fbf/flutter_color.dart';
-
 import 'package:klr/widgets/logo.dart';
 
-import 'base/_page-base.dart';
+import 'page-data/splash-page-data.dart';
 
-class SplashPage extends PageBase<SplashPageConfig> {
+
+class SplashPage extends FbfPage<SplashPageData> {
   static const String routeName = "/";
   static const String title = 'Splash';
 
@@ -20,7 +16,7 @@ class SplashPage extends PageBase<SplashPageConfig> {
     this.timeout = 5000,
     this.transition = 1500
   })
-    : super("/");
+    : super();
 
   final int timeout;
   final int transition;
@@ -31,19 +27,21 @@ class SplashPage extends PageBase<SplashPageConfig> {
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   Size get _viewportSize => MediaQuery.of(context).size;
+  KlrConfig get klr => KlrConfig.of(context);
+  
   AnimationController _controller;
   bool _transStarted = false;
 
-  String get _targetRouteName => Klr.pages.pageRoutes.first.routeName;
-  WidgetBuilder get _targetBuilder => Klr.pages.pageRoutes.first.builder;
+  String get _targetRouteName => klr.routes.pageRoutes.first.routeName;
+  WidgetBuilder get _targetBuilder => klr.routes.pageRoutes.first.builder;
 
   Duration _splashDur;
   Duration _transDur;
   Duration _decoDur;
   
-  DecorationTween _decoTween = DecorationTween(
-      begin: Klr.theme.splashGradientStart.toDeco(),
-      end: Klr.theme.splashGradientEnd.toDeco(),
+  DecorationTween get _decoTween => DecorationTween(
+      begin: klr.theme.splashGradientStart.toDeco(),
+      end: klr.theme.splashGradientEnd.toDeco(),
     );
 
   void _transition({bool isDimiss = false}) {
@@ -132,7 +130,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             )
           ),
           Positioned(
-            bottom: Klr.size(2),
+            bottom: klr.size(2),
             width: _viewportSize.width / 5,
             height: _viewportSize.height / 5,
             child: Align(
@@ -154,5 +152,3 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 }
 
-class SplashPageConfig extends PageConfig 
-  with PageConfig_ScaffoldOff {}

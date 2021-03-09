@@ -3,14 +3,12 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-import 'package:fbf/dart_extensions.dart';
-import 'package:fbf/flutter_color.dart';
+import 'package:fbf/fbf.dart';
 
-import 'package:klr/app/klr.dart';
+import 'package:klr/klr.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
 
-import 'btn.dart';
 import 'togglable-text-editor.dart';
 import 'txt.dart';
 
@@ -24,7 +22,7 @@ class PaletteColorEditor extends StatefulWidget {
   _PaletteColorEditorState createState() => _PaletteColorEditorState();
 }
 
-class _PaletteColorEditorState extends State<PaletteColorEditor> {
+class _PaletteColorEditorState extends State<PaletteColorEditor> with KlrConfigMixin {
   PaletteColor get _paletteColor => widget.paletteColor;
   Palette get _currentPalette => appStateService().snapshot.currentPalette;
   List<Harmony> get _harmonies => appStateService().snapshot.harmonies
@@ -77,7 +75,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
   Widget build(BuildContext context) {
     return _paletteColor == null ? Container() : Container(
       height: 200,
-      padding: Klr.edge.y(2),
+      padding: klr.edge.y(2),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -87,7 +85,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
               onColorChanged: _setColor,
               enableAlpha: true,
               displayThumbColor: false,
-              labelTextStyle: Klr.textTheme.bodyText1,
+              labelTextStyle: klr.textTheme.bodyText1,
               showLabel: true,
               paletteType: PaletteType.hsl,
               pickerAreaBorderRadius: const BorderRadius.only(
@@ -108,7 +106,7 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
                       _saveColor();
                     },
                     style: TextStyle(
-                      fontSize: Klr.textTheme.bodyText1.fontSize,
+                      fontSize: klr.textTheme.bodyText1.fontSize,
                     )
                   )
                 ),
@@ -131,13 +129,13 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> {
                   ]),
                 ),
                 ListTile(
-                  trailing: btnIcon(
+                  trailing: FbfBtn.icon(
                     'Remove color',
                     icon: LineAwesomeIcons.backspace,
                     backgroundColor: Colors.transparent,
-                    borderColor: colorRemove(),
-                    iconColor: colorRemove(),
-                    style: styleColorRemove(),
+                    borderColor: klr.theme.tertiary,
+                    iconColor: klr.theme.tertiary,
+                    style: TextStyle(color: klr.theme.tertiary),
                     onPressed: () => _deleteColor(),
                     baseSize: 1
                   ),

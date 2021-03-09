@@ -1,50 +1,36 @@
 import 'package:flutter/material.dart';
-
+import 'package:klr/views/page-data/splash-page-data.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-import 'package:fbf/dart_extensions.dart';
-import 'package:fbf/flutter_color.dart';
+import 'package:fbf/fbf.dart';
 
-import 'package:klr/klr.dart';
+import 'package:klr/app/klr.dart';
+import 'package:klr/app/klr/colors.dart';
 
 import 'package:klr/models/app-state.dart';
-
 import 'package:klr/services/app-state-service.dart';
-
 import 'package:klr/views/views.dart';
 
-import 'package:klr/widgets/bottom-navigation.dart';
-import 'package:klr/widgets/bottom-sheet-menu.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
-import 'package:klr/widgets/btn.dart';
-import 'package:klr/widgets/layout.dart';
-import 'package:klr/widgets/tile.dart';
 import 'package:klr/widgets/dialogs/css-dialog.dart';
 import 'package:klr/widgets/palette-color-editor.dart';
 
-class PalettePage extends PageBase<PalettePageConfig> {
-  static Color pageAccent = Klr.colors.orange99;
-  static Color onPageAccent = Klr.colors.grey05; 
+import 'page-data/palette-page-data.dart';
+
+class PalettePage extends FbfPage<PalettePageData> {
+  static Color pageAccent = KlrColors.getInstance().orange99;
+  static Color onPageAccent = KlrColors.getInstance().grey05; 
 
   static const String routeName = '/palette';
   static const String title = 'palette';
 
-  static BottomNavigationPage makeNavigationPage(AppState state)
-    => BottomNavigationPage(
-      icon: Icons.palette_outlined,
-      activeIcon: Icons.palette,
-      label: 'Palette',
-      routeName: routeName,
-      disabled: state.currentPalette == null
-    );
-
-  PalettePage() : super(routeName);
+  PalettePage() : super();
 
   @override
   _PalettePageState createState() => _PalettePageState();
 }
 
-class _PalettePageState extends State<PalettePage> {
+class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
   PaletteColor _selectedColor;
@@ -54,15 +40,15 @@ class _PalettePageState extends State<PalettePage> {
   static const String menuDeletePalette = "delete";
   static const String menuCancel = "cancel";
  
-  List<BottomSheetMenuItem<String>> get _menuItems => [
-    BottomSheetMenuItem<String>(
-      icon: Icon(Icons.add_box_outlined, color: colorAction()),
+  List<FbfFabMenuItem<String>> get _menuItems => [
+    FbfFabMenuItem<String>(
+      icon: Icon(Icons.add_box_outlined, color: klr.theme.primary),
       title: "New color",
       subtitle: "Create a new color in this palette",
       value: menuCreateColor
     ),
-    BottomSheetMenuItem<String>(
-      icon: Icon(Icons.cancel_outlined, color: colorChoice()),
+    FbfFabMenuItem<String>(
+      icon: Icon(Icons.cancel_outlined, color: klr.theme.secondary),
       title: "Cancel",
       subtitle: "Close this menu",
       value: menuCancel
@@ -110,155 +96,159 @@ class _PalettePageState extends State<PalettePage> {
     Color mark
   }) {
     final textColor = color.computeLuminance() <= 0.45 
-      ? Klr.theme.foreground
-      : Klr.theme.background;
+      ? klr.theme.foreground
+      : klr.theme.background;
     return Container(
-      padding: Klr.edge.all(1),
+      padding: klr.edge.all(1),
         decoration: BoxDecoration(
-          border: chosen ? Klr.border.y(2, Klr.theme.cardForeground) : null,
+          border: chosen ? klr.border.y(2, klr.theme.cardForeground) : null,
           boxShadow: mark != null ? [
             BoxShadow(color: mark.withAlpha(0x80), 
-              blurRadius: Klr.borderWidth(1),
-              spreadRadius: Klr.borderWidth(2)
+              blurRadius: klr.borderWidth(1),
+              spreadRadius: klr.borderWidth(2)
             )
           ] : []
         ),
-        child: btn(
+        child: FbfBtn(
           color.toHex(includeHash: true),
           backgroundColor: color,
           onPressed: onPressed,
-          style: Klr.textTheme.bodyText1.copyWith(color: textColor),
+          style: klr.textTheme.bodyText1.copyWith(color: textColor),
         )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AppState>(
+    return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
       initialData: _appStateService.snapshot,
-      builder: (context, snapshot) => scaffold<PalettePageConfig,PalettePageArguments>(
-        context: context,
-        config: PalettePageConfig(
-          appStateSnapshot: snapshot.data,
-          fabMenuItems: _menuItems,
-          fabOnSelect: _onMenuSelect
-        ),
-        builder: (context, data, _) 
-          => _currPalette == null
-            ? null 
-            : CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: ListTile(
-                    leading: Icon(LineAwesomeIcons.palette),
-                    title: TogglableTextEditor(
-                      initalText: _currPalette.name,
-                      onChanged: (v) {
-                        _currPalette.name = v;
-                        _currPalette.save();
-                      },
+      builder: (context, config, snapshot)
+        => FbfScaffold<KlrConfig,PalettePageData>(
+            context: context,
+            pageData: PalettePageData(
+              appState: snapshot,
+              fabMenuConfig: FabMenuConfig<String>(
+                fabIcon: Icons.arrow_upward,
+                menuItems: _menuItems,
+                onSelect: _onMenuSelect,
+                title: 'Actions',
+                titleIcon: Icons.palette
+              )
+            ),
+            builder: (context, klr, pageData) 
+              => _currPalette == null
+                ? null 
+                : CustomScrollView(
+                  slivers: <Widget>[
+                    SliverToBoxAdapter(
+                      child: ListTile(
+                        leading: Icon(LineAwesomeIcons.palette),
+                        title: TogglableTextEditor(
+                          initalText: _currPalette.name,
+                          onChanged: (v) {
+                            _currPalette.name = v;
+                            _currPalette.save();
+                          },
+                        )
+                      )
+                    ),
+
+                  // sliverSpacer(),
+
+                  listToGrid(
+                      <Widget>[                   
+                      ..._currPalette
+                          .sortedColors
+                          .map(
+                            (c) => _colorBox(
+                              color: c.color.toColor(), 
+                              onPressed: () => setState(() => _selectedColor = c),
+                              chosen: _selectedColor?.uuid == c.uuid,
+                              mark: _showGenerated && c.transformations.isNotEmpty 
+                                ? c.color.toColor() : null
+                            )).toList(),
+                    ],
+                    crossAxisCount: 7,
+                    mainAxisExtent: klr.size(14),
+                    crossAxisSpacing: klr.borderWidth()
+                  ),
+                  ...(_showGenerated 
+                    ? _currPalette.transformedColors.entries.map(
+                        (entry) {
+                          final pc = _currPalette.colors
+                            .firstWhere((c) => c.uuid == entry.key);
+                          return listToGrid(
+                            entry.value.map((col) => _colorBox(
+                              color: col.toColor(),
+                              onPressed: () => _promoteColor(col),
+                              mark: pc.color.toColor(),
+                            )).toList(),
+                            crossAxisCount: 7,
+                            mainAxisExtent: klr.size(7),
+                            crossAxisSpacing: klr.borderWidth()
+                          );
+                        }).toList()
+                    : []),
+                  
+                  sliverSpacer(),
+
+                  SliverToBoxAdapter(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: FbfBtn.icon(
+                        'New',
+                        icon: LineAwesomeIcons.plus,
+                        backgroundColor: klr.theme.secondary,
+                        onPressed: () => _createColor()
+                      )
                     )
-                  )
-                ),
+                  ),
 
-              // sliverSpacer(),
+                  sliverSpacer(),
 
-              listToGrid(
-                  <Widget>[                   
-                  ..._currPalette
-                      .sortedColors
-                      .map(
-                        (c) => _colorBox(
-                          color: c.color.toColor(), 
-                          onPressed: () => setState(() => _selectedColor = c),
-                          chosen: _selectedColor?.uuid == c.uuid,
-                          mark: _showGenerated && c.transformations.isNotEmpty 
-                            ? c.color.toColor() : null
-                        )).toList(),
-                ],
-                crossAxisCount: 7,
-                mainAxisExtent: Klr.size(14),
-                crossAxisSpacing: Klr.borderWidth()
-              ),
-              ...(_showGenerated 
-                ? _currPalette.transformedColors.entries.map(
-                    (entry) {
-                      final pc = _currPalette.colors
-                        .firstWhere((c) => c.uuid == entry.key);
-                      return listToGrid(
-                        entry.value.map((col) => _colorBox(
-                          color: col.toColor(),
-                          onPressed: () => _promoteColor(col),
-                          mark: pc.color.toColor(),
-                        )).toList(),
-                        crossAxisCount: 7,
-                        mainAxisExtent: Klr.size(7),
-                        crossAxisSpacing: Klr.borderWidth()
-                      );
-                    }).toList()
-                : []),
-              
-              sliverSpacer(),
+                  listToList([
+                    PaletteColorEditor(
+                      paletteColor: _selectedColor,
+                      onDelete: () => setState(() => _selectedColor = null),
+                    )
+                  ]),
 
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: btnIcon(
-                    'New',
-                    icon: LineAwesomeIcons.plus,
-                    backgroundColor: colorAction(darker: true),
-                    onPressed: () => _createColor()
-                  )
-                )
-              ),
+                  sliverSpacer(size: klr.size(8)),
 
-              sliverSpacer(),
+                  listToGrid(<Widget>[
+                    FbfTile.checkbox(
+                      value: _showGenerated,
+                      onChange: (v) => setState(() => _showGenerated = v),
+                      title: 'Show generated colors',
+                      subtitle: '(automatic shades/harmonies)'
+                    ),
+                    FbfTile.action(
+                      icon: LineAwesomeIcons.css_3_logo,
+                      title: 'Show CSS',
+                      subtitle: 'Generate and view CSS for this palette',
+                      onTap: () => showCssDialog(context, _currPalette),
+                    )
+                  ]),
 
-              listToList([
-                PaletteColorEditor(
-                  paletteColor: _selectedColor,
-                  onDelete: () => setState(() => _selectedColor = null),
-                )
-              ]),
+                  sliverSpacer(),
 
-              sliverSpacer(size: Klr.size(8)),
+                  listToList(<Widget>[
+                    FbfTile.heading(
+                      icon: LineAwesomeIcons.info,
+                      title: 'Help'
+                    ),
+                    FbfTile.info(
+                      icon: LineAwesomeIcons.paint_roller,
+                      title: 'Colors',
+                      subtitle: 'To edit a color, click on it in the grid above'
+                        'Any smaller boxes are *generated colors*, which are not'
+                        'editable by default, but can be made so by tapping them'
+                        
+                    )
+                  ]),
 
-              listToGrid(<Widget>[
-                checkboxTile(
-                  value: _showGenerated,
-                  onChange: (v) => setState(() => _showGenerated = v),
-                  title: 'Show generated colors',
-                  subtitle: '(automatic shades/harmonies)'
-                ),
-                actionTile(
-                  icon: LineAwesomeIcons.css_3_logo,
-                  title: 'Show CSS',
-                  subtitle: 'Generate and view CSS for this palette',
-                  onTap: () => showCssDialog(context, _currPalette),
-                )
-              ]),
-
-              sliverSpacer(),
-
-              listToList(<Widget>[
-                titleTile(
-                  icon: LineAwesomeIcons.info,
-                  title: 'Help'
-                ),
-                infoTile(
-                  icon: LineAwesomeIcons.paint_roller,
-                  title: 'Colors',
-                  subtitle: 'To edit a color, click on it in the grid above'
-                    'Any smaller boxes are *generated colors*, which are not'
-                    'editable by default, but can be made so by tapping them'
-                    
-                )
-              ]),
-
-              sliverSpacer()
-            
-              
+                  sliverSpacer()
         ]))  
     );
   }
@@ -269,24 +259,4 @@ enum PalettePageMenuAction {
   createColor,
   deletePalette
 }
-
-class PalettePageArguments extends PageArguments {}
-class PalettePageConfig extends DefaultPageConfig<PalettePageArguments> 
-{
-  PalettePageConfig({
-    AppState appStateSnapshot,
-    List<BottomSheetMenuItem<String>> fabMenuItems,
-    void Function(String) fabOnSelect,
-  }) : super(
-    appStateSnapshot: appStateSnapshot,
-    fabMenuItems: fabMenuItems,
-    fabOnSelect: fabOnSelect,
-    fabBackgroundColor: PalettePage.pageAccent,
-    fabIconColor: PalettePage.onPageAccent,
-    fabTitle: 'Palette actions',
-    fabTitleIcon: Icons.palette,
-    pageTitle: PalettePage.title
-  );
-}
-
 

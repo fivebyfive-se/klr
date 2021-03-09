@@ -1,57 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:klr/app/klr/font-theme.dart';
-
-import 'package:fbf/flutter.dart';
-
-import 'package:klr/views/views.dart';
+import 'package:fbf/fbf.dart';
+import 'package:klr/views/start-page.dart';
 
 import 'klr/colors.dart';
 import 'klr/pages.dart';
 import 'klr/theme.dart';
 
-export 'klr/colors.dart';
-export 'klr/pages.dart';
-export 'klr/theme.dart';
-
-class Klr {
-  static Widget makeApp() => _KlrApp();
-
-  static const appTitle = 'klr';
-
-  static KlrColors colors = KlrColors.getInstance();
-
-  static FivebyfiveLayoutTheme layoutTheme = FivebyfiveLayoutTheme(
-    baseSize: 8.0,
-    baseBorderWidth: 2.0
+class KlrConfig extends FbfAppConfig<KlrTheme,KlrPages> {
+  KlrConfig() : super(
+    appName: 'Klr',
+    theme: KlrTheme(),
+    routes: KlrPages()
   );
-  static FivebyfiveFontTheme fontTheme = KlrFontTheme();
-  static FivebyfiveTheme theme = KlrTheme(fontTheme);
+  KlrColors get colors => KlrColors.getInstance();
 
-  static ThemeData get themeData => theme.themeData;
-  static TextTheme get textTheme => themeData.textTheme;
-  static CodeTheme get codeTheme => themeData.codeTheme;
-
-  static FbfLayoutBorder get border => layoutTheme.border;
-  static FbfLayoutEdge   get edge   => layoutTheme.edgeInsets;
-
-  static double size([double f = 1.0]) => layoutTheme.size(f);
-  static double borderWidth([double f = 1.0]) => layoutTheme.borderWidth(f);
-
-  static FbfPageRouteList pages = KlrPages();
-
-  static const double iconSizeXLarge = 32.0;
-  static const double iconSizeLarge  = 24.0;
-  static const double baseSize       = 8.0;
-  static const double baseBorderSize = 2.0;
-  static const double baseFontSize   = 10.0;
+  static KlrConfig of(BuildContext context)
+    => FbfAppConfig.of<KlrConfig>(context);
 }
 
-class _KlrApp extends StatelessWidget {
-  Widget build(BuildContext context) 
-    => MaterialApp(
-      title: Klr.appTitle,
-      theme: Klr.theme.themeData,
-      routes: Klr.pages.routes,
-      home: SplashPage()
-    );
+class KlrApp extends FbfApp<KlrConfig> {
+  KlrApp() : super(config: KlrConfig());
 }
+
+class KlrBuilder extends FbfAppBuilder<KlrConfig> {
+  KlrBuilder({
+    Key key,
+    FbfAppWidgetBuilder<KlrConfig> builder
+  }) : super(key: key, builder: builder);
+}
+
+class KlrStatefulBuilder extends FbfStatefulBuilder<KlrConfig> {
+  KlrStatefulBuilder({
+    Key key,
+    FbfStatefulWidgetBuilder<KlrConfig> builder
+  }) : super(key: key, builder: builder);
+}
+
+mixin KlrConfigMixin<W extends StatefulWidget> on State<W> {
+  KlrConfig get klr => KlrConfig.of(super.context); 
+} 
