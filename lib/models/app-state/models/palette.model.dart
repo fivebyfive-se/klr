@@ -49,6 +49,8 @@ class Palette extends BaseModel {
           )
         );
 
+  bool get hasTransformedColors => colors.any((c) => c.transformations.isNotEmpty);
+
   @override int compareTo(BaseModel other)
     => (other is Palette) 
       ? displayIndex.compareTo(other.displayIndex)

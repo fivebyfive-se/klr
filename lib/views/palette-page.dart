@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klr/views/page-data/splash-page-data.dart';
+import 'package:klr/widgets/dialogs/stats-dialog.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
@@ -228,6 +229,12 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       title: 'Show CSS',
                       subtitle: 'Generate and view CSS for this palette',
                       onTap: () => showCssDialog(context, _currPalette),
+                    ),
+                    FbfTile.action(
+                      icon: LineAwesomeIcons.line_chart,
+                      title: 'Show stats',
+                      subtitle: 'Show statistics about this palette',
+                      onTap: () => showStatsDialog(context, _currPalette),
                     )
                   ]),
 

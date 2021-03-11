@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fbf/fbf.dart';
-import 'package:klr/views/start-page.dart';
 
 import 'klr/colors.dart';
 import 'klr/pages.dart';

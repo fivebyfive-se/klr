@@ -12,10 +12,10 @@ import 'package:klr/models/app-state/models/app-state.dart';
 
 import 'package:klr/services/app-state-service.dart';
 
-import 'package:klr/views/palette-page.dart';
 import 'package:klr/widgets/dialogs/image-picker-dialog.dart';
 
 import 'page-data/start-page-data.dart';
+import 'palette-page.dart';
 
 class StartPage extends FbfPage<StartPageData> {
   static Color pageAccent = KlrColors.getInstance().pink95;
@@ -122,7 +122,9 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
               builder: (context, klr, pageData) => CustomScrollView(
                 slivers: <Widget>[
                   SliverToBoxAdapter(
-                    child: RYBColorPicker(size: 250)
+                    child: RYBColorPicker(
+                      onChange: (col) => print(col),
+                    ),
                   ),
                   SliverToBoxAdapter(
                     child: FbfTile.heading<KlrConfig>(
