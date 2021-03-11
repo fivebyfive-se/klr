@@ -5,43 +5,41 @@ import 'package:klr/klr.dart';
 
 import 'package:klr/models/stats.dart';
 
-typedef StatValueSelector = double Function(PaletteColorStat);
-
-class StatsChart extends StatefulWidget {
+class StatsChart extends StatelessWidget {
   StatsChart(this.stats, {
+    this.overlay,
     this.width = 300
   });
 
   final List<StatChartItem> stats;
+  final List<StatChartItem> overlay;
   final double width;
 
-  @override
-  _StatsChartState createState() => _StatsChartState();
-}
+  List<ChartItem<StatChartItem>> 
+  _statsToItems(List<StatChartItem> s)
+    => s.map((s) => s.asBubbleValue).toList();
 
-class _StatsChartState extends State<StatsChart> {
   List<ChartItem<StatChartItem>> get _items 
-    => widget.stats.map((s) => s.asBubbleValue).toList();
+    => _statsToItems(stats);
   
-  double get _width 
-    => widget.width;
+  ChartData<StatChartItem> get _chartData
+    => overlay == null
+      ? ChartData.fromList(_items, axisMax: 100.0, axisMin: 0.0)
+      : ChartData(
+        [_items, _statsToItems(overlay)],
+        axisMax: 100.0,
+        axisMin: 0.0
+      );
 
   @override
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
 
     return Chart(
-      width: _width,
+      width: width,
 
       state: ChartState(
-        ChartData.fromList(_items,
-          axisMax: 100.0,
-          axisMin:   0.0,
-        ),
-
-        behaviour: ChartBehaviour(
-          isScrollable: false,          
-        ),
+        _chartData,
 
         itemOptions: BubbleItemOptions(
           colorForKey: 

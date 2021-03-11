@@ -57,14 +57,14 @@ class PaletteColorStat {
   double get lightness  => _hslColor.lightness;
   String get label      => _label;
 
-  double getDimension(StatChartItemDimensions dimension)
-    => dimension == StatChartItemDimensions.hue        ? hue
-     : dimension == StatChartItemDimensions.lightness  ? lightness
-     : dimension == StatChartItemDimensions.luma       ? luma
-     : dimension == StatChartItemDimensions.saturation ? saturation
+  double getDimension(ColorStatDimension dimension)
+    => dimension == ColorStatDimension.hue        ? hue
+     : dimension == ColorStatDimension.lightness  ? lightness
+     : dimension == ColorStatDimension.luma       ? luma
+     : dimension == ColorStatDimension.saturation ? saturation
      : 0.0;
 
-  StatChartItem asChartItem(StatChartItemDimensions dimension)
+  StatChartItem asChartItem(ColorStatDimension dimension)
     => StatChartItem(
       name: label,
       color: color,

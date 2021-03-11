@@ -122,11 +122,6 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
               builder: (context, klr, pageData) => CustomScrollView(
                 slivers: <Widget>[
                   SliverToBoxAdapter(
-                    child: RYBColorPicker(
-                      onChange: (col) => print(col),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
                     child: FbfTile.heading<KlrConfig>(
                       icon: LineAwesomeIcons.palette,
                       title: 'Palettes',

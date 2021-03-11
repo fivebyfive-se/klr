@@ -42,7 +42,7 @@ class PaletteStats {
   }
 
   List<StatChartItem> getChartItems(
-    StatChartItemDimensions dimension, {
+    ColorStatDimension dimension, {
       bool includeTransformations = true,
       ColorBlindnessType simulate = ColorBlindnessType.none
     }

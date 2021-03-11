@@ -1,14 +1,14 @@
 import 'package:charts_painter/chart.dart';
 import 'package:flutter/painting.dart';
 
-enum StatChartItemDimensions {
+enum ColorStatDimension {
   luma,
   hue,
   saturation,
   lightness
 }
 
-String dimensionToString(StatChartItemDimensions dimension)
+String dimensionToString(ColorStatDimension dimension)
   => dimension.toString().replaceAll("StatChartItemDimensions.", "");
 
 class StatChartItem {

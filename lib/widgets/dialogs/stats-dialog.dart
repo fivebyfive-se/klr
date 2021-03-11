@@ -8,6 +8,7 @@ import 'package:klr/models/app-state.dart';
 import 'package:klr/models/stats.dart';
 
 import 'package:klr/services/palette-stats-service.dart';
+import 'package:klr/widgets/popup-menu-tile.dart';
 import 'package:klr/widgets/stats-chart.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -27,41 +28,23 @@ Widget buildStatsDialog(BuildContext context, Palette palette) {
   final statsService = PaletteStatsService.getInstance();
 
   bool includeTransformed = true;
-  StatChartItemDimensions showDimension = StatChartItemDimensions.luma;
-  ColorBlindnessType      simulateColorBlindness = ColorBlindnessType.none;
+  ColorStatDimension showDimension = ColorStatDimension.luma;
+  ColorBlindnessType simulateColorBlindness = ColorBlindnessType.none;
 
   return KlrStatefulBuilder(
     builder: (context, klr, setState) {
-      final stats = statsService
-        .getStats(palette);
+      final stats = statsService.getStats(palette);
+
       final chartItems = stats.getChartItems(showDimension, 
-          simulate: simulateColorBlindness,
-          includeTransformations: includeTransformed
-        );
+        includeTransformations: includeTransformed,
+        simulate: simulateColorBlindness
+      );
       
       final divider = ([double h]) 
         => Divider(
           height: klr.size(h ?? 2.0),
           thickness: klr.size(0.5),
         );
-
-      final buildDimensionTile = (StatChartItemDimensions dimension)
-        => Container(
-            width: dialogWidth / 2 - klr.size(2),
-            child: RadioListTile(
-              groupValue: showDimension,
-              value: dimension,
-              onChanged: (v) => setState(() => showDimension = v),
-              title: Text('Show ' + dimensionToString(dimension)),
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: klr.theme.secondary,
-            )
-          );
-
-      final buildDimensionSelector = ()
-        => StatChartItemDimensions.values
-            .map((v) => buildDimensionTile(v)).toListOf<Widget>(); 
-
 
       return AlertDialog(
         backgroundColor: klr.theme.dialogBackground,
@@ -93,31 +76,29 @@ Widget buildStatsDialog(BuildContext context, Palette palette) {
                 SliverList(
                   delegate: SliverChildListDelegate(
                     <Widget>[
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        spacing: 0,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: buildDimensionSelector()
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: PopupMenuTile<ColorStatDimension>(
+                              label: 'Show dimension:',
+                              value: showDimension,
+                              items: ColorStatDimension.values,
+                              onSelected: (v) => setState(() => showDimension = v),
+                            )
+                          ),
+                          Expanded(
+                            flex: 6,
+                            child: PopupMenuTile<ColorBlindnessType>(
+                              label: 'Simulate color-blindness:',
+                              value: simulateColorBlindness,
+                              onSelected: (v) => setState(() => simulateColorBlindness = v),
+                              items: ColorBlindnessType.values
+                            )
+                          )
+                        ],
                       ),
 
-                      divider(),
-
-                      ListTile(
-                        title: Text('Simulate color blindness:'),
-                        trailing: DropdownButton(
-                          icon: Icon(LineAwesomeIcons.glasses),
-                          value: simulateColorBlindness,
-                          onChanged: (v) => setState(() => simulateColorBlindness = v),
-                          items: ColorBlindnessType.values.map(
-                              (t) => DropdownMenuItem<ColorBlindnessType>(
-                                value: t,
-                                child: Text(
-                                  colorBlindnessTypeToString(t)
-                                ),
-                              )
-                            ).toList()
-                        )
-                      ),
 
                       divider(),
 

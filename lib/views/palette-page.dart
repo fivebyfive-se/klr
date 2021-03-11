@@ -232,8 +232,8 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     ),
                     FbfTile.action(
                       icon: LineAwesomeIcons.line_chart,
-                      title: 'Show stats',
-                      subtitle: 'Show statistics about this palette',
+                      title: 'Show chart',
+                      subtitle: 'See how the colors relate to each other',
                       onTap: () => showStatsDialog(context, _currPalette),
                     )
                   ]),
@@ -248,10 +248,9 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     FbfTile.info(
                       icon: LineAwesomeIcons.paint_roller,
                       title: 'Colors',
-                      subtitle: 'To edit a color, click on it in the grid above'
-                        'Any smaller boxes are *generated colors*, which are not'
-                        'editable by default, but can be made so by tapping them'
-                        
+                      subtitle: 'To edit a color, click on it in the grid above. '
+                        'Any smaller boxes are *generated colors*, which are not '
+                        'editable by default, but can be made so by tapping them.' 
                     )
                   ]),
 
