@@ -1,22 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:klr/klr.dart';
 import 'package:klr/widgets/text-with-icon.dart';
+
+import 'editor-tile.dart';
 
 typedef ItemToIcon<T> = IconData Function(T item);
 typedef ItemToString<T> = String Function(T item);
 typedef OnSelectFunction<T> = void Function(T); 
 
-class PopupMenuTile<E> extends StatelessWidget {
+class PopupMenuTile<E> extends EditorTile {
   const PopupMenuTile({
     Key key,
+    String label,
     this.iconDataBuilder,
     this.itemNameBuilder,
     this.items,
-    this.label,
     this.onSelected,
     this.value,
   }) 
-    : super(key: key);
+    : super(key: key, label: label);
 
   /// If supplied, each item in the menu will be prefixed with
   /// an icon as built by this function
@@ -30,9 +33,6 @@ class PopupMenuTile<E> extends StatelessWidget {
 
   /// List of items
   final List<E> items;
-
-  /// Label to show before menu button
-  final String label;
 
   /// Called when an item is selected
   final OnSelectFunction<E> onSelected;
@@ -63,10 +63,8 @@ class PopupMenuTile<E> extends StatelessWidget {
         );
 
   @override
-  Widget build(BuildContext context)
-    => ListTile(
-      leading: Text(label),
-      title: PopupMenuButton<E>(
+  Widget buildField(BuildContext context, KlrConfig klr)
+    => PopupMenuButton<E>(
         child: _childBuilder(value ?? items.first),
         initialValue: value,
         itemBuilder: (_) => items.map(
@@ -76,7 +74,6 @@ class PopupMenuTile<E> extends StatelessWidget {
           )
         ).toList(),
         onSelected: onSelected,
-      ) 
-    );
+      );
 }
 

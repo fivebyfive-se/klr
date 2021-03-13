@@ -20,8 +20,8 @@ class KlrTheme extends FbfTheme {
         baseBorderWidth: 2.0
       ),
       background: klrs.grey05,
-      foreground: klrs.grey99,
-      foregroundDisabled: klrs.grey80,
+      foreground: klrs.grey95,
+      foregroundDisabled: klrs.grey50,
 
       backgroundGradient: LinearGradient(
         colors: [klrs.grey20, klrs.grey10],
@@ -38,8 +38,12 @@ class KlrTheme extends FbfTheme {
       warning: Colors.orange[800],
 
       primaryTriad: ColorTriad(klrs.pink70, klrs.pink55, klrs.pink90),
-      secondaryTriad: ColorTriad(klrs.purple95, klrs.purple90, klrs.purple99),
-      tertiaryTriad: ColorTriad(klrs.red90, klrs.red80, klrs.red95),
+      secondaryTriad: ColorTriad(klrs.purple80, klrs.purple60, klrs.purple99),
+      tertiaryTriad: ColorTriad(klrs.red80, klrs.red60, klrs.red95),
+
+      onPrimary: klrs.grey99,
+      onSecondary: klrs.grey99,
+      onTertiary: klrs.bamboo99,
 
       highlight: ColorTriad(klrs.blue95, klrs.blue90, klrs.blue99),
       focus: ColorTriad(klrs.yellow90, klrs.yellow80, klrs.yellow90),

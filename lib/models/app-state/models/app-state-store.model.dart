@@ -9,12 +9,24 @@ class AppStateStore extends BaseModel {
 
   AppStateStore() : super();
 
-  AppStateStore.fromAdapter(String uuid, String currPalette)
+  AppStateStore.fromAdapter(
+    String uuid,
+    String currPalette,
+    String currColor,
+    DateTime lastUpdate,
+  )
     : this.currentPalette = currPalette,
+      this.currentColor = currColor,
+      this.lastUpdate = lastUpdate,
       super.fromAdapter(uuid);
 
   @HiveField(1)
   String currentPalette;
+
+  @HiveField(2)
+  String currentColor;
+
+  DateTime lastUpdate;
 
   static Future<Box<AppStateStore>> ensureBoxOf() async {
     if (Hive.isBoxOpen(boxPath)) {

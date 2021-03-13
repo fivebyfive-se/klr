@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:klr/widgets/dialogs/palette-generator-dialog.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
-import 'package:fbf/ryb.dart';
 
 import 'package:klr/klr.dart';
 import 'package:klr/app/klr/colors.dart';
@@ -39,29 +39,30 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
   static const String menuClearAll      = "clear-everything";
   static const String menuCancel        = "cancel";
 
-  List<FbfFabMenuItem<String>> get _menuItems => [
-    FbfFabMenuItem<String>(
+  List<FbfFabMenuItem> get _menuItems => [
+    FbfFabMenuItem(
       icon: Icon(LineAwesomeIcons.alternate_trash, color: klr.theme.tertiaryAccent),
-      title: "Clear",
-      subtitle: "Clear all palettes",
+      title: t.start_fabMenu_clear,
+      subtitle: t.start_fabMenu_clearDesc,
       value: menuClearPalettes
     ),
-    FbfFabMenuItem<String>(
+    FbfFabMenuItem(
       icon: Icon(LineAwesomeIcons.alternate_trash, color: klr.theme.tertiaryAccent),
-      title: "Clear everything",
-      subtitle: "Clear all saved data",
+      title: t.start_fabMenu_clearAll,
+      subtitle: t.start_fabMenu_clearAllDesc,
       value: menuClearAll
     ),
-    FbfFabMenuItem<String>(
+    FbfFabMenuItem(
       icon: Icon(Icons.cancel_outlined, color: klr.theme.secondaryAccent),
-      title: "Cancel",
-      subtitle: "Close this menu",
+      title: t.fabMenu_close,
+      subtitle: t.fabMenu_closeDesc,
       value: menuCancel
     )
   ];
 
   Future<void> _createPalette() async {
-      final p = await _appStateService.createBuiltinPalette();
+    showGeneratorDialog(context);
+      // final p = await _appStateService.createBuiltinPalette();
   }
   Future<void> _clearPalettes() async {
     await Palette.boxOf().clear();
@@ -110,11 +111,11 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
         => FbfScaffold<KlrConfig,StartPageData>(
               context: context,
               pageData: StartPageData(
-                fabMenuConfig: FabMenuConfig<String>(
+                fabMenuConfig: FabMenuConfig(
                   fabIcon: Icons.arrow_upward,
                   menuItems: _menuItems,
                   onSelect: _onMenuSelect,
-                  title: 'Actions',
+                  title: t.start_fabMenu_title,
                   titleIcon: Icons.dashboard
                 ),
                 appState: snapshot
@@ -124,15 +125,15 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                   SliverToBoxAdapter(
                     child: FbfTile.heading<KlrConfig>(
                       icon: LineAwesomeIcons.palette,
-                      title: 'Palettes',
-                      subtitle: 'Your saved color schemes'
+                      title: t.start_palettes_title,
+                      subtitle: t.start_palettes_subtitle
                     )
                   ),
                   listToGrid<KlrConfig>(
                     snapshot.palettes.map((p) => FbfTile.choice(
                       icon: Icons.palette_outlined,
                       title: p.name,
-                      subtitle: "${p.colors.length} colors",
+                      subtitle: t.start_palettes_item(p.colors.length),
                       onTap: () {
                         _selectPalette(p);
                       },
@@ -142,21 +143,22 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                   sliverSpacer<KlrConfig>(),
                   SliverToBoxAdapter(
                     child: FbfTile.heading(
-                      title: 'Create',
+                      title: t.start_createPalette_title,
+                      subtitle: t.start_createPalette_subtitle,
                       icon: LineAwesomeIcons.plus_circle
                     ),
                   ),
                   listToGrid<KlrConfig>([                                
                     FbfTile.action<KlrConfig>(
                       icon:LineAwesomeIcons.palette,
-                      title: "Create from template",
-                      subtitle: "Create an example palette",
+                      title: t.start_createPalette_tpl_title,
+                      subtitle: t.start_createPalette_tpl_subtitle,
                       onTap: () => _createPalette(),
                     ),
                     FbfTile.action<KlrConfig>(
                       icon: LineAwesomeIcons.image_1,
-                      title: 'Create from image',
-                      subtitle: 'Extract palette from an image file',
+                      title: t.start_createPalette_img_title,
+                      subtitle: t.start_createPalette_img_subtitle,
                       onTap: () => _showExtractDialog(),
                     )
                   ])

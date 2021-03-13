@@ -9,12 +9,14 @@ class Tabber extends StatefulWidget {
     this.width,
     this.height,
     this.tabs,
+    this.title,
     this.initialTab,
   }) : super(key: key);
 
   final double width;
   final double height;
   final List<TabberTab> tabs;
+  final String title;
 
   final int initialTab;
 
@@ -45,37 +47,78 @@ class _TabberState extends State<Tabber> {
 
   @override
   Widget build(BuildContext context) {
-    final wp = MediaQuery.of(context).size;
+    final vp = MediaQuery.of(context).size;
     final klr = KlrConfig.of(context);
+
+    final containerWidth = widget.width ?? vp.width;
+    final containerHeight = widget.height ?? vp.height;
+
     final getColor = (int idx) => idx == _activeTabIndex 
-      ? klr.theme.primaryAccent
-      : klr.theme.foreground; 
+      ? klr.theme.foreground
+      : klr.theme.foregroundDisabled; 
+
+    final tabBarItems = _tabs.length;
+    final tabBarWidth = containerWidth / tabBarItems;
+
+    final tabBarHeight = 50.0;
+    final currentTabBarBorderSize = 2.0;
+    final contentHeight = containerHeight 
+      - tabBarHeight * 2 
+      - currentTabBarBorderSize;
+
+    final currentTabBarItem = _activeTabIndex;
+    final currentTabLeading = currentTabBarItem * tabBarWidth;
+    final currentTabTrailing = (tabBarItems - currentTabBarItem - 1) * tabBarWidth;
 
     return Container(
-      width: widget.width ?? wp.width,
+      width: containerWidth,
+      height: containerHeight,
       color: klr.theme.cardBackground,
       child: Column(
         children: [
+          Divider(
+            color: klr.theme.primary,
+            indent: currentTabLeading,
+            endIndent: currentTabTrailing,
+            thickness: 1.5,
+            height: currentTabBarBorderSize,
+          ),
           Container(
-            height: 60.0,
+            height: tabBarHeight,
             child: Row(
-              children: _tabs.mapIndex(
-                (t, i) => Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    leading: Icon(t.icon, color: getColor(i)),
-                    title: Text(t.label, style: TextStyle(color: getColor(i))),
-                    onTap: () => _setTab(i),
+              children: [
+                ..._tabs.mapIndex(
+                  (t, i) => Expanded(
+                    flex: 1,
+                    child: ListTile(
+                      leading: t.icon == null ? null : Icon(t.icon, color: getColor(i)),
+                      tileColor: i == _activeTabIndex 
+                        ? klr.theme.cardBackground 
+                        : klr.theme.cardBackground.deltaLightness(-5.0),
+                      title: Text(
+                        t.label,
+                        style: TextStyle(color: getColor(i))
+                      ),
+                      onTap: () => _setTab(i),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                        side: BorderSide.none
+                      ),
+                    )
                   )
-                )
-              ).toList()
+                ).toList()
+              ]
             ),
           ),
-          Divider(color: klr.theme.primary),
-          Expanded(
+          SizedBox(
+            height: contentHeight,
+            width: containerWidth,
             child: _activeTab == null 
               ? Container() 
-              : _activeTab.contentBuilder.call(context)
+              : Container(
+                  height: contentHeight,
+                  child: _activeTab.contentBuilder.call(context)
+                )
           )
         ],
       )

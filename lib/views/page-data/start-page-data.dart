@@ -3,18 +3,18 @@ import 'package:klr/models/app-state.dart';
 import 'package:klr/views/page-data/klr-page-data-base.dart';
 
 class StartPageData extends KlrPageDataBase
-                    implements  FbfPageWithFabMenu<String>
+                    implements  FbfPageWithFabMenu
 {
   StartPageData({
     AppState appState,
-    FabMenuConfig<String> fabMenuConfig,
+    FabMenuConfig fabMenuConfig,
   }) 
     : _fabMenuConfig = fabMenuConfig,
       super(appState: appState, pageTitle: 'Dashboard', pageRoute: '/start');
 
-  final FabMenuConfig<String> _fabMenuConfig;
+  final FabMenuConfig _fabMenuConfig;
 
   @override
-  FabMenuConfig<String> get fabMenuConfig => _fabMenuConfig;
+  FabMenuConfig get fabMenuConfig => _fabMenuConfig;
 
 }

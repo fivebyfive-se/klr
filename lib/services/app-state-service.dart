@@ -38,8 +38,13 @@ class AppStateService {
     }
   }
 
-  AppState get snapshot => _currentAppState ?? (_currentAppState = _loadState());
-  Stream<AppState> get appStateStream => _streamController.stream;
+  AppState 
+  get snapshot 
+    => _currentAppState ?? (_currentAppState = _loadState());
+
+  Stream<AppState> 
+  get appStateStream 
+    => _streamController.stream;
 
   Future<void> init() async {
     Hive.registerAdapter(ColorTransformAdapter());
@@ -78,8 +83,13 @@ class AppStateService {
   Future<Palette> createPalette() async
     => await Palette.scaffold(name: "Palette #${snapshot.numPalettes + 1}").addOrSave();
 
+  Future<void> setCurrentColor(PaletteColor pc) async {
+    snapshot.stateStore.currentColor = pc?.uuid;
+    await snapshot.stateStore.save();
+  }
+
   Future<PaletteColor> createColor() async
-    => await PaletteColor.scaffold().addOrSave();
+    =>  await PaletteColor.scaffold().addOrSave();
 
   Future<Harmony> createHarmony() async 
     => await Harmony.scaffold().addOrSave();

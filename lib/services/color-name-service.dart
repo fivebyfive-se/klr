@@ -54,6 +54,9 @@ class ColorNameService {
     return NameSuggestions(color, distances);
   }
 
+  String guessName(Color color)
+    => suggestName(color, numSuggestions: 1).suggestion;
+
   static ColorNameService _instance;
 
   static ColorNameService getInstance()

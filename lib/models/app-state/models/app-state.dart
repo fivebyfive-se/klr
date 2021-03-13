@@ -20,9 +20,22 @@ class AppState {
 
   int get numPalettes => palettes?.length ?? 0;
   int get numHarmonies => harmonies?.length ?? 0;
+  DateTime get lastUpdate => stateStore?.lastUpdate ?? null;
+
+  PaletteColor get currentColor
+    => stateStore?.currentColor == null || 
+       currentPalette?.colors == null ||
+       currentPalette.colors.isEmpty
+      ? null 
+      : currentPalette.colors.firstWhere(
+          (pc) => pc.uuid == stateStore.currentColor,
+          orElse: () => null
+        );
 
   Palette get currentPalette 
-    => stateStore.currentPalette == null || palettes == null || palettes.isEmpty 
+    => stateStore?.currentPalette == null ||
+       palettes == null ||
+       palettes.isEmpty 
       ? null
       : palettes.firstWhere(
           (p) => p.uuid == stateStore.currentPalette,

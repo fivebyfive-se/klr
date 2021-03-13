@@ -1,0 +1,38 @@
+{
+    "appTitle": "KLR",
+    "@appTitle": {
+      "description": "The name of the application"
+    },
+
+    "btn_cancel": "Cancel",
+    "btn_close": "Close",
+    "btn_save": "Save",
+
+    "fabMenu_close": "Close",
+    "fabMenu_closeDesc": "Exit this menu",
+
+    "start_fabMenu_title": "Actions",
+    
+    "start_fabMenu_clear": "Clear",
+    "start_fabMenu_clearDesc": "Remove all palettes",
+    "start_fabMenu_clearAll": "Clear everything",
+    "start_fabMenu_clearAllDesc": "Remove ALL saved data",
+
+    "start_palettes_title": "Palettes",
+    "start_palettes_subtitle": "Your saved color schemes",
+
+    "start_palettes_item": "{count, plural, zero{No colors} one{One color} other{{count} colors}}",
+    "@start_palettes_item": {
+        "placeholders": {
+            "count": {}
+        }
+    },
+
+    "start_createPalette_title": "New palette...",
+    "start_createPalette_subtitle": "Create a new palette using a generator or from an image",
+    "start_createPalette_tpl_title": "New from generator",
+    "start_createPalette_tpl_subtitle": "Use a generator to build a new palette",
+    "start_createPalette_img_title": "New from image",
+    "start_createPalette_img_subtitle": "Use an image to generate a new palette"
+        
+  }

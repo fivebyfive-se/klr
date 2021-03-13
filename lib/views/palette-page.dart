@@ -34,21 +34,21 @@ class PalettePage extends FbfPage<PalettePageData> {
 class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
-  PaletteColor _selectedColor;
+  PaletteColor get _selectedColor => _appStateService.snapshot.currentColor;
 
   bool _showGenerated = true;
   static const String menuCreateColor = "create";
   static const String menuDeletePalette = "delete";
   static const String menuCancel = "cancel";
  
-  List<FbfFabMenuItem<String>> get _menuItems => [
-    FbfFabMenuItem<String>(
+  List<FbfFabMenuItem> get _menuItems => [
+    FbfFabMenuItem(
       icon: Icon(Icons.add_box_outlined, color: klr.theme.primary),
       title: "New color",
       subtitle: "Create a new color in this palette",
       value: menuCreateColor
     ),
-    FbfFabMenuItem<String>(
+    FbfFabMenuItem(
       icon: Icon(Icons.cancel_outlined, color: klr.theme.secondary),
       title: "Cancel",
       subtitle: "Close this menu",
@@ -69,12 +69,18 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     _appStateService.endTransaction();
   }
 
+  Future<void> _selectColor(PaletteColor pc) async {
+    await _appStateService.setCurrentColor(null);
+    await _appStateService.setCurrentColor(pc);
+  }
+
   Future<void> _createColor() async {
     final color = await _appStateService.createColor();
 
     _currPalette.colors.add(color);
     await color.save();
     await _currPalette.save();
+    await _appStateService.setCurrentColor(color);
   }
 
   Future<void> _deletePalette() async {
@@ -129,7 +135,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
             context: context,
             pageData: PalettePageData(
               appState: snapshot,
-              fabMenuConfig: FabMenuConfig<String>(
+              fabMenuConfig: FabMenuConfig(
                 fabIcon: Icons.arrow_upward,
                 menuItems: _menuItems,
                 onSelect: _onMenuSelect,
@@ -164,7 +170,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                           .map(
                             (c) => _colorBox(
                               color: c.color.toColor(), 
-                              onPressed: () => setState(() => _selectedColor = c),
+                              onPressed: () => _selectColor(c),
                               chosen: _selectedColor?.uuid == c.uuid,
                               mark: _showGenerated && c.transformations.isNotEmpty 
                                 ? c.color.toColor() : null
@@ -210,8 +216,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
 
                   listToList([
                     PaletteColorEditor(
-                      paletteColor: _selectedColor,
-                      onDelete: () => setState(() => _selectedColor = null),
+                      onDelete: () => _selectColor(null),
                     )
                   ]),
 
@@ -233,7 +238,10 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     FbfTile.action(
                       icon: LineAwesomeIcons.line_chart,
                       title: 'Show chart',
-                      subtitle: 'See how the colors relate to each other',
+                      subtitle: 
+                        'Check how your palette\'s colors relate to '
+                        'each other and simulate color blindness'
+                      ,
                       onTap: () => showStatsDialog(context, _currPalette),
                     )
                   ]),

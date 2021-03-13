@@ -8,9 +8,9 @@ import 'package:klr/models/app-state.dart';
 import 'package:klr/models/stats.dart';
 
 import 'package:klr/services/palette-stats-service.dart';
-import 'package:klr/widgets/popup-menu-tile.dart';
+
 import 'package:klr/widgets/stats-chart.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:klr/widgets/editor-tile/popup-menu-tile.dart';
 
 void showStatsDialog(BuildContext context, Palette palette)
   => showDialog(

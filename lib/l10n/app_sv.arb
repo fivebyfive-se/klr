@@ -1,0 +1,29 @@
+{
+    "appTitle": "Klr",
+
+    "btn_close": "Close",
+
+    "fabMenu_close": "Avbryt",
+    "fabMenu_closeDesc": "Stäng denna meny",
+
+    "start_fabMenu_title": "Hantera sparad data",
+
+    "start_fabMenu_clear": "Rensa",
+    "start_fabMenu_clearDesc": "Ta bort alla färgscheman",
+    "start_fabMenu_clearAll": "Rensa allt",
+    "start_fabMenu_clearAllDesc": "Ta bort ALL sparad data",
+
+    "start_palettes_title": "Färgscheman",
+    "start_palettes_subtitle": "Dina sparade färgscheman",
+
+    "start_palettes_item": "{count, plural, zero{Inga färger} one{en färg} other{{count} färger}}",
+
+    "start_createPalette_title": "Nytt färgschema",
+    "start_createPalette_subtitle": "Skapa ett nytt färgschema, med utgångspunkt från generatorer eller en bild",
+    "start_createPalette_tpl_title": "Ny utifrån funktioner",
+    "start_createPalette_tpl_subtitle": "Använd funktioner för att generera ett färgschema",
+    "start_createPalette_img_title": "Ny från bild",
+    "start_createPalette_img_subtitle": "Använd en bild som källa till ett färgschema"
+
+
+}
