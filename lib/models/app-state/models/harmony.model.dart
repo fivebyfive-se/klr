@@ -1,5 +1,6 @@
-import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
+
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 import 'color-transform.model.dart';
 import '_base-model.dart';
@@ -26,7 +27,7 @@ class Harmony extends BaseModel {
   @HiveField(2)
   HiveList<ColorTransform> transformations;
 
-  List<HSLColor> applyTo(HSLColor source)
+  List<HSLuvColor> applyTo(HSLuvColor source)
     => transformations.map((t) => t.applyTo(source)).toList();
 
 

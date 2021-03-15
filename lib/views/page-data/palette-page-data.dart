@@ -1,20 +1,13 @@
 import 'package:fbf/fbf.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/views/page-data/klr-page-data-base.dart';
+import 'package:klr/views/palette-page.dart';
 
 class PalettePageData extends KlrPageDataBase
-                    implements  FbfPageWithFabMenu
 {
   PalettePageData({
     AppState appState,
-    FabMenuConfig fabMenuConfig,
+    String pageTitle,
   }) 
-    : _fabMenuConfig = fabMenuConfig,
-      super(appState: appState, pageTitle: 'Palette', pageRoute: '/palette');
-
-  final FabMenuConfig _fabMenuConfig;
-
-  @override
-  FabMenuConfig get fabMenuConfig => _fabMenuConfig;
-
+    : super(appState: appState, pageTitle: pageTitle, pageRoute: PalettePage.routeName);
 }

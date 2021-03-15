@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
 
-import 'package:klr/widgets/hsluv/hsluv-color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 class HSLuvPicker extends StatefulWidget {
   const HSLuvPicker({
@@ -15,8 +15,8 @@ class HSLuvPicker extends StatefulWidget {
     this.height,
   }) : super(key: key);
 
-  final Color color;
-  final void Function(Color) onChange;
+  final HSLuvColor color;
+  final void Function(HSLuvColor) onChange;
   final double width;
   final double height;
 
@@ -27,7 +27,7 @@ class HSLuvPicker extends StatefulWidget {
 class _HSLuvPickerState extends State<HSLuvPicker> {
   HSLuvColor _hslColor;
 
-  Color get _currColor => _hslColor.toColor();
+  HSLuvColor get _currColor => _hslColor;
 
   Map<HSLChannel,List<double>> _sliders = {
     HSLChannel.hue: NumRange.stepList(.0, 360.0, 30.0),
@@ -39,7 +39,7 @@ class _HSLuvPickerState extends State<HSLuvPicker> {
   void _changeChannel(HSLChannel channel, double value) {
     _hslColor = _hslColor.withChannel(channel, value);
     if (_currColor != widget.color) {
-      widget.onChange?.call(_hslColor.toColor());
+      widget.onChange?.call(_hslColor);
     }
     setState(() => {});
   }
@@ -52,7 +52,7 @@ class _HSLuvPickerState extends State<HSLuvPicker> {
   @override
   void initState() {
     super.initState();
-    _hslColor = HSLuvColor.fromColor(widget.color);
+    _hslColor = widget.color;
   }
 
   @override
@@ -61,15 +61,16 @@ class _HSLuvPickerState extends State<HSLuvPicker> {
     final height = widget.height ?? 250.0;
     final padding = 10.0;
     final col = (width - padding * 2) / 12;
-    final row = height / 4;
+    final row = height / 4.5;
 
     return Container(
       width: width,
+      padding: EdgeInsets.all(padding),
       child: Column(
         children: _sliders.entries.map((e) => 
           Container(
             width: width,
-            height: row,
+            height: row - padding,
             padding: EdgeInsets.symmetric(vertical: padding),
             child: Row(
               children: <Widget>[

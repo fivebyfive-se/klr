@@ -2,6 +2,7 @@ import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
 import 'package:fbf/flutter_color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 import '_base-model.dart';
 
@@ -33,7 +34,7 @@ class ColorTransform extends BaseModel {
       moveHueInRYB = moveHueInRYB,
       super.fromAdapter(uuid);
 
-  ColorTransform.fromHSL(HSLColor color)
+  ColorTransform.fromHSL(HSLuvColor color)
     : deltaHue = color.hue,
       deltaSaturation = color.saturation,
       deltaLightness = color.lightness,
@@ -63,11 +64,19 @@ class ColorTransform extends BaseModel {
   @HiveField(5)
   bool moveHueInRYB;
 
-  HSLColor applyTo(HSLColor color)
+  HSLuvColor applyTo(HSLuvColor color)
     => color.deltaHue(deltaHue, ryb: moveHueInRYB)
             .deltaSaturation(deltaSaturation)
             .deltaLightness(deltaLightness)
             .deltaAlpha(deltaAlpha);
+
+  static ColorTransform fromDelta(HSLuvColor a, HSLuvColor b)
+    => ColorTransform(
+      deltaAlpha: a.alpha - b.alpha,
+      deltaHue: a.hue - b.hue,
+      deltaSaturation: a.saturation - b.saturation,
+      deltaLightness: a.lightness - b.lightness,
+    );
 
   static Future<Box<ColorTransform>> ensureBoxOf() async {
     if (Hive.isBoxOpen(boxPath)) {
@@ -78,8 +87,8 @@ class ColorTransform extends BaseModel {
   static Box<ColorTransform> boxOf()
     => Hive.box<ColorTransform>(boxPath);
 
-  static HiveList<ColorTransform> listOf()
-    => HiveList<ColorTransform>(boxOf(), objects: []);
+  static HiveList<ColorTransform> listOf([List<ColorTransform> objects = const <ColorTransform>[]])
+    => HiveList<ColorTransform>(boxOf(), objects: objects);
 
   static ColorTransform scaffold()
     => ColorTransform();

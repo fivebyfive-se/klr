@@ -1,10 +1,11 @@
 import 'dart:ui';
 
+import 'package:fbf/ryb.dart';
 import 'package:flutter/painting.dart';
-import 'package:klr/widgets/hsluv/contrast.dart';
 
 import 'package:fbf/fbf.dart';
 
+import 'contrast.dart';
 import 'hsluv.dart';
 
 enum HSLChannel {
@@ -42,6 +43,17 @@ class HSLuvColor {
     return HSLuvColor.fromAHSL(alpha * 100, hue, saturation, lightness);
   }
 
+  /// Creates an instance of [HSLuvColor] from a [RYBColor]
+  factory HSLuvColor.fromRYBColor(RYBColor color) {
+    return HSLuvColor.fromColor(color.toColor());
+  }
+
+  /// Creates an [HSLuvColor] from a list of doubles in the order
+  /// Alpha, Hue, Saturation, Lightness.
+  factory HSLuvColor.fromList(List<double> list) {
+    return HSLuvColor.fromAHSL(list[0], list[1], list[2], list[3]);
+  }
+
   /// Alpha value, from 0.0 to 100.0
   final double alpha;
 
@@ -61,6 +73,7 @@ class HSLuvColor {
   /// a color is. A value of 0.0 indicates black, and 100.0 indicates white.
   final double lightness;
 
+  /// Return a copy with the the channel [channel] set to [value]
   HSLuvColor withChannel(HSLChannel channel, double value)
     => channel == HSLChannel.alpha ? withAlpha(value)
      : channel == HSLChannel.hue   ? withHue(value)
@@ -68,6 +81,7 @@ class HSLuvColor {
      : channel == HSLChannel.lightness ? withLightness(value)
      : this;
 
+  /// Return the value of the channel [channel]
   double getChannel(HSLChannel channel)
     => channel == HSLChannel.alpha ? alpha
      : channel == HSLChannel.hue   ? hue
@@ -100,11 +114,14 @@ class HSLuvColor {
   HSLuvColor deltaAlpha(double da)
     => withAlpha((alpha + da).clamp(0, 100.0));
 
-
   /// Return a copy of this instance with [hue] changed by [dh]
-  /// (the resulting hue angle will be normalized to 0 <= hue <= 360).
-  HSLuvColor deltaHue(double dh) {
-    double newHue = hue + dh;
+  /// (the resulting hue angle will be wrapped to 0 <= hue <= 360).
+  /// If [ryb] is true, the hue is rotated in an RYB color wheel.
+  HSLuvColor deltaHue(double dh, {bool ryb = false}) {
+    double newHue = ryb 
+      ? rybToHsl(hslToRyb(hue) + dh)
+      : hue + dh;
+
     while (newHue < 0) {
       newHue += 360;
     }
@@ -121,9 +138,12 @@ class HSLuvColor {
   HSLuvColor deltaLightness(double dl)
     => withLightness((lightness + dl).clamp(0, 100.0));
 
+  /// Return a copy with [hue] rotated 180 degrees.
   HSLuvColor complementary()
     => withHue(hue + 180.0);
 
+  /// Return a copy with lightness inverted to contrast 
+  /// with this color
   HSLuvColor invertLightness([double minRatio = Contrast.W3C_CONTRAST_TEXT]) {
     final bool goLighter = lightness < 50;
     final double step = goLighter ? 1.0 : -1.0;
@@ -138,6 +158,33 @@ class HSLuvColor {
       candidate += step;
     }
     return withLightness(candidate.clamp(0.0, 100.0));
+  }
+
+  /// Return a copy of this instance with [channel] set to the 
+  /// value of that channel in [color] converted to [HSLuvColor]
+  HSLuvColor withChannelFrom(Color color, HSLChannel channel) {
+    final c = HSLuvColor.fromColor(color);
+    return withChannel(channel, c.getChannel(channel));
+  }
+
+  /// Get hue from [color] and return a copy of this [HSLuvColor]
+  /// instance with that hue
+  HSLuvColor withHueFrom(Color color)
+    => withChannelFrom(color, HSLChannel.hue);
+
+
+  /// Return a copy of this [HSLuvColor] with channels set
+  /// to those of [color] converted to [HSLuvColor] if they
+  /// differ enough from those in this instance.
+  HSLuvColor applyColor(Color color, [double threshold = 5.0]) {
+    final c = HSLuvColor.fromColor(color);
+    final bd = (double a, double b) => (a - b).abs() >= threshold ? b : a;
+    return HSLuvColor.fromAHSL(
+      bd(alpha, c.alpha),
+      bd(hue, c.hue),
+      bd(saturation, c.saturation),
+      bd(lightness, c.lightness)
+    );
   }
 
   /// Returns this HSL color in RGB.
@@ -155,15 +202,17 @@ class HSLuvColor {
   HSLColor toHSLColor()
     => HSLColor.fromColor(toColor());
 
+  List<double> toList()
+    => <double>[alpha, hue, saturation, lightness];
+
   @override
   bool operator ==(dynamic other) {
     if (identical(this, other)) return true;
-    if (other is! HSLuvColor) return false;
-    final HSLuvColor typedOther = other;
-    return typedOther.hue == hue &&
-        typedOther.saturation == saturation &&
-        typedOther.lightness == lightness &&
-        typedOther.alpha == alpha;
+    return (other is HSLuvColor) &&
+        other.hue == hue &&
+        other.saturation == saturation &&
+        other.lightness == lightness &&
+        other.alpha == alpha;
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
 import 'package:fbf/dart_extensions.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 import './palette-color.model.dart';
 import '_base-model.dart';
@@ -42,10 +43,13 @@ class Palette extends BaseModel {
         .order<PaletteColor>((a,b) => a.displayIndex.compareTo(b.displayIndex))
         .toList();
 
-  Map<String,List<HSLColor>> get transformedColors
+  Map<String, List<HSLuvColor>> get transformedColors
     => Map.fromEntries(
           sortedColors.map(
-            (c) => MapEntry<String,List<HSLColor>>(c.uuid,c.transformedColors)
+            (c) => MapEntry<String, List<HSLuvColor>>(
+              c.uuid,
+              c.transformedColors
+            )
           )
         );
 

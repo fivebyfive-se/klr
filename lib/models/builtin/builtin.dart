@@ -1,6 +1,6 @@
-import 'package:fbf/flutter_color.dart';
-
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
+
 import 'package:klr/services/app-state-service.dart';
 
 import 'harmonies.dart';
@@ -18,7 +18,7 @@ class BuiltinBuilder {
     List<PaletteColor> colors = [];
     for (var e in Palettes.vhs60.entries) {
       final c = await PaletteColor.scaffoldAndSave(name: e.key);
-      c.color = e.value.toHSL();
+      c.color = e.value.toHSLuvColor();
       c.displayIndex = i++;
       await c.save();
       colors.add(c);

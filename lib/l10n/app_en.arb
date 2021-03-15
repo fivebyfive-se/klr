@@ -31,7 +31,7 @@
     "start_createPalette_title": "New palette...",
     "start_createPalette_subtitle": "Create a new palette using a generator or from an image",
     "start_createPalette_tpl_title": "New from generator",
-    "start_createPalette_tpl_subtitle": "Use a generator to build a new palette",
+    "start_createPalette_tpl_subtitle": "Use generator functions to build a new palette",
     "start_createPalette_img_title": "New from image",
     "start_createPalette_img_subtitle": "Use an image to generate a new palette"
         

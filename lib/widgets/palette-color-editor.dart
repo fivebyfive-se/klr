@@ -1,7 +1,7 @@
 import 'package:fbf/ryb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:klr/widgets/hsluv/hsluv-picker.dart';
+import 'package:klr/widgets/hsluv-picker.dart';
 import 'package:klr/widgets/tabber.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -11,6 +11,8 @@ import 'package:fbf/fbf.dart';
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
+
 import 'package:klr/services/app-state-service.dart';
 
 import 'togglable-text-editor.dart';
@@ -53,8 +55,8 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> with KlrConfigM
     setState(() {});
   }
 
-  void _setColor(PaletteColor pc, Color col) {
-    pc.color = col.toHSL();
+  void _setColor(PaletteColor pc, HSLuvColor col) {
+    pc.color = col;
     _saveColor(pc);
   }
 
@@ -162,35 +164,35 @@ class _PaletteColorEditorState extends State<PaletteColorEditor> with KlrConfigM
                             label: 'RYB',
                             contentBuilder: (_) => RYBColorPicker(
                               initialColor: currentColor.color.toColor(),
-                              onChange: (c) => _setColor(currentColor, c),
+                              onChange: (c) => _setColor(currentColor, HSLuvColor.fromColor(c)),
                             )
                           ),
                           TabberTab(
                             icon: Icons.adjust,
                             label: 'HSLuv',
                             contentBuilder: (_) => HSLuvPicker(
-                              color: currentColor.color.toColor(),
+                              color: currentColor.color,
                               onChange: (c) => _setColor(currentColor, c),
                               height: 250
                             )
                           ),
-                          TabberTab(
-                            icon: Icons.color_lens,
-                            label: 'HSL',
-                            contentBuilder: (_) => ColorPicker(
-                              pickerColor: currentColor.color.toColor(),
-                              onColorChanged: (c) => _setColor(currentColor, c),
-                              enableAlpha: true,
-                              displayThumbColor: false,
-                              labelTextStyle: klr.textTheme.bodyText1,
-                              showLabel: true,
-                              paletteType: PaletteType.hsl,
-                              pickerAreaBorderRadius: const BorderRadius.only(
-                                topLeft:  const Radius.circular(4.0),
-                                topRight: const Radius.circular(4.0),
-                              ),
-                            )
-                          )
+                          // TabberTab(
+                          //   icon: Icons.color_lens,
+                          //   label: 'HSL',
+                          //   contentBuilder: (_) => ColorPicker(
+                          //     pickerColor: currentColor.color.toColor(),
+                          //     onColorChanged: (c) => _setColor(currentColor, c),
+                          //     enableAlpha: true,
+                          //     displayThumbColor: false,
+                          //     labelTextStyle: klr.textTheme.bodyText1,
+                          //     showLabel: true,
+                          //     paletteType: PaletteType.hsl,
+                          //     pickerAreaBorderRadius: const BorderRadius.only(
+                          //       topLeft:  const Radius.circular(4.0),
+                          //       topRight: const Radius.circular(4.0),
+                          //     ),
+                          //   )
+                          // )
                         ],
                       ),
                     ),

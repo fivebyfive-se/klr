@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:fbf/fbf.dart';
 import 'package:klr/services/color-name-service.dart';
 
-import 'package:klr/widgets/hsluv/hsluv-color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 class PaletteGeneratorService {
   @protected

@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:fbf/fbf.dart';
 
 import 'package:klr/klr.dart';
+import 'package:klr/models/app-state.dart';
+import 'package:klr/services/app-state-service.dart';
+import 'package:klr/services/color-name-service.dart';
 
 import 'package:klr/services/palette-generator-service.dart';
+import 'package:klr/views/views.dart';
 import 'package:klr/widgets/color-generator-config.dart';
 
-import 'package:klr/widgets/hsluv/hsluv-color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 void showGeneratorDialog(BuildContext context)
   => showDialog(
@@ -16,6 +20,8 @@ void showGeneratorDialog(BuildContext context)
   );
 
 Widget buildGeneratorDialog(BuildContext context) {
+  final appService = AppStateService.getInstance();
+  final nameService = ColorNameService.getInstance();
   final genService = PaletteGeneratorService.getInstance().init();
   
   final viewportSize = MediaQuery.of(context).size;
@@ -36,6 +42,7 @@ Widget buildGeneratorDialog(BuildContext context) {
       final colorBox = (
         HSLuvColor col, {
           void Function() onTap,
+          IconData icon,
           String label,
           String subtitle,
           bool small = false,
@@ -59,7 +66,7 @@ Widget buildGeneratorDialog(BuildContext context) {
               tileColor: color,
               onTap: onTap,
               leading: onTap == null ? null 
-                : Icon(Icons.edit, color: invColor),
+                : Icon(icon ?? Icons.edit, color: invColor),
               title: Text(
                 label ?? col.toHex(),
                 style: klr.textTheme.bodyText1.copyWith(
@@ -100,6 +107,29 @@ Widget buildGeneratorDialog(BuildContext context) {
         );
       };
 
+      final createPalette = (List<ColorGenerator> colors) async {
+        final List<PaletteColor> paletteColors = [];
+
+        for (final gen in colors) {
+          final List<HSLuvColor> chunk = [gen.color, ...gen.colors];
+          for (final col in chunk) {
+            final palCol = await PaletteColor.scaffoldAndSave(
+              fromColor: col,
+              name: nameService.guessName(col.toColor())
+            );
+            paletteColors.add(palCol);
+          }
+        }
+        final palette = await Palette.scaffoldAndSave(
+          name: "Generated palette",
+          colors: paletteColors
+        );
+        await appService.setCurrentPalette(palette);
+        Navigator.pop(context);
+        Navigator.pushNamed(context, PalettePage.routeName);
+      };
+
+
       return StreamBuilder<List<ColorGenerator>>(
         stream: genService.colorStream,
         initialData: genService.snapshot,
@@ -117,7 +147,7 @@ Widget buildGeneratorDialog(BuildContext context) {
             actions: [
               FbfBtn.action(
                 'Save',
-                onPressed: () => Navigator.pop(context)
+                onPressed: () => createPalette(colors)
               ),
               FbfBtn.choice(
                 t.btn_close, 
@@ -125,22 +155,7 @@ Widget buildGeneratorDialog(BuildContext context) {
               )
             ],
 
-            title: Row(
-              children: [
-                Expanded(child: Text('Generate palette')),
-                Expanded(
-                  child: TextButton(
-                    child: Text(
-                      "New color",
-                      style: klr.textTheme.subtitle1.copyWith(
-                        color: klr.theme.primaryAccent
-                      )
-                    ),
-                    onPressed: () => genService.addColor(),
-                  )
-                )
-              ],
-            ),
+            title: Text('Generate palette'),
 
             content: Container(
               width: dialogWidth,
@@ -166,6 +181,7 @@ Widget buildGeneratorDialog(BuildContext context) {
                         colorBox(
                           HSLuvColor.fromColor(klr.theme.dialogBackground),
                           label: 'Add color',
+                          icon: Icons.add,
                           onTap: () => genService.addColor()
                         )
                       ],
@@ -179,7 +195,7 @@ Widget buildGeneratorDialog(BuildContext context) {
                       shape: BoxShape.rectangle,
                       color: klr.theme.dialogBackground,
                       border: klr.border.only(
-                        right: 1.0, 
+                        left: 1.0, 
                         color: chosenColor == null
                           ? klr.theme.dialogBackground
                           : klr.theme.foreground

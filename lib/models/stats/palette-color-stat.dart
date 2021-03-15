@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/painting.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:klr/models/hsluv.dart';
 
 import '../app-state.dart';
 
@@ -17,13 +18,13 @@ class PaletteColorStat {
       _label = label ?? color.color.toHex();
 
   PaletteColorStat.fromColor(Color color, [int index = 0, String label])
-    : _hslColor = color.toHSL(),
+    : _hslColor = color.toHSLuvColor(),
       _color = color,
       _index = index,
       _label = label ?? color.toHex();
 
   Color    _color;
-  HSLColor _hslColor;
+  HSLuvColor _hslColor;
   int      _index;
   String   _label;
   double   _luma;
@@ -53,8 +54,8 @@ class PaletteColorStat {
   Color  get color      => _color ?? (_color = _hslColor.toColor());
   double get luma       => _luma ?? (_luma = color.luma);
   double get hue        => _hslColor.hue / 360;
-  double get saturation => _hslColor.saturation;
-  double get lightness  => _hslColor.lightness;
+  double get saturation => _hslColor.saturation / 100;
+  double get lightness  => _hslColor.lightness / 100;
   String get label      => _label;
 
   double getDimension(ColorStatDimension dimension)

@@ -7,6 +7,7 @@ import 'package:fbf/fbf.dart';
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
 import 'package:klr/models/named-color.dart';
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/services/color-name-service.dart';
@@ -69,7 +70,7 @@ Widget buildImagePickerDialog(context) {
         List<PaletteColor> paletteColors = [];
         for (var sug in suggestions) {
           var palCol = await PaletteColor.scaffoldAndSave(
-            fromColor: sug.color,
+            fromColor: HSLuvColor.fromColor(sug.color),
             name: sug.suggestion
           );
           paletteColors.add(palCol);

@@ -6,6 +6,7 @@ import 'package:fbf/fbf.dart';
 
 import 'package:klr/app/klr.dart';
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
 
 void showCssDialog(BuildContext context, Palette palette)
   => showDialog(
@@ -15,7 +16,7 @@ void showCssDialog(BuildContext context, Palette palette)
 
 List<String> paletteToCss(Palette palette, {bool useCssVars = false, bool useHex = true}) {
     final output = <String>[];
-    final c = (HSLColor c) => c.toCss(hex: useHex);
+    final c = (HSLuvColor c) => c.toHSLColor().toCss(hex: useHex);
     final line = (List<String> parts) => parts.join('');
 
     final buildCss = (name, color) =>

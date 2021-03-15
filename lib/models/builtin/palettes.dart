@@ -2,6 +2,7 @@ import 'package:flutter/painting.dart';
 import 'package:fbf/flutter_color.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
 
 class Palettes {
   static Map<String, Color> vhs60 = {
@@ -17,7 +18,7 @@ class Palettes {
 extension PaletteExtensions on Palette {
   void addHexValues(Iterable<String> hexValues) 
     => this.colors.addAll(
-      hexValues.map((v) => colorFromHex(v).toHSL())
+      hexValues.map((v) => colorFromHex(v).toHSLuvColor())
         .map((c) => PaletteColor(color: c)).toList()
     );
 }

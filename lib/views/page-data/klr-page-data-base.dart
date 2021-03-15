@@ -17,10 +17,11 @@ abstract class KlrPageDataBase extends FbfPageData
 {
   KlrPageDataBase({
     this.appState,
-    String pageRoute,
-    String pageTitle
-  }) : super(pageRoute: pageRoute, pageTitle: pageTitle);
+    this.pageTitle,
+    String pageRoute
+  }) : super(pageRoute: pageRoute);
   
+  final String pageTitle;
   final AppState appState;
 
   Future<void> _launchUrl(String url) async {
@@ -28,7 +29,6 @@ abstract class KlrPageDataBase extends FbfPageData
       ? await launch(url)
       : print("Cannot launch $url!");
   }
-
 
   @override
   List<FbfDrawerItem> get drawerItems => <FbfDrawerItem>[

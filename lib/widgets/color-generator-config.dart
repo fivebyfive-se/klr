@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:klr/klr.dart';
 
 import 'package:klr/services/palette-generator-service.dart';
-import 'package:klr/widgets/hsluv/hsluv-color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 import 'package:klr/widgets/tabber.dart';
 
 import 'editor-tile/number-picker-tile.dart';

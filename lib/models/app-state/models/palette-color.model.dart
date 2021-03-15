@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 
 import 'package:fbf/dart_extensions.dart';
 import 'package:fbf/flutter_color.dart';
+import 'package:klr/models/hsluv/hsluv-color.dart';
 
 import './color-transform.model.dart';
 import '_base-model.dart';
@@ -31,7 +32,7 @@ class PaletteColor extends BaseModel {
     int displayIndex,
     String harmony,
   ) : name = name,
-      color = hslColorFromList(channels),
+      color = HSLuvColor.fromList(channels),
       transformations = transformations,
       shadeDeltas = shadeDeltas ?? <double>[],
       displayIndex = displayIndex ?? 0,
@@ -42,7 +43,7 @@ class PaletteColor extends BaseModel {
   String name;
 
   @HiveField(2)
-  HSLColor color;
+  HSLuvColor color;
 
   @HiveField(3)
   HiveList<ColorTransform> transformations;
@@ -56,12 +57,12 @@ class PaletteColor extends BaseModel {
   @HiveField(6)
   String harmony; 
 
-  List<HSLColor> get shades
+  List<HSLuvColor> get shades
     => [0, ...shadeDeltas]
       .order<double>((a, b) => a.compareTo(b))
       .map((d) => color.deltaLightness(d)).toList();
 
-  List<HSLColor> get transformedColors
+  List<HSLuvColor> get transformedColors
     => transformations.map((t) => t.applyTo(color)).toList();
 
   @override int compareTo(BaseModel other)
@@ -81,15 +82,15 @@ class PaletteColor extends BaseModel {
   static HiveList<PaletteColor> listOf({List<PaletteColor> objects})
     => HiveList<PaletteColor>(boxOf(), objects: objects ?? []);
 
-  static PaletteColor scaffold({String name, Color fromColor})
+  static PaletteColor scaffold({String name, HSLuvColor fromColor})
     => PaletteColor(
       name: name ?? "New color",
-      color: HSLColor.fromColor(fromColor ?? Colors.grey),
+      color: fromColor,
       shadeDeltas: <double>[-10, 10],
       transformations: ColorTransform.listOf()
     );
 
-  static Future<PaletteColor> scaffoldAndSave({String name, Color fromColor}) async {
+  static Future<PaletteColor> scaffoldAndSave({String name, HSLuvColor fromColor}) async {
     final p = scaffold(name: name, fromColor: fromColor);
     await boxOf().put(p.uuid, p);
     await p.save();

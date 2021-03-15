@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:klr/views/page-data/splash-page-data.dart';
+import 'package:klr/widgets/color-editor.dart';
 import 'package:klr/widgets/dialogs/stats-dialog.dart';
+import 'package:klr/widgets/selectable.dart';
+import 'package:klr/widgets/tabber.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
@@ -9,12 +11,11 @@ import 'package:klr/app/klr.dart';
 import 'package:klr/app/klr/colors.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
 import 'package:klr/services/app-state-service.dart';
-import 'package:klr/views/views.dart';
 
 import 'package:klr/widgets/togglable-text-editor.dart';
 import 'package:klr/widgets/dialogs/css-dialog.dart';
-import 'package:klr/widgets/palette-color-editor.dart';
 
 import 'page-data/palette-page-data.dart';
 
@@ -33,45 +34,45 @@ class PalettePage extends FbfPage<PalettePageData> {
 
 class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
+
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
-  PaletteColor get _selectedColor => _appStateService.snapshot.currentColor;
 
-  bool _showGenerated = true;
-  static const String menuCreateColor = "create";
-  static const String menuDeletePalette = "delete";
-  static const String menuCancel = "cancel";
- 
-  List<FbfFabMenuItem> get _menuItems => [
-    FbfFabMenuItem(
-      icon: Icon(Icons.add_box_outlined, color: klr.theme.primary),
-      title: "New color",
-      subtitle: "Create a new color in this palette",
-      value: menuCreateColor
-    ),
-    FbfFabMenuItem(
-      icon: Icon(Icons.cancel_outlined, color: klr.theme.secondary),
-      title: "Cancel",
-      subtitle: "Close this menu",
-      value: menuCancel
-    )
-  ];
+  List<_ColorItem> get _colors => _currPalette.sortedColors
+    .map((c) => _ColorItem(id: c.uuid, name: c.name, color: c.color)).toList();
 
+  List<_ColorItem> get _derived => _currPalette.transformedColors.entries
+    .mapReduce<MapEntry<String,List<HSLuvColor>>,List<_ColorItem>>(
+      (prev, entry, _) => [
+        ...prev,
+        ...entry.value.map(
+          (c) => _ColorItem(
+            parentId: entry.key,
+            color: c
+          )
+        ).toList()],
+        <_ColorItem>[]
+    ).toList();
 
-  Future<void> _promoteColor(HSLColor color) async {
+  String _activeColor;
+
+  PaletteColor _colorById(String id)
+    => _currPalette?.colors?.firstWhere(
+        (c) => c.uuid == id,
+        orElse: null
+      );
+
+  Future<void> _promoteSelected(List<_ColorItem> selected) async {
+    final derived = selected.where((c) => c.isDerived).toList();
     _appStateService.beginTransaction();
-    final newPaletteColor = await PaletteColor.scaffoldAndSave(
-      name: color.toHex(),
-      fromColor: color.toColor()
-    );
-    newPaletteColor.displayIndex = _currPalette.colors.map((c) => c.displayIndex).max() + 1;
-    _currPalette.colors.add(newPaletteColor);
+    for (final ci in derived) {
+      final newPaletteColor = await PaletteColor.scaffoldAndSave(
+        fromColor: ci.color,
+        name: ci.color.toHex()
+      );
+      _currPalette.colors.add(newPaletteColor);
+    }
     await _currPalette.save();
     _appStateService.endTransaction();
-  }
-
-  Future<void> _selectColor(PaletteColor pc) async {
-    await _appStateService.setCurrentColor(null);
-    await _appStateService.setCurrentColor(pc);
   }
 
   Future<void> _createColor() async {
@@ -83,50 +84,85 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     await _appStateService.setCurrentColor(color);
   }
 
-  Future<void> _deletePalette() async {
-    await _currPalette.delete();
-    Navigator.pushNamed(context, StartPage.routeName);
+  Future<void> _deleteSelected(List<_ColorItem> selected) async {
+    final colors = selected.where((ci) => !ci.isDerived).toList();
+    for (final col in colors) {
+      final palCol = _colorById(col.id);
+      if (palCol != null) {
+        _currPalette.colors.remove(palCol);
+        await palCol.delete();
+      }
+    }
+    await _currPalette.save();
   }
 
-  void _onMenuSelect(String value) {
-    if (value == menuCreateColor) {
-      _createColor();
-    } else if (value == menuDeletePalette) {
-      _deletePalette();
+  Widget _colorTile(_ColorItem pc, bool selected, bool showDetails) {
+    final isActive = !pc.isDerived && pc.id == _activeColor;
+    final color = pc.color.toColor();
+    final invColor = pc.color.invertLightness().withSaturation(0).toColor();
+    final titleStyle = klr.textTheme.subtitle1.withColor(invColor);
+    final subtitleStyle = klr.textTheme.subtitle2.withColor(invColor);
+    final derivedFrom = pc.isDerived ? _colorById(pc.parentId) : null;
+
+    return Padding(
+      padding: pc.isDerived 
+        ? klr.edge.all(3) 
+        : EdgeInsets.zero,
+      child: Container(
+        height: 300,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          border: isActive ? BorderDirectional(
+            bottom: BorderSide(color: klr.theme.foreground, width: 2.0),
+            top: BorderSide(color: klr.theme.foreground, width: 2.0),
+          ) : null,
+          boxShadow: pc.isDerived ? [BoxShadow(
+            color: derivedFrom.color.toColor(),
+            spreadRadius: klr.size(0.5),
+          )] : <BoxShadow>[]
+        ),
+        child: ListTile(
+          tileColor: color,
+          title: Text(pc.label, style: titleStyle),
+          subtitle: showDetails 
+            ? Text(pc.color.toHex(), style: subtitleStyle)
+            : null,
+        )
+      )
+    );
+  }
+
+  void _tapColor(_ColorItem ci) {
+    if (!ci.isDerived) {
+      _showColorEditor(ci);
     }
   }
 
-  Widget _colorBox({
-    Color color,
-    Function() onPressed,
-    bool chosen = false,
-    Color mark
-  }) {
-    final textColor = color.computeLuminance() <= 0.45 
-      ? klr.theme.foreground
-      : klr.theme.background;
-    return Container(
-      padding: klr.edge.all(1),
-        decoration: BoxDecoration(
-          border: chosen ? klr.border.y(2, klr.theme.cardForeground) : null,
-          boxShadow: mark != null ? [
-            BoxShadow(color: mark.withAlpha(0x80), 
-              blurRadius: klr.borderWidth(1),
-              spreadRadius: klr.borderWidth(2)
-            )
-          ] : []
-        ),
-        child: FbfBtn(
-          color.toHex(includeHash: true),
-          backgroundColor: color,
-          onPressed: onPressed,
-          style: klr.textTheme.bodyText1.copyWith(color: textColor),
+  void _showColorEditor(_ColorItem ci) {
+    final paletteColor = _colorById(ci.id);
+    final size = MediaQuery.of(context).size;
+
+    showDialog(
+      context: context,
+      useSafeArea: true,
+      builder: (context) => AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        clipBehavior: Clip.hardEdge,
+        content: ColorEditor(
+          color: paletteColor,
+          height: size.height * 0.8,
+          width: size.width,
         )
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewport = MediaQuery.of(context).size;
+    final klr = KlrConfig.of(context);
+
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
       initialData: _appStateService.snapshot,
@@ -135,13 +171,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
             context: context,
             pageData: PalettePageData(
               appState: snapshot,
-              fabMenuConfig: FabMenuConfig(
-                fabIcon: Icons.arrow_upward,
-                menuItems: _menuItems,
-                onSelect: _onMenuSelect,
-                title: 'Actions',
-                titleIcon: Icons.palette
-              )
+              pageTitle: 'Palette'
             ),
             builder: (context, klr, pageData) 
               => _currPalette == null
@@ -149,86 +179,49 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                 : CustomScrollView(
                   slivers: <Widget>[
                     SliverToBoxAdapter(
-                      child: ListTile(
-                        leading: Icon(LineAwesomeIcons.palette),
-                        title: TogglableTextEditor(
-                          initalText: _currPalette.name,
-                          onChanged: (v) {
-                            _currPalette.name = v;
-                            _currPalette.save();
-                          },
+                      child: Container(
+                        height: 64,
+                        child: ListTile(
+                          leading: Icon(LineAwesomeIcons.palette),
+                          title: TogglableTextEditor(
+                            initalText: _currPalette.name,
+                            onChanged: (v) {
+                              _currPalette.name = v;
+                              _currPalette.save();
+                            },
+                            style: klr.textTheme.subtitle1,
+                          )
                         )
                       )
                     ),
-
-                  // sliverSpacer(),
-
-                  listToGrid(
-                      <Widget>[                   
-                      ..._currPalette
-                          .sortedColors
-                          .map(
-                            (c) => _colorBox(
-                              color: c.color.toColor(), 
-                              onPressed: () => _selectColor(c),
-                              chosen: _selectedColor?.uuid == c.uuid,
-                              mark: _showGenerated && c.transformations.isNotEmpty 
-                                ? c.color.toColor() : null
-                            )).toList(),
-                    ],
-                    crossAxisCount: 7,
-                    mainAxisExtent: klr.size(14),
-                    crossAxisSpacing: klr.borderWidth()
-                  ),
-                  ...(_showGenerated 
-                    ? _currPalette.transformedColors.entries.map(
-                        (entry) {
-                          final pc = _currPalette.colors
-                            .firstWhere((c) => c.uuid == entry.key);
-                          return listToGrid(
-                            entry.value.map((col) => _colorBox(
-                              color: col.toColor(),
-                              onPressed: () => _promoteColor(col),
-                              mark: pc.color.toColor(),
-                            )).toList(),
-                            crossAxisCount: 7,
-                            mainAxisExtent: klr.size(7),
-                            crossAxisSpacing: klr.borderWidth()
-                          );
-                        }).toList()
-                    : []),
-                  
-                  sliverSpacer(),
-
-                  SliverToBoxAdapter(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: FbfBtn.icon(
-                        'New',
-                        icon: LineAwesomeIcons.plus,
-                        backgroundColor: klr.theme.secondary,
-                        onPressed: () => _createColor()
-                      )
-                    )
-                  ),
-
-                  sliverSpacer(),
-
-                  listToList([
-                    PaletteColorEditor(
-                      onDelete: () => _selectColor(null),
-                    )
-                  ]),
+                    SelectableList<_ColorItem>(
+                      compact: true,
+                      crossAxisCount: 6,
+                      height: viewport.height - 50,
+                      items: [..._colors, ..._derived],
+                      widgetBuilder: _colorTile,
+                      onPressed: (pc) => _tapColor(pc),
+                      actions: [
+                        ListItemAction(
+                          icon: Icon(LineAwesomeIcons.plus_circle),
+                          onPressed: (_) => _createColor()
+                        )
+                      ],
+                      selectedActions: [
+                        ListItemAction(
+                          icon: Icon(LineAwesomeIcons.trash),
+                          onPressed: (selected) => _deleteSelected(selected)
+                        ),
+                        ListItemAction(
+                          icon: Icon(LineAwesomeIcons.alternate_level_up),
+                          onPressed: (selected) => _promoteSelected(selected)
+                        )
+                      ],
+                    ),
 
                   sliverSpacer(size: klr.size(8)),
 
                   listToGrid(<Widget>[
-                    FbfTile.checkbox(
-                      value: _showGenerated,
-                      onChange: (v) => setState(() => _showGenerated = v),
-                      title: 'Show generated colors',
-                      subtitle: '(automatic shades/harmonies)'
-                    ),
                     FbfTile.action(
                       icon: LineAwesomeIcons.css_3_logo,
                       title: 'Show CSS',
@@ -246,31 +239,20 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     )
                   ]),
 
-                  sliverSpacer(),
-
-                  listToList(<Widget>[
-                    FbfTile.heading(
-                      icon: LineAwesomeIcons.info,
-                      title: 'Help'
-                    ),
-                    FbfTile.info(
-                      icon: LineAwesomeIcons.paint_roller,
-                      title: 'Colors',
-                      subtitle: 'To edit a color, click on it in the grid above. '
-                        'Any smaller boxes are *generated colors*, which are not '
-                        'editable by default, but can be made so by tapping them.' 
-                    )
-                  ]),
-
                   sliverSpacer()
         ]))  
     );
   }
 }
 
-enum PalettePageMenuAction {
-  cancel,
-  createColor,
-  deletePalette
-}
+class _ColorItem {
+  const _ColorItem({this.id, this.name, this.parentId, this.color});
 
+  final String id;
+  final String name;
+  final String parentId;
+  final HSLuvColor color;
+
+  String get label => name ?? color.toHex();
+  bool get isDerived => parentId != null;
+}

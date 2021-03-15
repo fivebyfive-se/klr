@@ -105,8 +105,21 @@ class AppStateService {
     return p;
   }
 
-  Future<void> createHarmonies() async {
+  Future<void> deleteColor(PaletteColor pc) async {
+    if (snapshot.currentPalette != null) {
+      snapshot.currentPalette.colors.remove(pc);
+      await snapshot.currentPalette.save();
+    }
+    await pc.delete();
+  }
 
+  Future<void> deletePalette(Palette p) async {
+    beginTransaction();
+    for (final c in p.colors) {
+      await c.delete();
+    }
+    await p.delete();
+    endTransaction();
   }
 
   void dispose() {
