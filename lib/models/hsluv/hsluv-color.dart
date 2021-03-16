@@ -172,12 +172,10 @@ class HSLuvColor {
   HSLuvColor withHueFrom(Color color)
     => withChannelFrom(color, HSLChannel.hue);
 
-
-  /// Return a copy of this [HSLuvColor] with channels set
-  /// to those of [color] converted to [HSLuvColor] if they
-  /// differ enough from those in this instance.
-  HSLuvColor applyColor(Color color, [double threshold = 5.0]) {
-    final c = HSLuvColor.fromColor(color);
+  /// Return a copy of this color with its channels replaced with
+  /// those in [c] that differ more than [threshold] from the
+  /// original values
+  HSLuvColor apply(HSLuvColor c, [double threshold = 2.5]) {
     final bd = (double a, double b) => (a - b).abs() >= threshold ? b : a;
     return HSLuvColor.fromAHSL(
       bd(alpha, c.alpha),
@@ -185,7 +183,13 @@ class HSLuvColor {
       bd(saturation, c.saturation),
       bd(lightness, c.lightness)
     );
-  }
+  } 
+
+  /// Return a copy of this [HSLuvColor] with channels set
+  /// to those of [color] converted to [HSLuvColor] if they
+  /// differ enough from those in this instance.
+  HSLuvColor applyColor(Color color, [double threshold = 2.5])
+    => apply(HSLuvColor.fromColor(color), threshold);
 
   /// Returns this HSL color in RGB.
   Color toColor() {

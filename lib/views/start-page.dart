@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:klr/models/hsluv/hsluv-color.dart';
 import 'package:klr/widgets/color-picker/color-picker.dart';
+import 'package:klr/widgets/color-picker/color-wheel.dart';
 import 'package:klr/widgets/dialogs/palette-generator-dialog.dart';
 import 'package:klr/widgets/richer-text.dart';
 import 'package:klr/widgets/selectable.dart';
@@ -119,6 +120,18 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                       child: ListTile(
                         title: Text(t.start_palettes_title, style: klr.textTheme.subtitle1),
                         subtitle: Text(t.start_palettes_subtitle, style: klr.textTheme.subtitle2)
+                      )
+                    )
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 300,
+                      width: viewport.width,
+                      child: RYBWheelColorPicker(
+                        color: HSLuvColor.fromColor(Colors.amber),
+                        onChanged: (c) => print(c),
+                        width: viewport.width,
+                        height: 300
                       )
                     )
                   ),

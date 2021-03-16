@@ -1,22 +1,23 @@
-import 'package:fbf/ryb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:klr/models/hsluv.dart';
-import 'package:klr/services/color-name-service.dart';
-import 'package:klr/widgets/color-picker/color-picker.dart';
-import 'package:klr/widgets/editor-tile/custom-editor-tile.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/ryb.dart';
 
 import 'package:klr/klr.dart';
+
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
+
 import 'package:klr/services/app-state-service.dart';
+import 'package:klr/services/color-name-service.dart';
+
+import 'package:klr/widgets/color-picker/color-picker.dart';
 import 'package:klr/widgets/editor-tile/popup-menu-tile.dart';
 import 'package:klr/widgets/editor-tile/text-field-tile.dart';
+import 'package:klr/widgets/editor-tile/custom-editor-tile.dart';
 import 'package:klr/widgets/tabber.dart';
-
-import 'hsluv-picker.dart';
 
 class ColorEditor extends StatefulWidget {
   const ColorEditor({
