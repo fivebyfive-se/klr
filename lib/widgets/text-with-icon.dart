@@ -9,17 +9,17 @@ class TextWithIcon extends StatelessWidget {
     this.iconAffinity = IconAffinity.leading
   }) : super(key: key);
 
-  final IconData icon;
-  final String   text;
+  final Widget icon;
+  final Widget text;
   final double   spacing;
   final IconAffinity iconAffinity;
 
   List<Widget> get _items
-    => <Widget>[Icon(icon), Text(text)];
+    => <Widget>[icon, text];
 
   List<Widget> get _orderedItems
     => iconAffinity == IconAffinity.leading
-        ? _items : _items.reversed; 
+        ? _items : _items.reversed.toList(); 
 
   @override
   Widget build(BuildContext context) {

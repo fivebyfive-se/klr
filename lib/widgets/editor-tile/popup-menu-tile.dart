@@ -58,8 +58,8 @@ class PopupMenuTile<E> extends EditorTile {
     => iconDataBuilder == null
       ? Text(_itemToString(item))
       : TextWithIcon(
-          icon: iconDataBuilder(item), 
-          text: _itemToString(item),
+          icon: Icon(iconDataBuilder(item)), 
+          text: Text(_itemToString(item)),
         );
 
   @override

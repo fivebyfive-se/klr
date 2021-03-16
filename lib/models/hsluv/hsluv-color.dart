@@ -142,6 +142,11 @@ class HSLuvColor {
   HSLuvColor complementary()
     => withHue(hue + 180.0);
 
+  double contrastWith(HSLuvColor other)
+    => lightness > other.lightness 
+      ? Contrast.contrastRatio(lightness, other.lightness)
+      : Contrast.contrastRatio(other.lightness, lightness);
+
   /// Return a copy with lightness inverted to contrast 
   /// with this color
   HSLuvColor invertLightness([double minRatio = Contrast.W3C_CONTRAST_TEXT]) {
