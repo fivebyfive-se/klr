@@ -12,7 +12,6 @@ import 'package:klr/models/named-color.dart';
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/services/color-name-service.dart';
 import 'package:klr/views/palette-page.dart';
-import 'package:klr/widgets/txt.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
 
 void showImagePickerDialog(BuildContext context)
@@ -102,7 +101,7 @@ Widget buildImagePickerDialog(context) {
                     padding: klr.edge.only(bottom: 0.5),
                     child: suggestions.isEmpty 
                       ? null 
-                      : Txt.subtitle3('Colors')
+                      : Text('Colors', style: klr.textTheme.subtitle1)
                   ),
                   Container(
                     alignment: Alignment.center,

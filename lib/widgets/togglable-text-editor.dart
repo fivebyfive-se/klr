@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:klr/widgets/txt.dart';
+import 'package:klr/klr.dart';
 
 class TogglableTextEditor extends StatefulWidget {
   TogglableTextEditor({
     this.initalText,
     this.onChanged,
     this.style,
-    this.alignment
+    this.editorStyle,
+    this.alignment,
   });
 
+  final AlignmentGeometry alignment;
   final String initalText;
   final void Function(String) onChanged;
   final TextStyle style;
-  final AlignmentGeometry alignment;
+  final TextStyle editorStyle;
 
   @override
   _TogglableTextEditorState createState() => _TogglableTextEditorState();
@@ -48,6 +50,8 @@ class _TogglableTextEditorState extends State<TogglableTextEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final baseStyle = KlrConfig.of(context).textTheme.bodyText1;
+    
     return Container(
       alignment: widget.alignment ?? Alignment.centerLeft,
       child: _editingText 
@@ -55,11 +59,12 @@ class _TogglableTextEditorState extends State<TogglableTextEditor> {
           controller: _controller,
           focusNode: _focusNode,
           onEditingComplete: _applyChange,
+          style: baseStyle.merge(widget.editorStyle),
         )
       : TextButton(
         child: Text(
           _controller.text,
-          style: TextStyle().merge(widget.style)
+          style: baseStyle.merge(widget.style)
         ),
         onPressed: _edit,
       )

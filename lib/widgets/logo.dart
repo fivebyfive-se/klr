@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:klr/app/klr.dart';
 
 class Logo extends StatelessWidget {
   Logo({
