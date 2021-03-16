@@ -77,7 +77,7 @@ class Palette extends BaseModel {
   static Palette scaffold({String name, List<PaletteColor> colors})
     => Palette(
       name: name ?? "New palette",
-      colors: PaletteColor.listOf(objects: colors)
+      colors: PaletteColor.listOf(objects: colors ?? <PaletteColor>[])
     );
 
   static Future<Palette> scaffoldAndSave({

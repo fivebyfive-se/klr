@@ -28,7 +28,7 @@ class PaletteColorAdapter extends TypeAdapter<PaletteColor> {
     writer.writeString(obj.uuid);
     writer.writeString(obj.name);
 
-    writer.writeDoubleList(obj.color.toList());
+    writer.writeDoubleList(obj.color?.toList() ?? [0.0, 0.0, 0.0, 0.0]);
 
     writer.writeHiveList(obj.transformations);
 

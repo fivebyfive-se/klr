@@ -124,10 +124,10 @@ class _ColorPickerBaseState<C> extends State<ColorPickerBase<C>> {
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
     final width = widget.width ?? MediaQuery.of(context).size.width;
-    final height = widget.height ?? 250.0;
+    final height = (widget.height ?? 250.0) - klr.size(2);
     final padding = klr.size(1.5);
     final col = (width - padding * 2) / 14;
-    final row = height / 5;
+    final row = height / 6;
 
     final label = (String t) => Text(
       (t ?? "").ucFirst() + ":", style: klr.textTheme.subtitle1
@@ -135,6 +135,7 @@ class _ColorPickerBaseState<C> extends State<ColorPickerBase<C>> {
 
     return Container(
       width: width,
+      height: height + padding * 2,
       padding: EdgeInsets.all(padding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -158,8 +159,8 @@ class _ColorPickerBaseState<C> extends State<ColorPickerBase<C>> {
                   child: label(e.key),
                 ),
                 Container(
-                  width: col * 10 - padding,
-                  height: row - padding * 2,
+                  width: col * 10 - padding * 2,
+                  height: row - padding * 3,
                   padding: EdgeInsets.only(right: padding),
                   alignment: Alignment.centerRight,
 

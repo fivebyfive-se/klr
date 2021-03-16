@@ -1,3 +1,5 @@
+import 'dart:math' show min;
+
 import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
@@ -58,17 +60,13 @@ class _TabberState extends State<Tabber> {
       : klr.theme.foregroundDisabled; 
 
     final tabBarItems = _tabs.length;
-    final tabBarWidth = containerWidth / tabBarItems;
+    final tabBarWidth = (containerWidth / 2) - klr.size(2);
 
-    final tabBarHeight = 50.0;
+    final tabBarHeight = 100.0;
     final currentTabBarBorderSize = 2.0;
     final contentHeight = containerHeight 
       - tabBarHeight * 2 
       - currentTabBarBorderSize;
-
-    final currentTabBarItem = _activeTabIndex;
-    final currentTabLeading = currentTabBarItem * tabBarWidth;
-    final currentTabTrailing = (tabBarItems - currentTabBarItem - 1) * tabBarWidth;
 
     return Container(
       width: containerWidth,
@@ -76,20 +74,14 @@ class _TabberState extends State<Tabber> {
       color: klr.theme.cardBackground,
       child: Column(
         children: [
-          Divider(
-            color: klr.theme.primary,
-            indent: currentTabLeading,
-            endIndent: currentTabTrailing,
-            thickness: 1.5,
-            height: currentTabBarBorderSize,
-          ),
           Container(
             height: tabBarHeight,
-            child: Row(
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: tabBarWidth / (tabBarHeight / 2),
               children: [
                 ..._tabs.mapIndex(
-                  (t, i) => Expanded(
-                    flex: 1,
+                  (t, i) => Container(
                     child: ListTile(
                       leading: t.icon == null ? null : Icon(t.icon, color: getColor(i)),
                       tileColor: i == _activeTabIndex 

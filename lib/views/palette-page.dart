@@ -151,7 +151,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         clipBehavior: Clip.hardEdge,
         content: ColorEditor(
           color: paletteColor,
-          height: size.height * 0.8,
+          height: size.height * 0.9,
           width: size.width,
         )
       )

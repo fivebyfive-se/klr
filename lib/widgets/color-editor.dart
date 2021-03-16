@@ -19,6 +19,8 @@ import 'package:klr/widgets/editor-tile/text-field-tile.dart';
 import 'package:klr/widgets/editor-tile/custom-editor-tile.dart';
 import 'package:klr/widgets/tabber.dart';
 
+import 'color-picker/color-wheel.dart';
+
 class ColorEditor extends StatefulWidget {
   const ColorEditor({
     Key key,
@@ -253,8 +255,18 @@ class _ColorEditorState extends State<ColorEditor> {
                     initialTab: 0,
                     tabs: [
                         TabberTab(
+                          icon: Icons.replay_circle_filled,
+                          label: 'Color wheel',
+                          contentBuilder: (_) => RYBWheelColorPicker(
+                            color: _paletteColor.color,
+                            onChanged: (c) => _setColor(c),
+                            width: editorWidth,
+                            height: editorHeight 
+                          )
+                        ),
+                        TabberTab(
                           icon: Icons.color_lens,
-                          label: 'HSL',
+                          label: 'Channels (HSL)',
                           contentBuilder: (_) => HSLColorEditor(
                             height: editorHeight,
                             width: editorWidth,
@@ -265,7 +277,7 @@ class _ColorEditorState extends State<ColorEditor> {
 
                         TabberTab(
                           icon: Icons.color_lens,
-                          label: 'RGB',
+                          label: 'Channels (RGB)',
                           contentBuilder: (_) => RGBColorEditor(
                             height: editorHeight,
                             width: editorWidth,
@@ -278,7 +290,7 @@ class _ColorEditorState extends State<ColorEditor> {
 
                         TabberTab(
                           icon: Icons.color_lens,
-                          label: 'RYB',
+                          label: 'Channels (RYB)',
                           contentBuilder: (_) => RYBColorEditor(
                             height: editorHeight,
                             width: editorWidth,

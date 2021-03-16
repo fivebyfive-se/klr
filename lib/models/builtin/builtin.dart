@@ -15,17 +15,17 @@ class BuiltinBuilder {
   static Future<Palette> buildPalette() async {
     _service.beginTransaction();
     int i = 0;
-    List<PaletteColor> colors = [];
+    final palette = await Palette.scaffoldAndSave(name: 'VHS-60');
     for (var e in Palettes.vhs60.entries) {
       final c = await PaletteColor.scaffoldAndSave(name: e.key);
       c.color = e.value.toHSLuvColor();
       c.displayIndex = i++;
       await c.save();
-      colors.add(c);
+      palette.colors.add(c);
     }
-    final p = await Palette.scaffoldAndSave(name: "VHS-60", colors: colors);
+    await palette.save();
     _service.endTransaction();
-    return p;
+    return palette;
   }
 
   static Future<void> buildHarmonies() async {

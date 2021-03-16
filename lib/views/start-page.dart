@@ -123,18 +123,6 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                       )
                     )
                   ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 300,
-                      width: viewport.width,
-                      child: RYBWheelColorPicker(
-                        color: HSLuvColor.fromColor(Colors.amber),
-                        onChanged: (c) => print(c),
-                        width: viewport.width,
-                        height: 300
-                      )
-                    )
-                  ),
                   SelectableList<Palette>(
                     items: snapshot.palettes,
                     onPressed: (p) => _showPalette(p),
