@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:klr/models/hsluv/contrast.dart';
+import 'package:klr/widgets/contrast-table.dart';
+import 'package:klr/widgets/css-table.dart';
 import 'package:klr/widgets/richer-text.dart';
+import 'package:klr/widgets/stats-table.dart';
 import 'package:klr/widgets/text-with-icon.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -44,22 +47,22 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
 
   bool _contrastActive = false;
-  _ColorItem  _contrastBackground;
+  ColorItem  _contrastBackground;
 
-  List<_ColorItem> get _colors => _currPalette.sortedColors
-    .map((c) => _ColorItem(id: c.uuid, name: c.name, color: c.color)).toList();
+  List<ColorItem> get _colors => _currPalette.sortedColors
+    .map((c) => ColorItem(id: c.uuid, name: c.name, color: c.color)).toList();
 
-  List<_ColorItem> get _derived => _currPalette.transformedColors.entries
-    .mapReduce<MapEntry<String,List<HSLuvColor>>,List<_ColorItem>>(
+  List<ColorItem> get _derived => _currPalette.transformedColors.entries
+    .mapReduce<MapEntry<String,List<HSLuvColor>>,List<ColorItem>>(
       (prev, entry, _) => [
         ...prev,
         ...entry.value.map(
-          (c) => _ColorItem(
+          (c) => ColorItem(
             parentId: entry.key,
             color: c
           )
         ).toList()],
-        <_ColorItem>[]
+        <ColorItem>[]
     ).toList();
 
   String _activeColor;
@@ -70,7 +73,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         orElse: null
       );
 
-  Future<void> _promoteSelected(List<_ColorItem> selected) async {
+  Future<void> _promoteSelected(List<ColorItem> selected) async {
     final derived = selected.where((c) => c.isDerived).toList();
     _appStateService.beginTransaction();
     for (final ci in derived) {
@@ -93,7 +96,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     await _appStateService.setCurrentColor(color);
   }
 
-  Future<void> _deleteSelected(List<_ColorItem> selected) async {
+  Future<void> _deleteSelected(List<ColorItem> selected) async {
     final colors = selected.where((ci) => !ci.isDerived).toList();
     for (final col in colors) {
       final palCol = _colorById(col.id);
@@ -105,7 +108,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     await _currPalette.save();
   }
 
-  Widget _colorTile(_ColorItem pc, bool selected, bool showDetails) {
+  Widget _colorTile(ColorItem pc, bool selected, bool showDetails) {
     final isActive = !pc.isDerived && pc.id == _activeColor;
     final color = pc.color.toColor();
     final invColor = pc.color.invertLightness().withSaturation(0).toColor();
@@ -142,13 +145,13 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     );
   }
 
-  void _tapColor(_ColorItem ci) {
+  void _tapColor(ColorItem ci) {
     if (!ci.isDerived) {
       _showColorEditor(ci);
     }
   }
 
-  void _showColorEditor(_ColorItem ci) {
+  void _showColorEditor(ColorItem ci) {
     final paletteColor = _colorById(ci.id);
     final size = MediaQuery.of(context).size;
 
@@ -175,12 +178,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
 
   @override
   Widget build(BuildContext context) {
-    final klr = KlrConfig.of(context);
     final viewport = MediaQuery.of(context).size;
-    final contrastDuration = const Duration(milliseconds: 400);
-    final tsLarge = klr.textTheme.subtitle1.copyWith(fontSize: 24);
-    final tsNormal = klr.textTheme.bodyText2;
-
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -213,7 +211,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                         )
                       )
                     ),
-                    SelectableList<_ColorItem>(
+                    SelectableList<ColorItem>(
                       compact: true,
                       crossAxisCount: 6,
                       height: viewport.height - 50,
@@ -240,188 +238,20 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
 
                   sliverSpacer(size: klr.size(8)),
 
-                  SliverStickyHeader(
-                    header: Container(
-                      height: 64,
-                      width: viewport.width,
-                      color: klr.theme.cardBackground,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ListTile(
-                              leading: Icon(
-                                _contrastActive
-                                  ? Icons.arrow_upward
-                                  : Icons.arrow_downward
-                              ),
-                              title: Text('Contrast', style: klr.textTheme.subtitle1),
-                              onTap: () => setState(() => _contrastActive = !_contrastActive),
-                            ),
-                          ),
-                          Expanded(
-                            child: AnimatedOpacity(
-                              duration: contrastDuration,
-                              opacity: _contrastActive ? 1.0 : 0.0,
-                              child: ListSelectorTile<_ColorItem>(
-                                itemWidgetBuilder: (ci) => TextWithIcon(
-                                  icon: Icon(Icons.circle, color: ci.color.toColor()),
-                                  text: Text(ci.label, style: klr.textTheme.subtitle1)
-                                ),
-                                items: [..._colors, ..._derived],
-                                label: 'Background color',
-                                onSelected: (v) => setState(() => _contrastBackground = v),
-                                value: _contrastBackground,
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    ),
-                    sliver:
-                     SliverList(
-                        delegate: SliverChildListDelegate(
-                          [...([..._colors, ..._derived]
-                          .where((c) => c.color != _contrastBackground.color)
-                          .map((c) {
-                            final contrast = _contrastBackground.color
-                              .contrastWith(c.color);
-                            final isGood = contrast >= Contrast.W3C_CONTRAST_TEXT;
-                            final isOK = contrast >= Contrast.W3C_CONTRAST_LARGE_TEXT;
+                  ContrastTable(colors: [..._colors, ..._derived]),
 
-                            return AnimatedContainer(
-                              height: _contrastActive ? 100.0 : 0,
-                              duration: contrastDuration,
-                              width: viewport.width,
-                              decoration: _contrastActive 
-                                ? BoxDecoration(
-                                  border: klr.border.only(
-                                    bottom: 1.0,
-                                    color: klr.theme.cardBackground
-                                  )
-                                )
-                                : null,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: klr.edge.all(2),
-                                    color: klr.theme.dialogBackground,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            c.label,
-                                            style: tsLarge
-                                          )
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            contrast.toStringAsFixed(1),
-                                            style: tsLarge.withColor(
-                                            isGood ? klr.theme.foreground
-                                              : isOK ? klr.theme.warning
-                                                : klr.theme.error
-                                            )
-                                          ),
-                                        )
-                                      ]
-                                    ),
-                                  )
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    color: _contrastBackground.color.toColor(),
-                                    padding: klr.edge.all(2),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            "Large text\n", 
-                                            style: tsLarge.withColor(c.color.toColor())
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            "Smaller text", 
-                                            style: tsNormal.withColor(c.color.toColor())
-                                          ),
-                                        ),
-                                      ]
-                                    ),
-                                  ),
-                                )
-                              ]),
-                            );
-                          }).toList()),
-                          AnimatedContainer(
-                            duration: contrastDuration,
-                            height: _contrastActive ? 100 : 0,
-                            color: klr.theme.cardBackground,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Icon(Icons.info_outline),
-                                ),
-                                Expanded(
-                                  flex: 11,
-                                  child: Container(
-                                    padding: klr.edge.xy(2, 1),
-                                    child: RicherText.from([
-                                        "WCAG requires a contrast of at least 4.5 "
-                                        "between text and background.\n",
-                                        "To compare colors along other axes, ",
-                                        [
-                                          "see them in a chart",
-                                          () => showStatsDialog(context, _currPalette)
-                                        ]
-                                      ], 
-                                      baseStyle: tsNormal
-                                        .withColor(klr.theme.cardForeground)
-                                    ),
-                                  )
-                                )
-                              ]
-                            )
-                          )
-                        ])
-                    )
-                  ),
+                  StatsTable(palette: _currPalette),
 
-                  sliverSpacer(size: klr.size(8)),
+                  CssTable(palette: _currPalette),
 
-                  listToGrid(<Widget>[
-                    FbfTile.action(
-                      icon: LineAwesomeIcons.css_3_logo,
-                      title: 'Show CSS',
-                      subtitle: 'Generate and view CSS for this palette',
-                      onTap: () => showCssDialog(context, _currPalette),
-                    ),
-                    FbfTile.action(
-                      icon: LineAwesomeIcons.line_chart,
-                      title: 'Show chart',
-                      subtitle: 
-                        'Check how your palette\'s colors relate to '
-                        'each other and simulate color blindness'
-                      ,
-                      onTap: () => showStatsDialog(context, _currPalette),
-                    )
-                  ]),
-
-                  sliverSpacer()
+                  sliverSpacer(),
         ]))  
     );
   }
 }
 
-class _ColorItem {
-  const _ColorItem({this.id, this.name, this.parentId, this.color});
+class ColorItem {
+  const ColorItem({this.id, this.name, this.parentId, this.color});
 
   final String id;
   final String name;
