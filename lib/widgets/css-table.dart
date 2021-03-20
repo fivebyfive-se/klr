@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
-import 'package:klr/models/hsluv.dart';
 import 'package:klr/widgets/expanding-table.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class CssTable extends StatefulWidget {
   const CssTable({Key key, this.palette}) : super(key: key);

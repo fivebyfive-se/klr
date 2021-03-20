@@ -1,12 +1,12 @@
 import 'dart:ui' as ui;
 
-import 'package:fbf/ryb.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
-import 'package:klr/app/klr.dart';
+import 'package:fbf/ryb.dart';
+import 'package:fbf/hsluv.dart';
 
-import 'package:klr/models/hsluv.dart';
+import 'package:klr/klr.dart';
 
 
 class HSLColorEditor extends ColorPickerBase<HSLuvColor> {

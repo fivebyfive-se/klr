@@ -4,11 +4,11 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
 import 'package:fbf/ryb.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
-import 'package:klr/models/hsluv.dart';
 
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/services/color-name-service.dart';

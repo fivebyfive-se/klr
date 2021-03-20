@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/painting.dart';
 
 import 'package:fbf/fbf.dart';
-import 'package:klr/models/hsluv.dart';
+import 'package:fbf/hsluv.dart';
 
 import '../app-state.dart';
 

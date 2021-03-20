@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
+
 import 'package:klr/widgets/contrast-table.dart';
 import 'package:klr/widgets/css-table.dart';
 import 'package:klr/widgets/stats-table.dart';
@@ -10,13 +13,10 @@ import 'package:klr/widgets/stats-table.dart';
 import 'package:klr/widgets/color-editor.dart';
 import 'package:klr/widgets/selectable.dart';
 
-import 'package:fbf/fbf.dart';
-
-import 'package:klr/app/klr.dart';
+import 'package:klr/klr.dart';
 import 'package:klr/app/klr/colors.dart';
 
 import 'package:klr/models/app-state.dart';
-import 'package:klr/models/hsluv.dart';
 import 'package:klr/services/app-state-service.dart';
 
 import 'package:klr/widgets/togglable-text-editor.dart';

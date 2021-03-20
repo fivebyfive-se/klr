@@ -4,9 +4,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/klr.dart';
-import 'package:klr/models/hsluv.dart';
 import 'package:klr/widgets/editor-tile/popup-menu-tile.dart';
 
 class RYBWheelColorPicker extends StatefulWidget {

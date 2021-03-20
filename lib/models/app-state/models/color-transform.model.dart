@@ -1,8 +1,6 @@
-import 'package:flutter/painting.dart';
 import 'package:hive/hive.dart';
 
-import 'package:fbf/flutter_color.dart';
-import 'package:klr/models/hsluv/hsluv-color.dart';
+import 'package:fbf/hsluv.dart';
 
 import '_base-model.dart';
 

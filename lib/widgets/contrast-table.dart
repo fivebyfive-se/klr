@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/klr.dart';
-import 'package:klr/models/hsluv/contrast.dart';
+
 import 'package:klr/views/palette-page.dart';
 import 'package:klr/widgets/expanding-table.dart';
-import 'package:klr/widgets/richer-text.dart';
 import 'package:klr/widgets/text-with-icon.dart';
 
 import 'editor-tile/list-selector-tile.dart';

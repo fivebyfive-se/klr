@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import 'package:klr/models/hsluv/hsluv-color.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'color-transform.model.dart';
 import '_base-model.dart';

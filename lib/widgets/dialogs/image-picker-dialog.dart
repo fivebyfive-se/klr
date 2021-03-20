@@ -3,11 +3,11 @@ import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/klr.dart';
 
 import 'package:klr/models/app-state.dart';
-import 'package:klr/models/hsluv.dart';
 import 'package:klr/models/named-color.dart';
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/services/color-name-service.dart';

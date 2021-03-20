@@ -8,9 +8,9 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/models/app-state.dart';
-import 'package:klr/models/hsluv.dart';
 import 'package:klr/services/color-name-service.dart';
 
 class AppStateService {

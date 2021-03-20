@@ -1,10 +1,8 @@
-import 'package:fbf/ryb.dart';
 import 'package:flutter/material.dart';
 
-import 'package:klr/klr.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/models/generator.dart';
-import 'package:klr/models/hsluv/hsluv-color.dart';
 import 'package:klr/widgets/tabber.dart';
 
 import 'editor-tile/number-picker-tile.dart';

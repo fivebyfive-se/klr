@@ -1,10 +1,8 @@
-import 'package:flutter/animation.dart';
-
 import 'package:fbf/fbf.dart';
+import 'package:fbf/hsluv.dart';
 
 import 'package:klr/models/app-state.dart';
 import 'package:klr/models/app-state/models/color-transform.model.dart';
-import 'package:klr/models/hsluv.dart';
 
 import 'channel-generator.dart';
 
