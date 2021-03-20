@@ -83,5 +83,35 @@
     "generator_paletteName": "Generated",
     "generator_title": "Generate palette",
     "generator_generator": "Generator",
-    "generator_colors": "Colors"
+    "generator_colors": "Colors",
+
+    "info_title": "Help",
+    "info_subtitle": "Tips & tricks",
+
+    "info_palettes_title": "Palettes",
+    "info_palettes_create_intro": 
+        "There are three ways of creating palettes in KLR:",
+    "info_palettes_create_tpl":
+        "Using the default KLR template, which will randomly generate a color, and then four more colors, each with its hue rotated 60 degrees clockwise from the previous color.",
+    "info_palettes_create_gen":
+        "Using generator functions. Here, you define start values for each of the hue, saturation, and lightness channels, which can each be modified in a customizable number of steps by either a fixed amount or using a tweening curve.",
+    "info_palettes_create_img":
+        "Using an image, from which KLR will extract five representative colors.",
+
+    "info_colors_title": "Colors",
+    "info_colors_intro":
+        "There are two types of colors in KLR: palette colors and generated colors. When editing a palette the former are shown as full-colored boxes, while the latter are shown with bordered boxes, where the border color is that of the generated color's source color.",
+    "info_colors_palette_title": "Palette colors",
+    "info_colors_palette": "Tapping a palette color opens the color editor, which consists of two sections: the first is the meta data section, where you can edit the name of the color, either manually or (by pressing the 'suggested names' button) selecting from a list of suggested names. In the meta data section, you can also use color harmonies to generate colors based upon this color.  The other section in the color editor is the color-editing section, where there are four different editors for changing the color itself.",
+    "info_colors_generated_title": "Generated colors",
+    "info_colors_generated": "Generated colors can be promoted to palette colors by selecting them in the color list (by long-pressing a color to enter selection mode) and pressing the arrow icon in the action list above the color list.",
+    "info_colors_helpers_intro":
+        "Below the color list, there are three helper sections:",
+    "info_colors_helpers_contrast":
+        "Contrast: where you can check the contrast ratios among the colors",
+    "info_colors_helpers_compare":
+        "Compare: where you compare the colors by channel (hue, saturation, lightness) or luma (perceived lightness), and also view how the colors appear for people with various kinds of color blindness",
+    "info_colors_helpers_css":
+        "CSS: where you can view generated CSS for the palette"
+        
   }

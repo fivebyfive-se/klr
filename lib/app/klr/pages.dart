@@ -1,4 +1,5 @@
 import 'package:fbf/flutter.dart';
+import 'package:klr/views/info-page.dart';
 
 import 'package:klr/views/views.dart';
 
@@ -12,5 +13,8 @@ class KlrPages extends FbfPageRouteList {
       routeName: PalettePage.routeName,
       builder: (context) => PalettePage(),
     ),
+    FbfPageRoute(
+      routeName: InfoPage.routeName,
+      builder: (_) => InfoPage())
   ]);
 }

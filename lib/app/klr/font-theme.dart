@@ -11,7 +11,7 @@ class KlrFontTheme extends FbfFontTheme {
 
   KlrFontTheme() : super(
     fontSerif, fontSans, fontMono,
-    minFontSize: 10.0,
+    minFontSize: 10.5,
     textColor: klrs.grey95
   //maxFontSize: Klr.sizeBase * Klr.sizeBase
   );

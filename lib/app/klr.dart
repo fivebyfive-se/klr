@@ -29,6 +29,7 @@ class KlrConfig extends FbfAppConfig<KlrTheme,KlrPages> {
   static FbfViewport view(BuildContext context)
     => FbfAppConfig.view(context);
 
+  double get smallTileHeight => size(6);
   double get tileHeight => size(8);
   double get tileHeightx2 => size(16);
 }

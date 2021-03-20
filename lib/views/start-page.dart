@@ -86,8 +86,8 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
   Widget build(BuildContext context) {
     final viewport = KlrConfig.view(context);
     final actionWidth = viewport.responsive<double>({
-      ViewportSize.xs: () => viewport.width / 2,
-      ViewportSize.md: () => viewport.width / 3, 
+      ViewportSize.md: () => viewport.width / 2,
+      ViewportSize.lg: () => viewport.width / 3, 
     });
 
     return FbfStreamBuilder<KlrConfig, AppState>(
@@ -98,7 +98,8 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
               context: context,
               pageData: StartPageData(
                 appState: snapshot,
-                pageTitle: t.start_title
+                pageTitle: t.start_title,
+                context: context,
               ),
               builder: (context, klr, pageData) => Container(
                 child: CustomScrollView(
@@ -135,7 +136,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                         t.start_noPalettes_img_suffix
                       ], 
                       baseStyle: klr.textTheme.subtitle1.copyWith(
-                        height: 1.5,
+                        height: 1.2,
                       ),
                       textAlign: TextAlign.center,
                     ),

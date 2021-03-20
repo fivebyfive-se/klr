@@ -162,7 +162,7 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
         ? SliverToBoxAdapter(
           child: Container(
             alignment: Alignment.center,
-            height: itemHeight,
+            height: itemHeight * 2,
             padding: klr.edge.xy(4.0, 3.0),
             color: klr.theme.cardBackground,
             child: widget.noItems ?? Text('No items...')

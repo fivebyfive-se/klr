@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klr/views/info-page.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,9 +19,11 @@ abstract class KlrPageDataBase extends FbfPageData
   KlrPageDataBase({
     this.appState,
     this.pageTitle,
-    String pageRoute
+    String pageRoute,
+    this.context,
   }) : super(pageRoute: pageRoute);
   
+  final BuildContext context;
   final String pageTitle;
   final AppState appState;
 
@@ -35,12 +38,23 @@ abstract class KlrPageDataBase extends FbfPageData
     FbfDrawerHeader(
       logo: Logo(logo: Logos.logo),
     ),
+
+    FbfDrawerUrlLink(
+      icon: Icons.help_center_outlined,
+      title: 'Help',
+      subtitle: 'Help & tips',
+      onTap: () => Navigator.of(context).pushNamed(InfoPage.routeName)
+    ),
+
+    FbfDrawerDivider(),
+
     FbfDrawerUrlLink(
       icon: LineAwesomeIcons.alternate_github,
       title: 'Source code',
       subtitle: 'https://github.com/fivebyfive-se/klr',
       onTap: () => _launchUrl('https://github.com/fivebyfive.se/klr')
-    )
+    ),
+
   ];
 
   @override

@@ -28,7 +28,6 @@ class PalettePage extends FbfPage<PalettePageData> {
   static Color onPageAccent = KlrColors.getInstance().grey05; 
 
   static const String routeName = '/palette';
-  static const String title = 'palette';
 
   PalettePage() : super();
 
@@ -40,9 +39,6 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
 
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
-
-  bool _contrastActive = false;
-  ColorItem  _contrastBackground;
 
   List<ColorItem> get _colors => _currPalette.sortedColors
     .map((c) => ColorItem(id: c.uuid, name: c.name, color: c.color)).toList();
@@ -166,14 +162,8 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _contrastBackground = _colors.first;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final viewport = MediaQuery.of(context).size;
+    final viewport = KlrConfig.view(context);
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -183,7 +173,8 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
             context: context,
             pageData: PalettePageData(
               appState: snapshot,
-              pageTitle: t.palette_title
+              pageTitle: t.palette_title,
+              context: context,
             ),
             builder: (context, klr, pageData) 
               => _currPalette == null
@@ -194,13 +185,9 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       child: Container(
                         height: klr.tileHeight,
                         child: ListTile(
-                          leading: Icon(LineAwesomeIcons.palette),
-                          title: TogglableTextEditor(
-                            initalText: _currPalette.name,
-                            onChanged: (v) {
-                              _currPalette.name = v;
-                              _currPalette.save();
-                            },
+                          leading: Icon(Icons.help_center_outlined),
+                          title: Text(
+                            '',
                             style: klr.textTheme.subtitle1,
                           )
                         )
@@ -208,7 +195,10 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     ),
                     SelectableList<ColorItem>(
                       compact: true,
-                      crossAxisCount: 6,
+                      crossAxisCount: viewport.responsive<int>({
+                        ViewportSize.xs: () => 4,
+                        ViewportSize.lg: () => 7
+                      }),
                       height: viewport.height - klr.tileHeight,
                       items: [..._colors, ..._derived],
                       widgetBuilder: _colorTile,
