@@ -38,11 +38,9 @@ class StartPage extends FbfPage<StartPageData> {
 
 class _StartPageState extends State<StartPage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
-  AppState get _appState => _appStateService.snapshot;
-
 
   Future<void> _createPalette() async {
-    await _appStateService.createBuiltinPalette();
+    await _appStateService.createDefaultPalette();
     setState(() {});
   }
 
@@ -91,7 +89,11 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
 
   @override
   Widget build(BuildContext context) {
-    final viewport = MediaQuery.of(context).size;
+    final viewport = KlrConfig.view(context);
+    final actionWidth = viewport.responsive<double>({
+      ViewportSize.xs: () => viewport.width / 2,
+      ViewportSize.md: () => viewport.width / 3, 
+    });
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -108,7 +110,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                 slivers: <Widget>[
                   SliverToBoxAdapter(
                     child: Container(
-                      height: 64,
+                      height: klr.tileHeight,
                       child: ListTile(
                         title: Text(t.start_palettes_title, style: klr.textTheme.subtitle1),
                         subtitle: Text(t.start_palettes_subtitle, style: klr.textTheme.subtitle2)
@@ -182,23 +184,47 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                   sliverSpacer(
                     size: klr.size(2),
                   ),
-                  SliverGrid.count(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2.0,
-                    children: [
-                      FbfTile.action(
-                        icon: Icons.functions_sharp,
-                        title: t.start_createPalette_tpl_title,
-                        subtitle: t.start_createPalette_tpl_subtitle,
-                        onTap: () => _showGenerateDialog()
+                  
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: klr.tileHeightx2,
+                      width: viewport.width,
+                      child: Wrap(
+                        children: [
+                          Container(
+                            height: klr.tileHeightx2,
+                            width: actionWidth,
+                            child: FbfTile.action(
+                              icon: Icons.wysiwyg,
+                              title: t.start_createPalette_tpl_title,
+                              subtitle: t.start_createPalette_tpl_subtitle,
+                              onTap: () => _createPalette()
+                            ),
+                          ),
+                          Container(
+                            height: klr.tileHeightx2,
+                            width: actionWidth,
+                            child: FbfTile.action(
+                              icon: Icons.functions_sharp,
+                              title: t.start_createPalette_gen_title,
+                              subtitle: t.start_createPalette_gen_subtitle,
+                              onTap: () => _showGenerateDialog()
+                            ),
+                          ),
+                      
+                          Container(
+                            height: klr.tileHeightx2,
+                            width: actionWidth,
+                            child: FbfTile.action(
+                              icon: Icons.photo_filter,
+                              title: t.start_createPalette_img_title,
+                              subtitle: t.start_createPalette_img_subtitle,
+                              onTap: () => _showExtractDialog()
+                            ),
+                          )
+                        ],
                       ),
-                      FbfTile.action(
-                        icon: Icons.photo_filter,
-                        title: t.start_createPalette_img_title,
-                        subtitle: t.start_createPalette_img_subtitle,
-                        onTap: () => _showExtractDialog()
-                      )
-                    ],
+                    ),
                   )
                 ],
               )

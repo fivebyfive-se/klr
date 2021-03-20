@@ -25,6 +25,12 @@ class KlrConfig extends FbfAppConfig<KlrTheme,KlrPages> {
 
   static AppLocalizations t(BuildContext context)
     => AppLocalizations.of(context);
+
+  static FbfViewport view(BuildContext context)
+    => FbfAppConfig.view(context);
+
+  double get tileHeight => size(8);
+  double get tileHeightx2 => size(16);
 }
 
 class KlrApp extends FbfApp<KlrConfig> {

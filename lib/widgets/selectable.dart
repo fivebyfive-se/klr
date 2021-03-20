@@ -142,7 +142,7 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
 
     return SliverStickyHeader(
       header: Container(
-        height: 60,
+        height: klr.tileHeight,
         color: KlrConfig.of(context).theme.bottomNavBackground,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

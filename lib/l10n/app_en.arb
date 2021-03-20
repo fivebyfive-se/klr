@@ -32,7 +32,7 @@
     },
 
     "start_noPalettes_intro": "You don't have any palettes yet.\nCreate a palette ",
-    "start_noPalettes_tpl": "based on a template",
+    "start_noPalettes_tpl": "based on the default KLR template",
     "start_noPalettes_tpl_suffix": ", ",
     "start_noPalettes_gen": "using generator functions",
     "start_noPalettes_gen_suffix": ", or ",
@@ -41,8 +41,10 @@
 
     "start_createPalette_title": "New palette...",
     "start_createPalette_subtitle": "Create a new palette using a generator or from an image",
-    "start_createPalette_tpl_title": "New from generator",
-    "start_createPalette_tpl_subtitle": "Use generator functions to build a new palette",
+    "start_createPalette_tpl_title": "New from template",
+    "start_createPalette_tpl_subtitle": "Use the default KLR palette template", 
+    "start_createPalette_gen_title": "New from generator",
+    "start_createPalette_gen_subtitle": "Use generator functions to build a new palette",
     "start_createPalette_img_title": "New from image",
     "start_createPalette_img_subtitle": "Use an image to generate a new palette",
         

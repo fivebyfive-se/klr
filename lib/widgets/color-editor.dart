@@ -112,7 +112,7 @@ class _ColorEditorState extends State<ColorEditor> {
     final t = KlrConfig.t(context);
     final containerHeight = widget.height;
     
-    final tileHeight = 48.0;
+    final tileHeight = klr.tileHeight;
     final editorHeight = containerHeight - tileHeight * 6;
     final editorWidth = widget.width ?? MediaQuery.of(context).size.width;
 
@@ -147,6 +147,7 @@ class _ColorEditorState extends State<ColorEditor> {
             header: Container(
               height: tileHeight,
               color: _color,
+              alignment: Alignment.centerLeft,
               child: ListTile(
                 title: Text(
                   _paletteColor.name ?? _paletteColor.color.toHex(),
@@ -308,6 +309,7 @@ class _ColorEditorState extends State<ColorEditor> {
 
                   Container(
                     height: tileHeight,
+                    padding: klr.edge.all(1),
                     child: ListTile(
                       leading: TextButton.icon(
                         onPressed: () => print("delete"),

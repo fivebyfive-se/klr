@@ -24,7 +24,7 @@
     "start_palettes_item": "{count, plural, zero{Inga färger} one{en färg} other{{count} färger}}",
 
     "start_noPalettes_intro": "Du har inga färgscheman sparade.\nSkapa ett schema ",
-    "start_noPalettes_tpl": "utifrån en grundmall",
+    "start_noPalettes_tpl": "utifrån KLRs grundmall",
     "start_noPalettes_tpl_suffix": ", ",
     "start_noPalettes_gen": "med hjälp av generator funktioner",
     "start_noPalettes_gen_suffix": " eller ",
@@ -70,8 +70,10 @@
 
     "start_createPalette_title": "Nytt färgschema",
     "start_createPalette_subtitle": "Skapa ett nytt färgschema, med utgångspunkt från generatorer eller en bild",
-    "start_createPalette_tpl_title": "Ny utifrån funktioner",
-    "start_createPalette_tpl_subtitle": "Använd funktioner för att generera ett färgschema",
+    "start_createPalette_tpl_title": "Ny från mall",
+    "start_createPalette_tpl_subtitle": "Använd KLRs grundmall för att skapa färgschema", 
+    "start_createPalette_gen_title": "Ny utifrån generator",
+    "start_createPalette_gen_subtitle": "Använd generatorfunktioner för att generera ett färgschema",
     "start_createPalette_img_title": "Ny från bild",
     "start_createPalette_img_subtitle": "Använd en bild som källa till ett färgschema"
 }

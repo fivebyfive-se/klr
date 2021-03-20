@@ -116,7 +116,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         ? klr.edge.all(3) 
         : EdgeInsets.zero,
       child: Container(
-        height: 300,
+        height: klr.tileHeightx2 * 3,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color,
@@ -192,7 +192,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                   slivers: <Widget>[
                     SliverToBoxAdapter(
                       child: Container(
-                        height: 64,
+                        height: klr.tileHeight,
                         child: ListTile(
                           leading: Icon(LineAwesomeIcons.palette),
                           title: TogglableTextEditor(
@@ -209,7 +209,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     SelectableList<ColorItem>(
                       compact: true,
                       crossAxisCount: 6,
-                      height: viewport.height - 50,
+                      height: viewport.height - klr.tileHeight,
                       items: [..._colors, ..._derived],
                       widgetBuilder: _colorTile,
                       onPressed: (pc) => _tapColor(pc),
@@ -231,7 +231,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       ],
                     ),
 
-                  sliverSpacer(size: klr.size(8)),
+                  sliverSpacer(size: klr.tileHeight),
 
                   ContrastTable(colors: [..._colors, ..._derived]),
 

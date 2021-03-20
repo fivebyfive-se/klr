@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:fbf/dart_extensions.dart';
+import 'package:fbf/fbf.dart';
 
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/hsluv.dart';
+import 'package:klr/services/color-name-service.dart';
 
 class AppStateService {
   static const String rootKey = "klrState";
 
+  Random _rng = Random();
+
   bool get _inTransaction => _transactionCount > 0;
 
   int _transactionCount = 0;
+
+  @protected
+  ColorNameService get _nameService => ColorNameService.getInstance();
 
   @protected
   StreamController<AppState> _streamController = StreamController.broadcast();
@@ -91,6 +99,20 @@ class AppStateService {
   Future<PaletteColor> createColor() async
     =>  await PaletteColor.scaffold().addOrSave();
 
+  Future<PaletteColor> createRandomColor([double hue]) async {
+    final col = HSLuvColor.fromAHSL(
+        100,
+        hue ?? _rng.nextValue(0, 359),
+        _rng.nextValue(45, 95),
+        _rng.nextValue(50, 75)
+      );
+    final c = await PaletteColor.scaffoldAndSave(
+      fromColor: col,
+      name: _nameService.guessName(col.toColor()) 
+    );
+    return c;
+  }
+
   Future<Harmony> createHarmony() async 
     => await Harmony.scaffold().addOrSave();
 
@@ -102,6 +124,17 @@ class AppStateService {
   Future<Palette> createBuiltinPalette() async {
     final p = await BuiltinBuilder.buildPalette();
     await setCurrentPalette(p);
+    return p;
+  }
+
+  Future<Palette> createDefaultPalette() async {
+    final p = await Palette.scaffoldAndSave(name: 'KLR-60');
+    var c = await createRandomColor();
+    for (int i = 0; i < 5; i++) {
+      p.colors.add(c);
+      c = await createRandomColor((c.color.hue + 60) % 360);
+    }
+    await p.save();
     return p;
   }
 
