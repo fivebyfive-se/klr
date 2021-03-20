@@ -151,33 +151,8 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    // noItems: RichText(
-                    //   text: TextSpan(
-                    //     style: klr.textTheme.bodyText2,
-                    //     children: [
-                    //       TextSpan(
-                    //         text: "You don't have any palettes yet. "
-                    //       ),
-                    //       TextSpan(
-                    //         text: "Create one "
-                    //       ),
-                    //       TextSpan(
-                    //         text: "from the default template",
-                    //         recognizer: TapGestureRecognizer()
-                              
-                    //       ),
-                    //       TextSpan(text: ", "),
-                    //       TextSpan(
-                    //         text: "using generator functions"
-                    //       ),
-                    //       TextSpan(text: ", or "),
-                    //       TextSpan(
-                    //         text: "extract colors from an image"
-                    //       ),
-                    //       TextSpan(text: ".")
-                    //     ]
-                    //   )
-                    // ),
+                    crossAxisCount: 4,
+
                     actions: [
                       ListItemAction(
                         icon: Icon(

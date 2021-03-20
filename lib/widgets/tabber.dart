@@ -59,30 +59,35 @@ class _TabberState extends State<Tabber> {
       ? klr.theme.foreground
       : klr.theme.foregroundDisabled; 
 
-    final tabBarItems = _tabs.length;
-    final tabBarWidth = (containerWidth / 2) - klr.size(2);
-
+    final tabBarWidth = containerWidth;
     final tabBarHeight = 100.0;
+
     final currentTabBarBorderSize = 2.0;
     final contentHeight = containerHeight 
-      - tabBarHeight * 2 
+      - tabBarHeight 
       - currentTabBarBorderSize;
+
+    final tabItemWidth = tabBarWidth / 2;
+    final tabItemHeight = 50.0;
 
     return Container(
       width: containerWidth,
       height: containerHeight,
       color: klr.theme.cardBackground,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: tabBarHeight,
+            width: tabBarWidth,
+            color: klr.theme.cardBackground.deltaLightness(-10.0),
             child: GridView.count(
               crossAxisCount: 2,
-              childAspectRatio: tabBarWidth / (tabBarHeight / 2),
+              childAspectRatio: tabBarWidth / (tabBarHeight),
               children: [
                 ..._tabs.mapIndex(
-                  (t, i) => Container(
-                    child: ListTile(
+                  (t, i) => ListTile(
                       leading: t.icon == null ? null : Icon(t.icon, color: getColor(i)),
                       tileColor: i == _activeTabIndex 
                         ? klr.theme.cardBackground 
@@ -91,13 +96,13 @@ class _TabberState extends State<Tabber> {
                         t.label,
                         style: TextStyle(color: getColor(i))
                       ),
+                      // subtitle: Text("$tabItemWidth x $tabBarWidth"),
                       onTap: () => _setTab(i),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                         side: BorderSide.none
                       ),
                     )
-                  )
                 ).toList()
               ]
             ),

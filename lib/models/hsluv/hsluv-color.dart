@@ -165,6 +165,11 @@ class HSLuvColor {
     return withLightness(candidate.clamp(0.0, 100.0));
   }
 
+  /// Return a copy with lightness inverted to contrast 
+  /// with this color
+  HSLuvColor invertLightnessGreyscale()
+    => invertLightness().withSaturation(0.0);
+
   /// Return a copy of this instance with [channel] set to the 
   /// value of that channel in [color] converted to [HSLuvColor]
   HSLuvColor withChannelFrom(Color color, HSLChannel channel) {

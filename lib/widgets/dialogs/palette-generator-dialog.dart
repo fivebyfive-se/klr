@@ -1,17 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import 'package:klr/klr.dart';
 import 'package:klr/models/app-state.dart';
+import 'package:klr/models/generator.dart';
+
 import 'package:klr/services/app-state-service.dart';
 import 'package:klr/services/color-name-service.dart';
 
-import 'package:klr/services/palette-generator-service.dart';
-import 'package:klr/views/views.dart';
-import 'package:klr/widgets/color-generator-config.dart';
 
 import 'package:klr/models/hsluv/hsluv-color.dart';
+import 'package:klr/widgets/color-generator-config.dart';
 
 void showGeneratorDialog(BuildContext context)
   => showDialog(
@@ -22,13 +25,35 @@ void showGeneratorDialog(BuildContext context)
 Widget buildGeneratorDialog(BuildContext context) {
   final appService = AppStateService.getInstance();
   final nameService = ColorNameService.getInstance();
-  final genService = PaletteGeneratorService.getInstance().init();
   
   final viewportSize = MediaQuery.of(context).size;
-  final dialogWidth = viewportSize.width - viewportSize.width / 3.5;
-  final dialogHeight = viewportSize.height - viewportSize.height / 2.5;
+  final dialogWidth = viewportSize.width / 1.5;
+  final dialogHeight = viewportSize.height / 2;
 
-  ColorGenerator chosenColor;
+  final List<int> activeColor = [];
+  final List<ColorGenerator> colors = [];
+  final rng = Random();
+
+  final randColor = () => HSLuvColor.fromAHSL(
+    100.0, 
+    rng.nextValue(0, 360),
+    rng.nextValue(40, 60),
+    rng.nextValue(30, 60)
+  );
+
+  final addGenerator = () {
+    final rc = randColor();
+    final gc = rc.deltaHue(180).deltaLightness(40).deltaSaturation(40);
+    colors.add(
+      ColorGenerator.curveTo(rc, gc, CurveType.cubic, CurveDir.easeInOut, 5)
+    );
+  };
+  final removeGenerator = (int i) {
+    colors.removeAt(i);
+  };
+
+
+  addGenerator();
 
   return KlrStatefulBuilder(
     builder: (context, klr, setState) {
@@ -37,109 +62,39 @@ Widget buildGeneratorDialog(BuildContext context) {
       final contentWidth = dialogWidth;
       final contentHeight = dialogHeight;
 
-      final colorBoxWidth = contentWidth / 4;
-
-      final colorBox = (
-        HSLuvColor col, {
-          void Function() onTap,
-          IconData icon,
-          String label,
-          String subtitle,
-          bool small = false,
-        }) {
-          final color = col.toColor();
-          final invColor = col.invertLightness()
-            .withSaturation(0)
-            .toColor();
-
-          return Container(
-            alignment: Alignment.center,
-            width: colorBoxWidth,
-            height: small ? klr.size(5) : klr.size(10),
-            decoration: BoxDecoration(
-              color: color,
-              border: small 
-                ? klr.border.only(top: 1, color: invColor)
-                : klr.border.only(bottom: 1, color: invColor)
-            ),
-            child: ListTile(
-              tileColor: color,
-              onTap: onTap,
-              leading: onTap == null ? null 
-                : Icon(icon ?? Icons.edit, color: invColor),
-              title: Text(
-                label ?? col.toHex(),
-                style: klr.textTheme.bodyText1.copyWith(
-                  color: invColor,
-                  fontWeight: small ? FontWeight.normal : FontWeight.bold
-                )
-              ),
-              subtitle: subtitle == null 
-                ? null : Text(
-                  subtitle,
-                  style: klr.textTheme.bodyText2.copyWith(
-                    color: invColor,
-                    fontWeight: FontWeight.normal,
-                    fontStyle: FontStyle.italic
-                  )
-                ),
-            ));
-        };
-
-      final colorCard = (ColorGenerator gen) {
-        return Container(
-          width: colorBoxWidth,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              colorBox(
-                gen.color,
-                onTap: () => setState(() => chosenColor = gen),
-                label: gen.color.toHex()
-              ),
-              ...gen.colors
-                .map(
-                    (c) => colorBox(c, small: true)
-                ).toList()
-            ],            
-          ),
-        );
-      };
-
-      final createPalette = (List<ColorGenerator> colors) async {
+      final toggleActive = (int idx)
+        => setState(() {
+          if (activeColor.contains(idx)) {
+            activeColor.remove(idx);
+          } else {
+            activeColor.add(idx);
+          }
+        });
+      final isActive = (int idx) => activeColor.contains(idx);
+      final createPalette = () async {
         final List<PaletteColor> paletteColors = [];
+        final String date = DateTime.now().toIso8601String();
 
-        for (final gen in colors) {
-          final List<HSLuvColor> chunk = [gen.color, ...gen.colors];
-          for (final col in chunk) {
-            final palCol = await PaletteColor.scaffoldAndSave(
-              fromColor: col,
-              name: nameService.guessName(col.toColor())
+        for (var gen in colors) {
+          for (var col in gen.toColors().toList()) {
+            paletteColors.add(
+              await PaletteColor.scaffoldAndSave(
+                fromColor: col,
+                name: nameService.guessName(col.toColor()) 
+              )
             );
-            paletteColors.add(palCol);
           }
         }
-        final palette = await Palette.scaffoldAndSave(
-          name: "Generated palette",
+        await Palette.scaffoldAndSave(
+          name: "Generated ($date)",
           colors: paletteColors
         );
-        await appService.setCurrentPalette(palette);
         Navigator.pop(context);
-        Navigator.pushNamed(context, PalettePage.routeName);
       };
 
-
-      return StreamBuilder<List<ColorGenerator>>(
-        stream: genService.colorStream,
-        initialData: genService.snapshot,
-
-        builder: (context, snapshot) {
-          final colors = snapshot.data;
-          final configWidth = chosenColor == null 
-            ? 0
-            : contentWidth - colorBoxWidth;
-          final configHeight = contentHeight;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          final configHeight = contentHeight - 64.0;
 
           return AlertDialog(
             backgroundColor: klr.theme.dialogBackground,
@@ -147,7 +102,7 @@ Widget buildGeneratorDialog(BuildContext context) {
             actions: [
               FbfBtn.action(
                 'Save',
-                onPressed: () => createPalette(colors)
+                onPressed: () => createPalette()
               ),
               FbfBtn.choice(
                 t.btn_close, 
@@ -160,65 +115,96 @@ Widget buildGeneratorDialog(BuildContext context) {
             content: Container(
               width: dialogWidth,
               height: dialogHeight,
-              child: Row(
-                children: [
-                  AnimatedContainer(
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(shape: BoxShape.rectangle),
-                    duration: const Duration(milliseconds: 300),
-                    alignment: Alignment.topLeft,
-                    width: contentWidth - configWidth,
-                    height: contentHeight,
-
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      itemExtent: colorBoxWidth,
-                      children: <Widget>[
-                        ...(chosenColor == null 
-                          ? colors.map((c) => colorCard(c)).toList()
-                          : [ colorCard(chosenColor) ]
-                        ),
-                        colorBox(
-                          HSLuvColor.fromColor(klr.theme.dialogBackground),
-                          label: 'Add color',
-                          icon: Icons.add,
-                          onTap: () => genService.addColor()
-                        )
-                      ],
-                    )
-                  ),
-
-                  AnimatedContainer(
-                    alignment: Alignment.topLeft,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: klr.theme.dialogBackground,
-                      border: klr.border.only(
-                        left: 1.0, 
-                        color: chosenColor == null
-                          ? klr.theme.dialogBackground
-                          : klr.theme.foreground
-                      )
-                    ),
-                    duration: const Duration(milliseconds: 300),
-                    width: configWidth,
-                    height: configHeight,
-                    child: chosenColor == null 
-                      ? Container()
-                      : Container(
-                          child: ColorGeneratorConfig(
-                            color: chosenColor,
-                            width: configWidth,
-                            height: configHeight,
-                            onChanged: (c) => genService.updateColor(c),
-                            onClose: () => setState(() => chosenColor = null),
+              child: CustomScrollView(
+                slivers: [
+                  SliverStickyHeader(
+                    header: Container(
+                      height: 64,
+                      width: dialogWidth,
+                      color: klr.theme.appBarBackground,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 6, 
+                            child: Center(child: Text('Generator'))
                           ),
-                        )
-                  ),
+                          Expanded(
+                            flex: 6,
+                            child: Center(child: Text('Colors'))
+                          )
+                        ],
+                      ),
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          ...colors.mapIndex<ColorGenerator,Widget>((gen, i) => Container(
+                            height: dialogHeight,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 6,
+                                  child:  
+                                    isActive(i) 
+                                      ? Column(
+                                        children: <Widget>[
+                                          ColorGeneratorConfig(
+                                            colorGenerator: gen,
+                                            height: dialogHeight - 64.0,
+                                            width: dialogWidth,
+                                            onChanged: (v) {
+                                              setState(() {
+                                                colors[i] = v;
+                                              });
+                                            },
+                                          ),
+                                          ElevatedButton.icon(
+                                            onPressed: () => toggleActive(i),
+                                            icon: Icon(Icons.close),
+                                            label: Text('Close editor')
+                                          )
+                                        ],
+                                      )
+                                      : Column(
+                                          children: <Widget>[
+                                            ElevatedButton.icon(
+                                              onPressed: () => toggleActive(i),
+                                              icon: Icon(Icons.edit),
+                                              label: Text('Generator'),
+                                            )
+                                          ]
+                                      )
+                                ),
+                                Expanded(
+                                  flex: 6,
+                                  child: GridView.count(
+                                    crossAxisCount: 3,
+                                    children: [
+                                      ...gen.toColors().map((c) => Container(
+                                        color: c.toColor(),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          c.toColor().toHex(),
+                                          style: klr.textTheme.bodyText2
+                                            .withColor(c.invertLightnessGreyscale().toColor())
+                                        ),
+                                      )).toList()
+                                    ],
+                                  )
+                                )
+                              ]
+                            ),
+                          )
+                          ).toList()
+                        ]
+                      ),
+                    ),
+                  )
                 ],
-              ),
-            ),
+              )
+            )
           );
         }
       );
