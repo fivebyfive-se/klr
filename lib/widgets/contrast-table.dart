@@ -39,19 +39,20 @@ class _ContrastTableState extends State<ContrastTable> {
   @override
   Widget build(BuildContext context) {    
     final klr = KlrConfig.of(context);
+    final t = KlrConfig.t(context);
     final tsLarge = klr.textTheme.subtitle1.copyWith(fontSize: 24);
     final tsNormal = klr.textTheme.bodyText2;
 
     return ExpandingTable(
       headerIcon: Icons.brightness_6,
-      headerLabel: 'Contrast',
+      headerLabel: t.contrast_title,
       headerBuilder: (c, a) => ListSelectorTile<ColorItem>(
         itemWidgetBuilder: (ci) => TextWithIcon(
           icon: Icon(Icons.circle, color: ci.color.toColor()),
           text: Text(ci.label, style: klr.textTheme.subtitle1)
         ),
         items: _colors,
-        label: 'Background color',
+        label: t.contrast_background,
         onSelected: (v) => setState(() => _contrastBackground = v),
         value: _contrastBackground,
       ),
@@ -108,13 +109,13 @@ class _ContrastTableState extends State<ContrastTable> {
                           children: [
                             Expanded(
                               child: Text(
-                                "Large text\n", 
+                                t.contrast_largeText, 
                                 style: tsLarge.withColor(c.color.toColor())
                               ),
                             ),
                             Expanded(
                               child: Text(
-                                "Smaller text", 
+                                t.contrast_smallText, 
                                 style: tsNormal.withColor(c.color.toColor())
                               ),
                             ),
@@ -126,35 +127,16 @@ class _ContrastTableState extends State<ContrastTable> {
                 ),
               );
             }
-          ).toList()
+          ).toList(),
+          Container(
+            padding: klr.edge.xy(2, 1),
+            child: Text(
+              t.contrast_helpText,
+              style: tsNormal.withColor(klr.theme.cardForeground)
+            ),
+          )
         ],
       ),
     );
-
-    //           child: Row(
-    //             children: [
-    //               Expanded(
-    //                 flex: 1,
-    //                 child: Icon(Icons.info_outline),
-    //               ),
-    //               Expanded(
-    //                 flex: 11,
-    //                 child: Container(
-    //                   padding: klr.edge.xy(2, 1),
-    //                   child: RicherText.from([
-    //                       "WCAG requires a contrast of at least 4.5 "
-    //                       "between text and background.\n",
-    //                     ], 
-    //                     baseStyle: tsNormal
-    //                       .withColor(klr.theme.cardForeground)
-    //                   ),
-    //                 )
-    //               )
-    //             ]
-    //           )
-    //         )
-    //       ])
-    //   )
-    // );
   }
 }

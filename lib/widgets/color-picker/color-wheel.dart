@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 import 'dart:math' as math;
 
-import 'package:fbf/ryb.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fbf/fbf.dart';
@@ -46,6 +45,7 @@ class _RYBWheelColorPickerState extends State<RYBWheelColorPicker> {
   @override
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
+    final t = KlrConfig.t(context);
     final padding = klr.edge.all(2);
     final containerHeight = widget.height - padding.vertical;
     final containerWidth = widget.width - padding.horizontal;
@@ -85,8 +85,10 @@ class _RYBWheelColorPickerState extends State<RYBWheelColorPicker> {
                   width: wheelSize,
                   height: sliderSize * 2,
                   child: PopupMenuTile<bool>(
-                    label: 'Mode:',
-                    itemNameBuilder: (v) => v ? 'RYB' : 'RGB',
+                    label: t.colorWheel_mode,
+                    itemNameBuilder: (v) => v 
+                      ? t.colorWheel_mode_ryb
+                      : t.colorWheel_mode_rgb,
                     onSelected: (v) => setState(() => RYBWheel.rybMode = v),
                     value: RYBWheel.rybMode,
                     items: [true, false],

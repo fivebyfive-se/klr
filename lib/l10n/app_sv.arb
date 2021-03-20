@@ -1,10 +1,15 @@
 {
     "appTitle": "Klr",
 
-    "btn_close": "Close",
+    "btn_cancel": "Avbryt",
+    "btn_delete": "Radera",
+    "btn_close": "Stäng",
+    "btn_save": "Spara färgschema",
 
     "fabMenu_close": "Avbryt",
     "fabMenu_closeDesc": "Stäng denna meny",
+
+    "start_title": "Start",
 
     "start_fabMenu_title": "Hantera sparad data",
 
@@ -18,12 +23,55 @@
 
     "start_palettes_item": "{count, plural, zero{Inga färger} one{en färg} other{{count} färger}}",
 
+    "start_noPalettes_intro": "Du har inga färgscheman sparade.\nSkapa ett schema ",
+    "start_noPalettes_tpl": "utifrån en grundmall",
+    "start_noPalettes_tpl_suffix": ", ",
+    "start_noPalettes_gen": "med hjälp av generator funktioner",
+    "start_noPalettes_gen_suffix": " eller ",
+    "start_noPalettes_img": "genom att ta färger från en bild",
+    "start_noPalettes_img_suffix": ".",
+        
+    "colorWheel_mode": "Läge",
+    "colorWheel_mode_rgb": "RGB",
+    "colorWheel_mode_ryb": "RYB",
+
+    "palette_title": "Färgschema",
+
+    "contrast_title": "Kontrast",
+    "contrast_background": "Bakgrundsfärg",
+    "contrast_largeText": "Stor text",
+    "contrast_smallText": "Liten text",
+    "contrast_helpText": "WCAG kräver en kontrastratio på 4.5 mellan text och bakgrund.",
+
+    "stats_title": "Jämför färger",
+    "stats_dimension": "Dimension",
+    "stats_colorblindness": "Sim. färgblindhet",
+
+    "css_title": "CSS",
+    "css_useVariables": "Använd CSS-variabler",
+    "css_useHex": "Hexadecimala färger",
+
+    "color_name": "Namn",
+    "color_suggestName": "Föreslagna namn",
+    "color_harmony": "Färgharmoni",
+    "color_edit_wheel": "Färghjul",
+    "color_channels_hsl": "Färgkanaler (HSL)",
+    "color_channels_rgb": "Färgkanaler (RGB)",
+    "color_channels_ryb": "Färgkanaler (RYB)",
+
+    "image_image": "bild",
+    "image_colors": "Färger",
+    "image_loadImage": "Ladda bild",
+
+    "generator_paletteName": "Genererad",
+    "generator_title": "Generera färgschema",
+    "generator_generator": "Generator",
+    "generator_colors": "Färger",
+
     "start_createPalette_title": "Nytt färgschema",
     "start_createPalette_subtitle": "Skapa ett nytt färgschema, med utgångspunkt från generatorer eller en bild",
     "start_createPalette_tpl_title": "Ny utifrån funktioner",
     "start_createPalette_tpl_subtitle": "Använd funktioner för att generera ett färgschema",
     "start_createPalette_img_title": "Ny från bild",
     "start_createPalette_img_subtitle": "Använd en bild som källa till ett färgschema"
-
-
 }

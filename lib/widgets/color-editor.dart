@@ -79,7 +79,9 @@ class _ColorEditorState extends State<ColorEditor> {
 
   Future<void> _updateColor() async {
     await _paletteColor.save();
-    setState(() {});
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _setName(String newName) async {
@@ -107,6 +109,7 @@ class _ColorEditorState extends State<ColorEditor> {
   @override
   Widget build(BuildContext context) {
     final klr  = KlrConfig.of(context);
+    final t = KlrConfig.t(context);
     final containerHeight = widget.height;
     
     final tileHeight = 48.0;
@@ -165,7 +168,7 @@ class _ColorEditorState extends State<ColorEditor> {
                       children: [
                         Expanded(
                           child: TextFieldTile(
-                            label: 'Name',
+                            label: t.color_name,
                             value: _paletteColor.name ?? "",
                             onChanged: (v) => _setName(v),
                           ),
@@ -206,7 +209,7 @@ class _ColorEditorState extends State<ColorEditor> {
                             },
                             icon: Icon(Icons.auto_awesome),
                             label: Text(
-                              'Suggest name...',
+                              t.color_suggestName,
                               style: klr.textTheme.subtitle1
                             )
                           )
@@ -225,7 +228,7 @@ class _ColorEditorState extends State<ColorEditor> {
                         ..._harmonies.map((h) => h.uuid).toList()
                       ],
                       onSelected: (id) => _setHarmony(id),
-                      label: 'Harmony',
+                      label: t.color_harmony,
                     ),
                   ),
                   Container(
@@ -256,7 +259,7 @@ class _ColorEditorState extends State<ColorEditor> {
                     tabs: [
                         TabberTab(
                           icon: Icons.replay_circle_filled,
-                          label: 'Color wheel',
+                          label: t.color_edit_wheel,
                           contentBuilder: (_) => RYBWheelColorPicker(
                             color: _paletteColor.color,
                             onChanged: (c) => _setColor(c),
@@ -266,7 +269,7 @@ class _ColorEditorState extends State<ColorEditor> {
                         ),
                         TabberTab(
                           icon: Icons.color_lens,
-                          label: 'Channels (HSL)',
+                          label: t.color_channels_hsl,
                           contentBuilder: (_) => HSLColorEditor(
                             height: editorHeight,
                             width: editorWidth,
@@ -277,7 +280,7 @@ class _ColorEditorState extends State<ColorEditor> {
 
                         TabberTab(
                           icon: Icons.color_lens,
-                          label: 'Channels (RGB)',
+                          label: t.color_channels_rgb,
                           contentBuilder: (_) => RGBColorEditor(
                             height: editorHeight,
                             width: editorWidth,
@@ -290,7 +293,7 @@ class _ColorEditorState extends State<ColorEditor> {
 
                         TabberTab(
                           icon: Icons.color_lens,
-                          label: 'Channels (RYB)',
+                          label: t.colorWheel_mode_ryb,
                           contentBuilder: (_) => RYBColorEditor(
                             height: editorHeight,
                             width: editorWidth,
@@ -309,12 +312,12 @@ class _ColorEditorState extends State<ColorEditor> {
                       leading: TextButton.icon(
                         onPressed: () => print("delete"),
                         icon: Icon(LineAwesomeIcons.backspace),
-                        label: Text("Delete")
+                        label: Text(t.btn_delete)
                       ),
                       trailing: ElevatedButton(
                         style: btnStyle(),
                         onPressed: () => Navigator.pop(context),
-                        child: Text("Close")
+                        child: Text(t.btn_close)
                       ),
                     ),
                   ),

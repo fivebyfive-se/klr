@@ -31,6 +31,7 @@ Widget buildImagePickerDialog(context) {
 
   return KlrStatefulBuilder(
     builder: (context, klr, setState) {
+      final t = KlrConfig.t(context);
       final setLoading = (bool loading) {
         isLoading = loading;
         setState(() {});
@@ -55,7 +56,7 @@ Widget buildImagePickerDialog(context) {
           allowMultiple: false
         );
         if(result != null) {
-          imageName = (result.files.first.name ?? "image")
+          imageName = (result.files.first.name ?? t.image_image)
             .replaceFirst(RegExp(r'\.[a-z]+$'), '');
           loadedImage = Image.memory(result.files.first.bytes);
           //imageFile = File(result.files.single.path);
@@ -86,9 +87,8 @@ Widget buildImagePickerDialog(context) {
       return AlertDialog(
         backgroundColor: klr.theme.dialogBackground,
         actions: [
-          suggestions.isEmpty ? null : 
-            FbfBtn.action("Create palette", onPressed: createPalette),
-            isLoading ? null : FbfBtn.choice("Close", onPressed: () => Navigator.pop(context)),
+          FbfBtn.action(t.btn_save, onPressed: createPalette),
+          FbfBtn.choice(t.btn_close, onPressed: () => Navigator.pop(context)),
         ],
         content: Container(
           width: viewportSize.width / 1.5,
@@ -101,7 +101,7 @@ Widget buildImagePickerDialog(context) {
                     padding: klr.edge.only(bottom: 0.5),
                     child: suggestions.isEmpty 
                       ? null 
-                      : Text('Colors', style: klr.textTheme.subtitle1)
+                      : Text(t.image_colors, style: klr.textTheme.subtitle1)
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -156,7 +156,7 @@ Widget buildImagePickerDialog(context) {
                     alignment: Alignment.center,
                     padding: klr.edge.y(),
                     child: isLoading ? null : FbfBtn.action(
-                      'Load image',
+                      t.image_loadImage,
                       onPressed: () => pickFile(),
                     )
                   ),

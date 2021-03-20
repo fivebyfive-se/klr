@@ -30,8 +30,6 @@ class StartPage extends FbfPage<StartPageData> {
   static Color onPageAccent = KlrColors.getInstance().grey05; 
   static const String routeName = '/start';
 
-  static bool mounted = false;
-
   StartPage() : super();
 
   @override
@@ -92,12 +90,6 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
   }
 
   @override
-  void initState() {
-    super.initState();
-    StartPage.mounted = true;
-  }
-
-  @override
   Widget build(BuildContext context) {
     final viewport = MediaQuery.of(context).size;
 
@@ -109,7 +101,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
               context: context,
               pageData: StartPageData(
                 appState: snapshot,
-                pageTitle: 'Dashboard'
+                pageTitle: t.start_title
               ),
               builder: (context, klr, pageData) => Container(
                 child: CustomScrollView(
@@ -128,23 +120,22 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                     onPressed: (p) => _showPalette(p),
                     noItems: RicherText.from(
                       [
-                        "You don't have any palettes yet.\n",
-                        "Create a palette ",
+                        t.start_noPalettes_intro,
                         [
-                          "based on a template",
+                          t.start_noPalettes_tpl,
                           () => _createPalette()
                         ],
-                        ", ",
+                        t.start_noPalettes_tpl_suffix,
                         [
-                          "using generator functions",
+                          t.start_noPalettes_gen,
                           () => _showGenerateDialog()
                         ],
-                        ", or ",
+                        t.start_noPalettes_gen_suffix,
                         [
-                          "by extracting colors from an image",
+                          t.start_noPalettes_img,
                           () => _showExtractDialog()
                         ],
-                        "."
+                        t.start_noPalettes_img_suffix
                       ], 
                       baseStyle: klr.textTheme.subtitle1.copyWith(
                         height: 1.5,
@@ -193,6 +184,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                   ),
                   SliverGrid.count(
                     crossAxisCount: 2,
+                    childAspectRatio: 2.0,
                     children: [
                       FbfTile.action(
                         icon: Icons.functions_sharp,

@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:klr/models/hsluv/contrast.dart';
-import 'package:klr/widgets/contrast-table.dart';
-import 'package:klr/widgets/css-table.dart';
-import 'package:klr/widgets/richer-text.dart';
-import 'package:klr/widgets/stats-table.dart';
-import 'package:klr/widgets/text-with-icon.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import 'package:klr/widgets/contrast-table.dart';
+import 'package:klr/widgets/css-table.dart';
+import 'package:klr/widgets/stats-table.dart';
+
+
 import 'package:klr/widgets/color-editor.dart';
-import 'package:klr/widgets/dialogs/stats-dialog.dart';
-import 'package:klr/widgets/editor-tile/list-selector-tile.dart';
 import 'package:klr/widgets/selectable.dart';
 
 import 'package:fbf/fbf.dart';
@@ -24,7 +20,6 @@ import 'package:klr/models/hsluv.dart';
 import 'package:klr/services/app-state-service.dart';
 
 import 'package:klr/widgets/togglable-text-editor.dart';
-import 'package:klr/widgets/dialogs/css-dialog.dart';
 
 import 'page-data/palette-page-data.dart';
 
@@ -188,7 +183,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
             context: context,
             pageData: PalettePageData(
               appState: snapshot,
-              pageTitle: 'Palette'
+              pageTitle: t.palette_title
             ),
             builder: (context, klr, pageData) 
               => _currPalette == null

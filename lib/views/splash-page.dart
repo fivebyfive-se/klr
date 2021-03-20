@@ -45,8 +45,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     );
 
   void _transition({bool isDimiss = false}) {
-    final currentRouteName = ModalRoute.of(context).settings.name;
-    if (currentRouteName != SplashPage.routeName || _transStarted) {
+    if (_transStarted) {
       return;
     }
     _transStarted = true;

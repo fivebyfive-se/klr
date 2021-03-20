@@ -58,14 +58,14 @@ class KlrTheme extends FbfTheme {
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.purple60, klrs.grey20.withAlpha(0)],
+          colors: [klrs.steel60, klrs.steel15.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.steel15, klrs.pink70, klrs.steel35],
+          colors: [klrs.steel15, klrs.steel50, klrs.steel25],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),

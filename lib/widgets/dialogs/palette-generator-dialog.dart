@@ -23,7 +23,6 @@ void showGeneratorDialog(BuildContext context)
   );
 
 Widget buildGeneratorDialog(BuildContext context) {
-  final appService = AppStateService.getInstance();
   final nameService = ColorNameService.getInstance();
   
   final viewportSize = MediaQuery.of(context).size;
@@ -86,7 +85,7 @@ Widget buildGeneratorDialog(BuildContext context) {
           }
         }
         await Palette.scaffoldAndSave(
-          name: "Generated ($date)",
+          name: "${t.generator_paletteName} ($date)",
           colors: paletteColors
         );
         Navigator.pop(context);
@@ -101,7 +100,7 @@ Widget buildGeneratorDialog(BuildContext context) {
 
             actions: [
               FbfBtn.action(
-                'Save',
+                t.btn_save,
                 onPressed: () => createPalette()
               ),
               FbfBtn.choice(
@@ -110,7 +109,7 @@ Widget buildGeneratorDialog(BuildContext context) {
               )
             ],
 
-            title: Text('Generate palette'),
+            title: Text(t.generator_title),
 
             content: Container(
               width: dialogWidth,
@@ -126,11 +125,11 @@ Widget buildGeneratorDialog(BuildContext context) {
                         children: <Widget>[
                           Expanded(
                             flex: 6, 
-                            child: Center(child: Text('Generator'))
+                            child: Center(child: Text(t.generator_generator))
                           ),
                           Expanded(
                             flex: 6,
-                            child: Center(child: Text('Colors'))
+                            child: Center(child: Text(t.generator_colors))
                           )
                         ],
                       ),
@@ -163,7 +162,7 @@ Widget buildGeneratorDialog(BuildContext context) {
                                           ElevatedButton.icon(
                                             onPressed: () => toggleActive(i),
                                             icon: Icon(Icons.close),
-                                            label: Text('Close editor')
+                                            label: Text(t.btn_close)
                                           )
                                         ],
                                       )
@@ -172,7 +171,7 @@ Widget buildGeneratorDialog(BuildContext context) {
                                             ElevatedButton.icon(
                                               onPressed: () => toggleActive(i),
                                               icon: Icon(Icons.edit),
-                                              label: Text('Generator'),
+                                              label: Text(t.generator_generator),
                                             )
                                           ]
                                       )

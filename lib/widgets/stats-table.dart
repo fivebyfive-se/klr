@@ -39,15 +39,16 @@ class _StatsTableState extends State<StatsTable> {
   @override
   Widget build(BuildContext context) {
     final viewport = MediaQuery.of(context).size;
+    final t = KlrConfig.t(context);
   
     return ExpandingTable(
       headerIcon: Icons.bubble_chart_outlined,
-      headerLabel: 'Compare colors',
+      headerLabel: t.stats_title,
       headerBuilder: (c, a) => Row(
         children: [
           Expanded(
               child: PopupMenuTile<ColorStatDimension>(
-                  label: 'Dimension',
+                  label: t.stats_dimension,
                   items: ColorStatDimension.values,
                   onSelected: (v) => setState(() => _showDimension = v),
                   value: _showDimension,
@@ -55,7 +56,7 @@ class _StatsTableState extends State<StatsTable> {
             ),
             Expanded(
               child: PopupMenuTile<ColorBlindnessType>(
-                  label: 'Color blindness',
+                  label: t.stats_colorblindness,
                   items: ColorBlindnessType.values,
                   onSelected: (v) => setState(() => _simulateColorBlindness = v),
                   value: _simulateColorBlindness,

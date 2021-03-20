@@ -5,11 +5,14 @@
     },
 
     "btn_cancel": "Cancel",
+    "btn_delete": "Delete",
     "btn_close": "Close",
-    "btn_save": "Save",
+    "btn_save": "Save palette",
 
     "fabMenu_close": "Close",
     "fabMenu_closeDesc": "Exit this menu",
+
+    "start_title": "Dashboard",
 
     "start_fabMenu_title": "Actions",
     
@@ -28,11 +31,55 @@
         }
     },
 
+    "start_noPalettes_intro": "You don't have any palettes yet.\nCreate a palette ",
+    "start_noPalettes_tpl": "based on a template",
+    "start_noPalettes_tpl_suffix": ", ",
+    "start_noPalettes_gen": "using generator functions",
+    "start_noPalettes_gen_suffix": ", or ",
+    "start_noPalettes_img": "by extracting colors from an image",
+    "start_noPalettes_img_suffix": ".",
+
     "start_createPalette_title": "New palette...",
     "start_createPalette_subtitle": "Create a new palette using a generator or from an image",
     "start_createPalette_tpl_title": "New from generator",
     "start_createPalette_tpl_subtitle": "Use generator functions to build a new palette",
     "start_createPalette_img_title": "New from image",
-    "start_createPalette_img_subtitle": "Use an image to generate a new palette"
+    "start_createPalette_img_subtitle": "Use an image to generate a new palette",
         
+    "colorWheel_mode": "Mode",
+    "colorWheel_mode_rgb": "RGB",
+    "colorWheel_mode_ryb": "RYB",
+
+    "palette_title": "Palette",
+
+    "contrast_title": "Contrast",
+    "contrast_background": "Background color",
+    "contrast_largeText": "Large text",
+    "contrast_smallText": "Small text",
+    "contrast_helpText": "WCAG requires a contrast of at least 4.5 between text and background.",
+
+    "stats_title": "Compare colors",
+    "stats_dimension": "Dimension",
+    "stats_colorblindness": "Sim. color blindness",
+
+    "css_title": "CSS",
+    "css_useVariables": "Use CSS variables",
+    "css_useHex": "Use hexadecimal colors",
+
+    "color_name": "Name",
+    "color_suggestName": "Suggest name",
+    "color_harmony": "Harmony",
+    "color_edit_wheel": "Color wheel",
+    "color_channels_hsl": "Channels (HSL)",
+    "color_channels_rgb": "Channels (RGB)",
+    "color_channels_ryb": "Channels (RYB)",
+
+    "image_image": "image",
+    "image_colors": "Colors",
+    "image_loadImage": "Load image",
+
+    "generator_paletteName": "Generated",
+    "generator_title": "Generate palette",
+    "generator_generator": "Generator",
+    "generator_colors": "Colors"
   }

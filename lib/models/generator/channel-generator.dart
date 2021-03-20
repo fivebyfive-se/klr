@@ -1,7 +1,6 @@
 import 'package:flutter/animation.dart';
 
 import 'package:fbf/fbf.dart';
-import 'package:klr/services/palette-generator-service.dart';
 
 enum GeneratorType {
   none,

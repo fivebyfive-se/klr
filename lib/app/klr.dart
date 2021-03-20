@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:fbf/fbf.dart';
+import 'package:klr/views/splash-page.dart';
 
 import 'klr/colors.dart';
 import 'klr/pages.dart';
@@ -38,7 +39,7 @@ class KlrApp extends FbfApp<KlrConfig> {
           title: cfg.appName,
           theme: cfg.theme.themeData,
           routes: cfg.routes.routes,
-          initialRoute: cfg.routes.initialRoute,
+          home: SplashPage(),
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
