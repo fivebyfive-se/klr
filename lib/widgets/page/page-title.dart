@@ -31,14 +31,15 @@ class PageTitle extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Container(
-        height: klr.tileHeight,
+        height: klr.tileHeightx15,
+        alignment: Alignment.centerLeft,
         child: ListTile(
-          leading: icon,
+          leading: icon,          
           title: DefaultTextStyle(
             child: title,
             style: klr.textTheme.subtitle1,
           ),
-          subtitle: DefaultTextStyle(
+          subtitle: subtitle == null ? null : DefaultTextStyle(
             child: subtitle,
             style: klr.textTheme.subtitle2
           )

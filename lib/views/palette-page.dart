@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klr/widgets/page/page-title.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -55,6 +56,11 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         ).toList()],
         <ColorItem>[]
     ).toList();
+
+  Future<void> _setPaletteName(String name) async {
+    _currPalette.name = name;
+    await _currPalette.save();
+  } 
 
   String _activeColor;
 
@@ -181,17 +187,15 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                 ? null 
                 : CustomScrollView(
                   slivers: <Widget>[
-                    SliverToBoxAdapter(
-                      child: Container(
-                        height: klr.tileHeight,
-                        child: ListTile(
-                          leading: Icon(Icons.help_center_outlined),
-                          title: Text(
-                            '',
-                            style: klr.textTheme.subtitle1,
-                          )
-                        )
-                      )
+                    PageTitle(
+                      icon: Icon(Icons.palette_outlined),
+                      title: TogglableTextEditor(
+                        initalText: _currPalette.name,
+                        onChanged: (n) => _setPaletteName(n),
+                      ),
+                      subtitle: Text(
+                        t.palette_subtitle(_currPalette.colors.length)
+                      ),
                     ),
                     SelectableList<ColorItem>(
                       compact: true,

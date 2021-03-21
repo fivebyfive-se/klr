@@ -32,6 +32,7 @@ class KlrConfig extends FbfAppConfig<KlrTheme,KlrPages> {
   double get smallTileHeight => size(6);
   double get tileHeight => size(8);
   double get tileHeightx2 => size(16);
+  double get tileHeightx15 => size(12);
 }
 
 class KlrApp extends FbfApp<KlrConfig> {

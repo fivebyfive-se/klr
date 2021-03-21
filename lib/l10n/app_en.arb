@@ -53,6 +53,13 @@
     "colorWheel_mode_ryb": "RYB",
 
     "palette_title": "Palette",
+    "palette_subtitle": "{count, plural, zero{No colors} one{One color} other{{count} colors}}",
+    "@palette_subtitle": {
+        "description": "",
+        "placeholders": {
+            "count": {}
+        }
+    },
 
     "contrast_title": "Contrast",
     "contrast_background": "Background color",

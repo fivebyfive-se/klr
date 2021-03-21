@@ -51,62 +51,66 @@ class _RYBWheelColorPickerState extends State<RYBWheelColorPicker> {
     final containerWidth = widget.width - padding.horizontal;
     final sliderSize = 40.0;
     final columnWidth = containerWidth / 2 - padding.horizontal * 4;
-    final wheelSize  = containerHeight - padding.vertical * 4;
+    final wheelSize  = containerHeight - padding.vertical * 6;
 
     return Container(
       width: containerWidth,
       height: containerHeight,
       padding: padding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            alignment: Alignment.topCenter,
-            width: columnWidth,
-            height: containerHeight,
-            padding: padding,
-            child: RYBWheelWidget(
-              color: _color,
-              onChanged: (c) => _updateColor(c),
-              height: wheelSize,
-              width: wheelSize,
-            )
+          Expanded(
+            child: Container(
+              alignment: Alignment.topCenter,
+              width: columnWidth,
+              height: containerHeight,
+              padding: padding,
+              child: RYBWheelWidget(
+                color: _color,
+                onChanged: (c) => _updateColor(c),
+                height: wheelSize,
+                width: wheelSize,
+              )
+            ),
           ),
-          Container(
-            alignment: Alignment.topCenter,
-            width: columnWidth,
-            height: containerHeight,
-            padding: padding,
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.topCenter,
-                  width: wheelSize,
-                  height: sliderSize * 2,
-                  child: PopupMenuTile<bool>(
-                    label: t.colorWheel_mode,
-                    itemNameBuilder: (v) => v 
-                      ? t.colorWheel_mode_ryb
-                      : t.colorWheel_mode_rgb,
-                    onSelected: (v) => setState(() => RYBWheel.rybMode = v),
-                    value: RYBWheel.rybMode,
-                    items: [true, false],
+          Expanded(
+            child: Container(
+              alignment: Alignment.topCenter,
+              width: columnWidth,
+              height: containerHeight,
+              padding: padding,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.topCenter,
+                    width: wheelSize,
+                    height: sliderSize * 2,
+                    child: PopupMenuTile<bool>(
+                      label: t.colorWheel_mode,
+                      itemNameBuilder: (v) => v 
+                        ? t.colorWheel_mode_ryb
+                        : t.colorWheel_mode_rgb,
+                      onSelected: (v) => setState(() => RYBWheel.rybMode = v),
+                      value: RYBWheel.rybMode,
+                      items: [true, false],
+                    )
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    width: wheelSize,
+                    height: sliderSize * 2,
+                    child: RYBBrightnessWidget(
+                      color: _color,
+                      onChanged: (c) => _updateColor(c),
+                      height: sliderSize,
+                      width: wheelSize - padding.vertical,
+                    )
                   )
-                ),
-                Container(
-                  alignment: Alignment.topCenter,
-                  width: wheelSize,
-                  height: sliderSize * 2,
-                  child: RYBBrightnessWidget(
-                    color: _color,
-                    onChanged: (c) => _updateColor(c),
-                    height: sliderSize,
-                    width: wheelSize - padding.vertical,
-                  )
-                )
-              ],
-            )
+                ],
+              )
+            ),
           ),
         ],
       )
