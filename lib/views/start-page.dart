@@ -142,86 +142,93 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                     ),
                     crossAxisCount: 4,
 
-                    actions: [
+                    rightActions: [
                       ListItemAction(
                         icon: Icon(
                           LineAwesomeIcons.plus_circle, 
                           color: klr.theme.primaryAccent
                         ),
-                        onPressed: (_) => _createPalette()
+                        onPressed: (_) => _createPalette(),
+                        shouldShow: (_, s) => !s,
+                        legend: Text(t.start_createPalette_tpl_title)
                       ),
                       ListItemAction(
                         icon: Icon(
                           Icons.functions_sharp,
                           color: klr.theme.primaryAccent
                         ),
-                        onPressed: (_) => _showGenerateDialog()
+                        onPressed: (_) => _showGenerateDialog(),
+                        shouldShow: (_, s) => !s,
+                        legend: Text(t.start_createPalette_gen_title)
                       ),
                       ListItemAction(
                         icon: Icon(
                           Icons.photo_filter,
                           color:klr.theme.primaryAccent
                         ),
-                        onPressed: (_) => _showExtractDialog()
-                      )
-                    ],
-                    selectedActions: [
+                        onPressed: (_) => _showExtractDialog(),
+                        shouldShow: (_, s) => !s,
+                        legend: Text(t.start_createPalette_img_title)
+                      ),
                       ListItemAction(
                         icon: Icon(
                           LineAwesomeIcons.trash,
                           color: klr.theme.tertiaryAccent
                         ),
-                        onPressed: (selected) => _deleteSelected(selected)
+                        onPressed: (selected) => _deleteSelected(selected),
+                        shouldShow: (i, s) => s && i.isNotEmpty,
+                        legend: Text('Delete selected palettes')
                       )
                     ],
                     widgetBuilder: _paletteTile,
                     height: viewport.height - 100
                   ),
+
                   sliverSpacer(
                     size: klr.size(2),
                   ),
                   
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: klr.tileHeightx2,
-                      width: viewport.width,
-                      child: Wrap(
-                        children: [
-                          Container(
-                            height: klr.tileHeightx2,
-                            width: actionWidth,
-                            child: FbfTile.action(
-                              icon: Icons.wysiwyg,
-                              title: t.start_createPalette_tpl_title,
-                              subtitle: t.start_createPalette_tpl_subtitle,
-                              onTap: () => _createPalette()
-                            ),
-                          ),
-                          Container(
-                            height: klr.tileHeightx2,
-                            width: actionWidth,
-                            child: FbfTile.action(
-                              icon: Icons.functions_sharp,
-                              title: t.start_createPalette_gen_title,
-                              subtitle: t.start_createPalette_gen_subtitle,
-                              onTap: () => _showGenerateDialog()
-                            ),
-                          ),
+                  // SliverToBoxAdapter(
+                  //   child: Container(
+                  //     height: klr.tileHeightx2,
+                  //     width: viewport.width,
+                  //     child: Wrap(
+                  //       children: [
+                  //         Container(
+                  //           height: klr.tileHeightx2,
+                  //           width: actionWidth,
+                  //           child: FbfTile.action(
+                  //             icon: Icons.wysiwyg,
+                  //             title: t.start_createPalette_tpl_title,
+                  //             subtitle: t.start_createPalette_tpl_subtitle,
+                  //             onTap: () => _createPalette()
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           height: klr.tileHeightx2,
+                  //           width: actionWidth,
+                  //           child: FbfTile.action(
+                  //             icon: Icons.functions_sharp,
+                  //             title: t.start_createPalette_gen_title,
+                  //             subtitle: t.start_createPalette_gen_subtitle,
+                  //             onTap: () => _showGenerateDialog()
+                  //           ),
+                  //         ),
                       
-                          Container(
-                            height: klr.tileHeightx2,
-                            width: actionWidth,
-                            child: FbfTile.action(
-                              icon: Icons.photo_filter,
-                              title: t.start_createPalette_img_title,
-                              subtitle: t.start_createPalette_img_subtitle,
-                              onTap: () => _showExtractDialog()
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                  //         Container(
+                  //           height: klr.tileHeightx2,
+                  //           width: actionWidth,
+                  //           child: FbfTile.action(
+                  //             icon: Icons.photo_filter,
+                  //             title: t.start_createPalette_img_title,
+                  //             subtitle: t.start_createPalette_img_subtitle,
+                  //             onTap: () => _showExtractDialog()
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // )
                 ],
               )
             )

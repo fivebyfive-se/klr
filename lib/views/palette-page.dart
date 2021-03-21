@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:klr/widgets/page/page-title.dart';
+import 'package:klr/widgets/expanding-table.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
 import 'package:fbf/hsluv.dart';
-
-import 'package:klr/widgets/contrast-table.dart';
-import 'package:klr/widgets/css-table.dart';
-import 'package:klr/widgets/stats-table.dart';
-
-
-import 'package:klr/widgets/color-editor.dart';
-import 'package:klr/widgets/selectable.dart';
 
 import 'package:klr/klr.dart';
 import 'package:klr/app/klr/colors.dart';
@@ -20,7 +13,14 @@ import 'package:klr/app/klr/colors.dart';
 import 'package:klr/models/app-state.dart';
 import 'package:klr/services/app-state-service.dart';
 
+import 'package:klr/widgets/contrast-table.dart';
+import 'package:klr/widgets/css-table.dart';
+import 'package:klr/widgets/stats-table.dart';
+
+import 'package:klr/widgets/color-editor.dart';
+import 'package:klr/widgets/selectable.dart';
 import 'package:klr/widgets/togglable-text-editor.dart';
+import 'package:klr/widgets/page/page-title.dart';
 
 import 'page-data/palette-page-data.dart';
 
@@ -81,6 +81,24 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
       _currPalette.colors.add(newPaletteColor);
     }
     await _currPalette.save();
+    _appStateService.endTransaction();
+  }
+
+  Future<void> _removeHarmony(List<ColorItem> selected) async {
+    final colors = selected.where((c) => !c.isDerived).toList();
+    _appStateService.beginTransaction();
+
+    for (final ci in colors) {
+      final pc = _currPalette.colors.firstWhere(
+        (c) => c.uuid == ci.id,
+        orElse: () => null
+      );
+      if (pc != null) {
+        pc.harmony = null;
+        pc.transformations.clear();
+        await pc.save();
+      }
+    }
     _appStateService.endTransaction();
   }
 
@@ -151,17 +169,19 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   void _showColorEditor(ColorItem ci) {
     final paletteColor = _colorById(ci.id);
     final size = MediaQuery.of(context).size;
-
-    showDialog(
+    
+    showMaterialModalBottomSheet(
       context: context,
-      useSafeArea: true,
-      builder: (context) => AlertDialog(
-        contentPadding: EdgeInsets.zero,
-        clipBehavior: Clip.hardEdge,
-        content: ColorEditor(
-          color: paletteColor,
-          height: size.height * 0.9,
-          width: size.width,
+      enableDrag: true,
+      expand: true,
+      backgroundColor: klr.theme.dialogBackground,
+      builder: (context) => SizedBox.expand(
+        child: SingleChildScrollView(
+          child: ColorEditor(
+            color: paletteColor,
+            width: size.width,
+            height: size.height
+          )
         )
       )
     );
@@ -207,23 +227,80 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       items: [..._colors, ..._derived],
                       widgetBuilder: _colorTile,
                       onPressed: (pc) => _tapColor(pc),
-                      actions: [
+                      rightActions: [
                         ListItemAction(
                           icon: Icon(LineAwesomeIcons.plus_circle),
-                          onPressed: (_) => _createColor()
-                        )
-                      ],
-                      selectedActions: [
+                          onPressed: (_) => _createColor(),
+                          shouldShow: (_, selectionActive) => !selectionActive,
+                          legend: Text('Add a color')
+                        ),
                         ListItemAction(
                           icon: Icon(LineAwesomeIcons.trash),
-                          onPressed: (selected) => _deleteSelected(selected)
+                          onPressed: (selected) => _deleteSelected(selected),
+                          shouldShow: (selected, selectionActive) 
+                            => selectionActive && selected.any((i) => !i.isDerived),
+                          legend: Text('Remove selected colors')
                         ),
                         ListItemAction(
                           icon: Icon(LineAwesomeIcons.alternate_level_up),
-                          onPressed: (selected) => _promoteSelected(selected)
+                          onPressed: (selected) => _promoteSelected(selected),
+                          shouldShow: (selected, selectionActive) 
+                            => selectionActive && selected.any((i) => i.isDerived),
+                          legend: Text('Promote selected generated colors')
+                        ),
+                        ListItemAction(
+                          icon: Icon(LineAwesomeIcons.alternate_level_down),
+                          onPressed: (selected) => _removeHarmony(selected),
+                          shouldShow: (selected, selectionActive) 
+                            => selectionActive && selected.any(
+                              (i) => !i.isDerived && _currPalette.colors
+                                .any((c) => c.uuid == i.id && c.harmony != null)
+                            ),
+                          legend: Text('Remove harmonies from selected')
                         )
                       ],
                     ),
+
+                  ExpandingTable(
+                    headerLabel: 'Help',
+                    headerIcon: LineAwesomeIcons.info_circle,
+                    headerBuilder: (c, a) => Container(),
+                    contentBuilder: (c, a) => GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: 5.0,
+                      children: [
+                        ListTile(
+                          leading: Icon(LineAwesomeIcons.check),
+                          title: Text('Select colors')
+                        ),
+                          ListTile(
+                            trailing: Icon(LineAwesomeIcons.plus_circle),
+                            title: Text('Add a color')
+                          ),
+                        
+                        ListTile(
+                          leading: Icon(LineAwesomeIcons.times),
+                          title: Text('Cancel selection')
+                        ),
+                          ListTile(
+                            trailing: Icon(LineAwesomeIcons.trash),
+                            title: Text('Remove selected color(s)'),
+                          ),
+
+                        Container(),
+                          ListTile(
+                            trailing: Icon(LineAwesomeIcons.alternate_level_up),
+                            title: Text('Promote selected generated colors'),
+                          ),
+
+                        Container(),
+                          ListTile(
+                            trailing: Icon(LineAwesomeIcons.alternate_level_down),
+                            title: Text('Remove harmony generators from selected colors'),
+                          ),
+                      ],
+                    ),
+                  ),
 
                   sliverSpacer(size: klr.tileHeight),
 

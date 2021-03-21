@@ -84,14 +84,20 @@ class KlrTheme extends FbfTheme {
         begin: Alignment(2.0, -0.5),
         end:   Alignment(-0.5, 2.0),
         colors: [
-          klrs.green35,
+          klrs.green60,
           klrs.purple45,
           klrs.purple99,
           klrs.orange99,
           klrs.pink95,
           klrs.blue70,
-          klrs.grey25,
+          klrs.yellow60,
         ],
       )
     );
+
+    Color get selectableItemBackground => klrs.steel25;
+    Color get selectableItemBorder => klrs.steel20;
+    Color get selectableItemIcon => klrs.steel35;
+    Color get selectableItemIconSelected => klrs.steel90;
+    Color get selectableHeaderBackground => klrs.steel35;
 }
