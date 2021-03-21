@@ -53,9 +53,12 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
 
   List<ListItemAction<T>> get _leftActions => <ListItemAction<T>>[
     ListItemAction<T>(
-      icon: Icon(LineAwesomeIcons.question_circle),
+      icon: Icon(
+        LineAwesomeIcons.question_circle, 
+        color: klr.theme.secondaryAccent
+      ),
       legend: Text('Show this help message'),
-      onPressed: (_) => setState(() => _showHelp = !_showHelp),
+      onPressed: (_) => _showLegend(),
       shouldShow: (_, __) => true
     ),
     ListItemAction<T>(
@@ -123,13 +126,11 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
   Widget _legendItem({
     Widget icon,
     Widget legend
-  }) => Padding(
-    padding: klr.edge.xy(2, 1),
-    child: TextWithIcon(
-      icon: icon,
-      text: legend,
-      spacing: klr.size()
-    )
+  }) => ListTile(
+      leading: icon,
+      title: legend,
+      visualDensity: VisualDensity.compact,
+      contentPadding: klr.edge.all(0.5),
   );
 
   List<Widget> _itemsToIcons(List<ListItemAction<T>> list)
@@ -141,7 +142,7 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
         )).toList();
 
   List<Widget> _itemsToLegends(List<ListItemAction<T>> list)
-    => list.where((l) => l.shouldShow(_selectedItems, _selectionActive))
+    => list
         .map((l) => _legendItem(
           icon: l.icon,
           legend: l.legend
@@ -161,103 +162,125 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
     _viewCompact = widget.compact ?? false;
   }
 
+  void _showLegend() {
+    final view = KlrConfig.view(context);
+    final t = KlrConfig.t(context);
+    final close = () => Navigator.of(context).pop();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            onPressed: close,
+            icon: Icon(LineAwesomeIcons.times_circle)
+          )
+        ),
+        actions: [
+          Padding(
+            padding: klr.edge.all(1),
+            child: ElevatedButton(
+              child: Text(t.btn_close, style: klr.textTheme.subtitle2),
+              onPressed: close,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  klr.theme.primary
+                )
+              ),
+            ),
+          )
+        ],
+        contentTextStyle: klr.textTheme.bodyText1,
+        content: Container(
+          height: view.height * .5,
+          width: view.width,
+          child: SingleChildScrollView(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: _getLeftLegends(),
+                  ),
+                ),
+
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: _getRightLegends(),
+                  ),
+                )
+              ],
+            )
+          )
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewport = MediaQuery.of(context).size;
     final width = widget.width ?? viewport.width;
-    final height = widget.height ?? viewport.height;
     final itemHeight = width / widget.crossAxisCount;
     final itemWidth  = _viewCompact ? itemHeight : width;
-    final dur = const Duration(milliseconds: 300);
-    return SliverStickyHeader(
-      header: Container(
-        color: klr.theme.selectableHeaderBackground,
-        child: Column(
-          children: [
-            Container(
-              height: klr.tileHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ButtonBar(
-                    children: _getLeftActions(),
-                    alignment: MainAxisAlignment.start
-                  ),
-                  ButtonBar(
-                    children: _getRightActions(),
-                    alignment: MainAxisAlignment.end,
-                  )
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              duration: dur,
-              height: _showHelp ? 2.5 * klr.tileHeightx2 : 0,
-              color: klr.theme.selectableHeaderBackground.deltaLightness(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: AnimatedContainer(
-                      duration: dur,
-                      height: _showHelp ? 1.5 * klr.tileHeightx2 : 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _getLeftLegends(),
-                      )
-                    ),
-                  ),
 
-                  Expanded(
-                    child: AnimatedContainer(
-                      duration: dur,
-                      height: _showHelp ? 1.5 * klr.tileHeightx2 : 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _getRightLegends(),
-                      )
-                    ),
-                  )
-                ],
+    return  
+      SliverStickyHeader(
+        header: Container(
+          color: klr.theme.selectableHeaderBackground,
+          height: klr.tileHeight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ButtonBar(
+                children: _getLeftActions(),
+                alignment: MainAxisAlignment.start
+              ),
+              ButtonBar(
+                children: _getRightActions(),
+                alignment: MainAxisAlignment.end,
               )
-            )
-          ],
-        )
-      ), 
-      sliver: widget.items.isEmpty
-        ? SliverToBoxAdapter(
-          child: Container(
-            alignment: Alignment.center,
-            height: itemHeight * 2,
-            padding: klr.edge.xy(4.0, 3.0),
-            color: klr.theme.cardBackground,
-            child: widget.noItems ?? Text('No items...')
-          )
-        )
-        : SliverGrid.count(
-            crossAxisCount: _viewCompact ? widget.crossAxisCount : 1,
-            childAspectRatio: itemWidth / itemHeight,
-            children: widget.items.mapIndex(
-              (item, index) => SelectableItem(
-                child: widget.widgetBuilder(
-                  item,
-                  _isSelected(index),
-                  !_viewCompact
-                ),
-                onPress: _selectionActive
-                  ? () => _toggleSelected(index)
-                  : () => widget.onPressed?.call(item),
-                onLongPress: () => _toggleSelected(index),
-                selected: _isSelected(index),
-                selectionActive: _selectionActive,
-                width: itemWidth,
-                height: itemHeight
-              )
-            ).toList(),
+            ],
           ),
-        );
+        ),
+
+        sliver: widget.items.isEmpty
+          ? SliverToBoxAdapter(
+            child: Container(
+              alignment: Alignment.center,
+              height: itemHeight * 2,
+              padding: klr.edge.xy(4.0, 3.0),
+              color: klr.theme.cardBackground,
+              child: widget.noItems ?? Text('No items...')
+            )
+          )
+          : SliverGrid.count(
+              crossAxisCount: _viewCompact ? widget.crossAxisCount : 1,
+              childAspectRatio: itemWidth / itemHeight,
+              children: widget.items.mapIndex(
+                (item, index) => SelectableItem(
+                  child: widget.widgetBuilder(
+                    item,
+                    _isSelected(index),
+                    !_viewCompact
+                  ),
+                  onPress: _selectionActive
+                    ? () => _toggleSelected(index)
+                    : () => widget.onPressed?.call(item),
+                  onLongPress: () => _toggleSelected(index),
+                  selected: _isSelected(index),
+                  selectionActive: _selectionActive,
+                  width: itemWidth,
+                  height: itemHeight
+                )
+              ).toList(),
+            ),         
+    );
   }
 }
 

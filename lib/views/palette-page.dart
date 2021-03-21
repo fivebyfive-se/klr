@@ -190,6 +190,8 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   @override
   Widget build(BuildContext context) {
     final viewport = KlrConfig.view(context);
+    final liIcon = (IconData i, [Color col]) 
+      => Icon(i, color: col ?? klr.theme.primary);
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -229,27 +231,27 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       onPressed: (pc) => _tapColor(pc),
                       rightActions: [
                         ListItemAction(
-                          icon: Icon(LineAwesomeIcons.plus_circle),
+                          icon: liIcon(LineAwesomeIcons.plus_circle),
                           onPressed: (_) => _createColor(),
                           shouldShow: (_, selectionActive) => !selectionActive,
                           legend: Text('Add a color')
                         ),
                         ListItemAction(
-                          icon: Icon(LineAwesomeIcons.trash),
+                          icon: liIcon(LineAwesomeIcons.trash, klr.theme.tertiaryAccent),
                           onPressed: (selected) => _deleteSelected(selected),
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any((i) => !i.isDerived),
                           legend: Text('Remove selected colors')
                         ),
                         ListItemAction(
-                          icon: Icon(LineAwesomeIcons.alternate_level_up),
+                          icon: liIcon(LineAwesomeIcons.alternate_level_up),
                           onPressed: (selected) => _promoteSelected(selected),
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any((i) => i.isDerived),
                           legend: Text('Promote selected generated colors')
                         ),
                         ListItemAction(
-                          icon: Icon(LineAwesomeIcons.alternate_level_down),
+                          icon: liIcon(LineAwesomeIcons.alternate_level_down),
                           onPressed: (selected) => _removeHarmony(selected),
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any(
@@ -260,47 +262,6 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                         )
                       ],
                     ),
-
-                  ExpandingTable(
-                    headerLabel: 'Help',
-                    headerIcon: LineAwesomeIcons.info_circle,
-                    headerBuilder: (c, a) => Container(),
-                    contentBuilder: (c, a) => GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: 5.0,
-                      children: [
-                        ListTile(
-                          leading: Icon(LineAwesomeIcons.check),
-                          title: Text('Select colors')
-                        ),
-                          ListTile(
-                            trailing: Icon(LineAwesomeIcons.plus_circle),
-                            title: Text('Add a color')
-                          ),
-                        
-                        ListTile(
-                          leading: Icon(LineAwesomeIcons.times),
-                          title: Text('Cancel selection')
-                        ),
-                          ListTile(
-                            trailing: Icon(LineAwesomeIcons.trash),
-                            title: Text('Remove selected color(s)'),
-                          ),
-
-                        Container(),
-                          ListTile(
-                            trailing: Icon(LineAwesomeIcons.alternate_level_up),
-                            title: Text('Promote selected generated colors'),
-                          ),
-
-                        Container(),
-                          ListTile(
-                            trailing: Icon(LineAwesomeIcons.alternate_level_down),
-                            title: Text('Remove harmony generators from selected colors'),
-                          ),
-                      ],
-                    ),
-                  ),
 
                   sliverSpacer(size: klr.tileHeight),
 

@@ -112,7 +112,7 @@ packages:
       path: "../packages/fbf"
       relative: true
     source: path
-    version: "0.3.3"
+    version: "0.3.7"
   ffi:
     dependency: transitive
     description:

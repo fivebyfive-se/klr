@@ -38,14 +38,14 @@ class KlrTheme extends FbfTheme {
       warning: Colors.orange[800],
 
       primaryTriad: ColorTriad(klrs.pink70, klrs.pink55, klrs.pink90),
-      secondaryTriad: ColorTriad(klrs.purple80, klrs.purple60, klrs.purple99),
+      secondaryTriad: ColorTriad(klrs.blue80, klrs.blue65, klrs.blue99),
       tertiaryTriad: ColorTriad(klrs.red80, klrs.red60, klrs.red95),
 
       onPrimary: klrs.grey99,
       onSecondary: klrs.grey99,
       onTertiary: klrs.bamboo99,
 
-      highlight: ColorTriad(klrs.blue95, klrs.blue90, klrs.blue99),
+      highlight: ColorTriad(klrs.purple90, klrs.purple60, klrs.purple99),
       focus: ColorTriad(klrs.yellow90, klrs.yellow80, klrs.yellow90),
 
       appBarBackground: klrs.steel40,
@@ -58,14 +58,14 @@ class KlrTheme extends FbfTheme {
 
       logoBackgroundGradient: 
         LinearGradient(
-          colors: [klrs.steel60, klrs.steel15.withAlpha(0)],
+          colors: [klrs.pink80, klrs.steel50.withAlpha(0)],
           begin: Alignment(0, -2.0),
           end: Alignment.bottomCenter
         ),
 
       drawerBackgroundGradient:
         LinearGradient(
-          colors: [klrs.steel15, klrs.steel50, klrs.steel25],
+          colors: [klrs.steel60, klrs.steel35, klrs.grey14],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter
         ),
@@ -75,7 +75,7 @@ class KlrTheme extends FbfTheme {
         end:   Alignment(-1.0, 1.5),
         colors: [
           klrs.grey14,
-          klrs.grey20,
+          klrs.steel25,
           klrs.grey14
         ],
       ),
@@ -84,13 +84,13 @@ class KlrTheme extends FbfTheme {
         begin: Alignment(2.0, -0.5),
         end:   Alignment(-0.5, 2.0),
         colors: [
-          klrs.green60,
-          klrs.purple45,
+          klrs.bamboo90,
           klrs.purple99,
           klrs.orange99,
           klrs.pink95,
-          klrs.blue70,
-          klrs.yellow60,
+          klrs.blue95,
+          klrs.green90,
+          klrs.yellow90,
         ],
       )
     );
@@ -100,4 +100,5 @@ class KlrTheme extends FbfTheme {
     Color get selectableItemIcon => klrs.steel35;
     Color get selectableItemIconSelected => klrs.steel90;
     Color get selectableHeaderBackground => klrs.steel35;
+    Color get selectableLegendBackground => klrs.steel40;
 }
