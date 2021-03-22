@@ -170,24 +170,15 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            onPressed: close,
-            icon: Icon(LineAwesomeIcons.times_circle)
-          )
-        ),
         actions: [
           Padding(
             padding: klr.edge.all(1),
             child: ElevatedButton(
-              child: Text(t.btn_close, style: klr.textTheme.subtitle2),
-              onPressed: close,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  klr.theme.primary
-                )
+              child: Text(
+                t.btn_close, 
+                style: klr.textTheme.subtitle2.withColor(klr.theme.onPrimary)
               ),
+              onPressed: close,
             ),
           )
         ],
@@ -325,8 +316,9 @@ class SelectableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
-    final padding = selectionActive ? klr.size(6) : 0;
-    final selectedPadding = selectionActive ? padding / 8 : 0;
+    final padding = selectionActive ? klr.size(6) : klr.size(.5);
+    final selectedPadding = selectionActive ? padding / 8 : 0.0;
+
     return LayoutBuilder(
       builder: (context, box) {
         final boxWidth = box.maxWidth;
@@ -341,6 +333,7 @@ class SelectableItem extends StatelessWidget {
               color: klr.theme.selectableItemBorder,
               height: boxHeight,
               width: boxWidth,
+
               child: Stack(
                 alignment: Alignment.center,
                 children: [

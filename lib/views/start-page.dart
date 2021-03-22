@@ -71,6 +71,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
             : klr.theme.foreground
           )
     );
+
     final clrs = showDetails
       ? p.sortedColors.map(
           (e) => Icon(
@@ -83,13 +84,12 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
       
 
     return ListTile(
-      leading: showDetails ? Icon(Icons.palette_outlined) : null,
+      leading: Icon(Icons.palette_outlined),
       title: txt(p.name, klr.textTheme.subtitle1),
-      subtitle: showDetails
-        ? txt(
-          t.start_palettes_item(p.colors.length),
-          klr.textTheme.subtitle2
-        ) : null,
+      subtitle: txt(
+        t.start_palettes_item(p.colors.length),
+        klr.textTheme.subtitle2
+      ),
       trailing: Wrap(
         alignment: WrapAlignment.end,
         children: clrs,
@@ -129,9 +129,13 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
 
                   SelectableList<Palette>(
                     items: snapshot.palettes,
+
                     onPressed: (p) => _showPalette(p),
+
                     itemExtent: klr.tileHeightLG,
+
                     width: r.width,
+
                     noItems: RicherText.from(
                       [
                         t.start_noPalettes_intro,

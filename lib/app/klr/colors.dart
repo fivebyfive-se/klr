@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:fbf/fbf.dart';
+
 class KlrColors {
   Color grey05 = Color(0xff0D0B0A);
   Color grey10 = Color(0xff1A1715);
@@ -114,4 +116,43 @@ class KlrColors {
   static KlrColors _instance;
 
   static KlrColors getInstance() => _instance ?? (_instance = KlrColors());
+}
+
+class KlrAltColors {
+  Color lightestYellow = Color(0xffd4c959).deltaLightness(18); 
+  Color lighterYellow = Color(0xffd4c959).deltaLightness(12);
+  Color lightYellow = Color(0xffd4c959).deltaLightness(6);
+  Color yellow = Color(0xffd4c959);
+  Color darkYellow = Color(0xffd4c959).deltaLightness(-6);
+  Color darkerYellow = Color(0xffd4c959).deltaLightness(-12);
+
+  Color lighterGreen = Color(0xff4aada3).deltaLightness(10);
+  Color lightGreen = Color(0xff4aada3).deltaLightness(6);
+  Color green = Color(0xff4aada3);
+  Color darkGreen = Color(0xff4aada3).deltaLightness(-6);
+  Color darkerGreen = Color(0xff4aada3).deltaLightness(-10);
+
+  Color lighterBlue = Color(0xff4997ce).deltaLightness(10);
+  Color lightBlue = Color(0xff4997ce).deltaLightness(6);
+  Color blue = Color(0xff4997ce);
+  Color darkBlue = Color(0xff4997ce).deltaLightness(-6);
+  Color darkerBlue = Color(0xff4997ce).deltaLightness(-10);
+
+  Color lighterPink = Color(0xffea52ce).deltaLightness(10);
+  Color lightPink = Color(0xffea52ce).deltaLightness(6);
+  Color pink = Color(0xffea52ce);
+  Color darkPink = Color(0xffea52ce).deltaLightness(-6);
+  Color darkerPink = Color(0xffea52ce).deltaLightness(-10);
+
+  Color lightestGrey = Color(0xffc9c9c9);
+  Color lighterGrey = Color(0xffaaaaaa);
+  Color lightGrey = Color(0xff8f8f8f);
+  Color grey = Color(0xff767676);
+  Color darkGrey = Color(0xff555555);
+  Color darkerGrey = Color(0xff404040);
+  Color darkestGrey = Color(0xff2f2f2f);
+
+  static KlrAltColors _instance;
+
+  static KlrAltColors getInstance() => _instance ?? (_instance = KlrAltColors());
 }

@@ -144,10 +144,22 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   Widget _colorTile(ColorItem pc, bool selected, bool showDetails) {
     final isActive = !pc.isDerived && pc.id == _activeColor;
     final color = pc.color.toColor();
-    final invColor = pc.color.invertLightness().withSaturation(0).toColor();
+    final invColor = pc.color.invertLightnessGreyscale().toColor();
     final titleStyle = klr.textTheme.subtitle1.withColor(invColor);
-    final subtitleStyle = klr.textTheme.subtitle2.withColor(invColor);
+    final subtitleStyle = klr.textTheme.bodyText2.withColor(invColor);
     final derivedFrom = pc.isDerived ? _colorById(pc.parentId) : null;
+
+    final dim = (String label, double val)
+      => TextSpan(
+        children: [
+          TextSpan(
+            text: "$label: ", 
+            style: subtitleStyle.withFontStyle(FontStyle.italic)
+          ),
+          TextSpan(text: val.toStringAsFixed(1))
+        ]
+      );
+    final comma = () => TextSpan(text: ', ');
 
     return Padding(
       padding: pc.isDerived 
@@ -168,11 +180,32 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
           )] : <BoxShadow>[]
         ),
         child: ListTile(
+          leading: showDetails 
+            ? Icon(LineAwesomeIcons.brush, color: invColor) 
+            : null,
           tileColor: color,
           title: Text(pc.label, style: titleStyle),
+          isThreeLine: showDetails,
           subtitle: showDetails 
-            ? Text(pc.color.toHex(), style: subtitleStyle)
-            : null,
+            ? RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '#' + pc.color.toHex() + '\n',
+                      style: subtitleStyle.withFontWeight(FontWeight.bold)
+                    ),
+                    dim('hue', pc.color.hue),
+                    comma(),
+                    dim('sat', pc.color.saturation),
+                    comma(),
+                    dim('lig', pc.color.lightness),
+                    comma(),
+                    dim('luma', color.luma * 100),
+                  ],
+                  style: subtitleStyle
+                ),
+              )
+            : Text('#' + pc.color.toHex(), style: subtitleStyle),
         )
       )
     );
@@ -240,14 +273,19 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     SelectableList<ColorItem>(
                       compact: true,
                       crossAxisCount: r.lte<int>(
-                        ViewportSize.sm,
-                        () => 4,
-                        () => 8
+                        ViewportSize.xs,
+                        () => 3,
+                        () => r.lte<int>(
+                          ViewportSize.sm,
+                          () => 4,
+                          () => 8
+                        )
                       ),
                       height: r.height - klr.tileHeightSM,
                       items: [..._colors, ..._derived],
                       widgetBuilder: _colorTile,
                       onPressed: (pc) => _tapColor(pc),
+                      itemExtent: klr.tileHeightXL,
                       rightActions: [
                         ListItemAction(
                           icon: liIcon(LineAwesomeIcons.plus_circle),
