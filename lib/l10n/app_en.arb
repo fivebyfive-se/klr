@@ -48,6 +48,8 @@
     "start_createPalette_img_title": "New from image",
     "start_createPalette_img_subtitle": "Use an image to generate a new palette",
         
+    "start_deletePalettes": "Delete selected palettes",
+
     "colorWheel_mode": "Mode",
     "colorWheel_mode_rgb": "RGB",
     "colorWheel_mode_ryb": "RYB",
@@ -60,6 +62,18 @@
             "count": {}
         }
     },
+    "palette_colors_add": "Add a color",
+    "palette_colors_remove": "Remove selected colors",
+    "palette_colors_promote": "Promote selected generated colors to palette colors",
+    "palette_colors_remove_harmonies":
+        "Remove harmonies from selected colors",
+
+    "palette_color_hue": "Hue",
+    "palette_color_sat": "Saturation",
+    "palette_color_lig": "Lightness",
+    "palette_color_luma": "Luma",
+
+    "palette_colors_show_preview": "Show fullscreen preview of this palette's colors",
 
     "contrast_title": "Contrast",
     "contrast_background": "Background color",

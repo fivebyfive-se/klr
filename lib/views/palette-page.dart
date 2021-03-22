@@ -147,6 +147,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   }
 
   Widget _colorDetails(ColorItem pc, bool showDetails, [bool showLabel = false]) {
+    final t = KlrConfig.t(context);
     final color = pc.color.toColor();
     final invColor = pc.color.invertLightnessGreyscale().toColor();
     final subtitleStyle = klr.textTheme.bodyText2.withColor(invColor);
@@ -178,13 +179,13 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                 text: '#' + pc.color.toHex() + '\n',
                 style: subtitleStyle.withFontWeight(FontWeight.bold)
               ),
-              dim('hue', pc.color.hue),
+              dim(t.palette_color_hue, pc.color.hue),
               comma(),
-              dim('sat', pc.color.saturation),
+              dim(t.palette_color_sat, pc.color.saturation),
               comma(),
-              dim('lig', pc.color.lightness),
+              dim(t.palette_color_lig, pc.color.lightness),
               comma(),
-              dim('luma', color.luma * 100),
+              dim(t.palette_color_luma, color.luma * 100),
             ],
             style: subtitleStyle
           ),
@@ -382,21 +383,21 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                           icon: liIcon(LineAwesomeIcons.plus_circle),
                           onPressed: (_) => _createColor(),
                           shouldShow: (_, selectionActive) => !selectionActive,
-                          legend: Text('Add a color')
+                          legend: Text(t.palette_colors_add)
                         ),
                         ListItemAction(
                           icon: liIcon(LineAwesomeIcons.trash, klr.theme.tertiaryAccent),
                           onPressed: (selected) => _deleteSelected(selected),
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any((i) => !i.isDerived),
-                          legend: Text('Remove selected colors')
+                          legend: Text(t.palette_colors_remove)
                         ),
                         ListItemAction(
                           icon: liIcon(LineAwesomeIcons.alternate_level_up),
                           onPressed: (selected) => _promoteSelected(selected),
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any((i) => i.isDerived),
-                          legend: Text('Promote selected generated colors')
+                          legend: Text(t.palette_colors_promote)
                         ),
                         ListItemAction(
                           icon: liIcon(LineAwesomeIcons.alternate_level_down),
@@ -404,9 +405,9 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                           shouldShow: (selected, selectionActive) 
                             => selectionActive && selected.any(
                               (i) => !i.isDerived && _currPalette.colors
-                                .any((c) => c.uuid == i.id && c.harmony != null)
+                                .any((c) => c.uuid == i.id && c.harmony != null && c.harmony != "")
                             ),
-                          legend: Text('Remove harmonies from selected')
+                          legend: Text(t.palette_colors_remove_harmonies)
                         ),
                         ListItemAction(
                           icon: liIcon(
@@ -415,7 +416,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                           ),
                           onPressed: (_) => _showColorDialog(),
                           shouldShow: (_, __) => true,
-                          legend: Text('Show a full screen preview of the palette')
+                          legend: Text(t.palette_colors_show_preview)
                         )
                       ],
                     ),

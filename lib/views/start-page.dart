@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:klr/widgets/bx.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -197,7 +196,7 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                         ),
                         onPressed: (selected) => _deleteSelected(selected),
                         shouldShow: (i, s) => s && i.isNotEmpty,
-                        legend: Text('Delete selected palettes')
+                        legend: Text(t.start_deletePalettes)
                       )
                     ],
                     widgetBuilder: _paletteTile,
