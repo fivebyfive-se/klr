@@ -61,7 +61,6 @@ class InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
     final t = KlrConfig.t(context);
-    final viewport = KlrConfig.view(context);
 
     return FbfScaffold<KlrConfig,InfoPageData>(
       context: context,

@@ -5,6 +5,8 @@ import 'package:fbf/fbf.dart';
 
 import 'package:klr/klr.dart';
 
+import 'bx.dart';
+
 class ExpandingTable extends StatefulWidget {
   const ExpandingTable({
     Key key,
@@ -37,20 +39,19 @@ class _ExpandingTableState extends State<ExpandingTable> {
     final klr = KlrConfig.of(context);
     final duration = const Duration(milliseconds: 400);
     final headerColor = _isActive
-      ? klr.theme.foreground
-      : klr.theme.foregroundDisabled;
+      ? klr.theme.primaryAccent
+      : klr.theme.foreground;
 
     return SliverStickyHeader(
-      header: Container(
-        height: klr.size(8),
+      header: AnimatedContainer(
+        duration: duration,
+        height: _isActive ? klr.tileHeightLG : klr.tileHeightSM,
         width: viewport.width,
-        color: klr.theme.cardBackground,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        color: klr.theme.tableSubHeaderColor,
+        child: BxCol(
           children: <Widget>[
-            Expanded(
-              flex: 1,
+            Container(
+              color: klr.theme.tableHeaderColor,
               child: ListTile(
                 leading: Icon(
                   widget.headerIcon,
@@ -61,15 +62,20 @@ class _ExpandingTableState extends State<ExpandingTable> {
                   style: klr.textTheme.subtitle1.withColor(headerColor)
                 ),
                 onTap: () => setState(() => _isActive = !_isActive),
-              )
+                trailing: Icon(
+                  _isActive ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  color: headerColor
+                ),
+                minVerticalPadding: klr.size(1),
+              ),
             ),
-            Expanded(
-              flex: 2,
-              child: AnimatedOpacity(
-                duration: duration,
-                opacity: _isActive ? 1.0 : 0.0,
-                child: _isActive ? widget.headerBuilder(context, _isActive) : Container()
-              )
+            ...(_isActive 
+              ? [AnimatedOpacity(
+                  duration: duration,
+                  opacity: _isActive ? 1.0 : 0.0,
+                  child: _isActive ? widget.headerBuilder(context, _isActive) : Container()
+                )] 
+              : []
             )
           ],
         )
@@ -79,6 +85,7 @@ class _ExpandingTableState extends State<ExpandingTable> {
           duration: duration,
           height: _isActive ? viewport.height / 2.5 : 0.0,
           width: viewport.width,
+          color: klr.theme.tableBackground,
           child: widget.contentBuilder(context, _isActive)),      
       ),
     );

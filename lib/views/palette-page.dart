@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klr/services/color-name-service.dart';
 import 'package:klr/widgets/expanding-table.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -38,6 +39,7 @@ class PalettePage extends FbfPage<PalettePageData> {
 
 class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   AppStateService _appStateService = AppStateService.getInstance();
+  ColorNameService _nameService = ColorNameService.getInstance();
 
   Palette get _currPalette => _appStateService.snapshot.currentPalette;
 
@@ -76,7 +78,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     for (final ci in derived) {
       final newPaletteColor = await PaletteColor.scaffoldAndSave(
         fromColor: ci.color,
-        name: ci.color.toHex()
+        name: _nameService.guessName(ci.color.toColor())
       );
       _currPalette.colors.add(newPaletteColor);
     }
@@ -103,7 +105,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
   }
 
   Future<void> _createColor() async {
-    final color = await _appStateService.createColor();
+    final color = await _appStateService.createRandomColor();
 
     _currPalette.colors.add(color);
     await color.save();
@@ -123,6 +125,22 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     await _currPalette.save();
   }
 
+  Future<void> _setColor(ColorItem ci) async {
+    if (ci.id == null) {
+      await _promoteSelected([ci]);
+    } else {
+      final color = _currPalette.colors.firstWhere(
+        (c) => c.uuid == ci.id,
+        orElse: () => null
+      );
+      if (color != null) {
+        color.color = ci.color;
+        color.name = _nameService.guessName(ci.color.toColor());
+        await color.save();
+      }
+    }
+  }
+
   Widget _colorTile(ColorItem pc, bool selected, bool showDetails) {
     final isActive = !pc.isDerived && pc.id == _activeColor;
     final color = pc.color.toColor();
@@ -136,7 +154,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         ? klr.edge.all(3) 
         : EdgeInsets.zero,
       child: Container(
-        height: klr.tileHeightx2 * 3,
+        height: klr.tileHeightLG * 3,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color,
@@ -189,9 +207,9 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
 
   @override
   Widget build(BuildContext context) {
-    final viewport = KlrConfig.view(context);
+    final r = KlrConfig.r(context);
     final liIcon = (IconData i, [Color col]) 
-      => Icon(i, color: col ?? klr.theme.primary);
+      => Icon(i, color: col ?? klr.theme.primaryAccent);
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -221,11 +239,12 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                     ),
                     SelectableList<ColorItem>(
                       compact: true,
-                      crossAxisCount: viewport.responsive<int>({
-                        ViewportSize.xs: () => 4,
-                        ViewportSize.lg: () => 7
-                      }),
-                      height: viewport.height - klr.tileHeight,
+                      crossAxisCount: r.lte<int>(
+                        ViewportSize.sm,
+                        () => 4,
+                        () => 8
+                      ),
+                      height: r.height - klr.tileHeightSM,
                       items: [..._colors, ..._derived],
                       widgetBuilder: _colorTile,
                       onPressed: (pc) => _tapColor(pc),
@@ -263,9 +282,12 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                       ],
                     ),
 
-                  sliverSpacer(size: klr.tileHeight),
+                  sliverSpacer(size: klr.tileHeightSM),
 
-                  ContrastTable(colors: [..._colors, ..._derived]),
+                  ContrastTable(
+                    colors: [..._colors, ..._derived],
+                    onChanged: (ci) => _setColor(ci),
+                  ),
 
                   StatsTable(palette: _currPalette),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klr/widgets/bx.dart';
 
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -70,6 +71,16 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
             : klr.theme.foreground
           )
     );
+    final clrs = showDetails
+      ? p.sortedColors.map(
+          (e) => Icon(
+            LineAwesomeIcons.square_full,
+            color: e.color.toColor(),
+            size: klr.size(4),
+          )
+        ).toList()
+      : <Widget>[];
+      
 
     return ListTile(
       leading: showDetails ? Icon(Icons.palette_outlined) : null,
@@ -79,16 +90,18 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
           t.start_palettes_item(p.colors.length),
           klr.textTheme.subtitle2
         ) : null,
+      trailing: Wrap(
+        alignment: WrapAlignment.end,
+        children: clrs,
+        spacing: klr.size(0.5),
+        runSpacing: klr.size(0.5),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewport = KlrConfig.view(context);
-    final actionWidth = viewport.responsive<double>({
-      ViewportSize.md: () => viewport.width / 2,
-      ViewportSize.lg: () => viewport.width / 3, 
-    });
+    final r = KlrConfig.r(context);
 
     return FbfStreamBuilder<KlrConfig, AppState>(
       stream: _appStateService.appStateStream,
@@ -106,16 +119,19 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                 slivers: <Widget>[
                   SliverToBoxAdapter(
                     child: Container(
-                      height: klr.tileHeight,
+                      height: klr.tileHeightSM,
                       child: ListTile(
                         title: Text(t.start_palettes_title, style: klr.textTheme.subtitle1),
                         subtitle: Text(t.start_palettes_subtitle, style: klr.textTheme.subtitle2)
                       )
                     )
                   ),
+
                   SelectableList<Palette>(
                     items: snapshot.palettes,
                     onPressed: (p) => _showPalette(p),
+                    itemExtent: klr.tileHeightLG,
+                    width: r.width,
                     noItems: RicherText.from(
                       [
                         t.start_noPalettes_intro,
@@ -181,54 +197,12 @@ class _StartPageState extends State<StartPage> with KlrConfigMixin {
                       )
                     ],
                     widgetBuilder: _paletteTile,
-                    height: viewport.height - 100
+                    height: r.height - klr.tileHeightSM
                   ),
 
                   sliverSpacer(
                     size: klr.size(2),
                   ),
-                  
-                  // SliverToBoxAdapter(
-                  //   child: Container(
-                  //     height: klr.tileHeightx2,
-                  //     width: viewport.width,
-                  //     child: Wrap(
-                  //       children: [
-                  //         Container(
-                  //           height: klr.tileHeightx2,
-                  //           width: actionWidth,
-                  //           child: FbfTile.action(
-                  //             icon: Icons.wysiwyg,
-                  //             title: t.start_createPalette_tpl_title,
-                  //             subtitle: t.start_createPalette_tpl_subtitle,
-                  //             onTap: () => _createPalette()
-                  //           ),
-                  //         ),
-                  //         Container(
-                  //           height: klr.tileHeightx2,
-                  //           width: actionWidth,
-                  //           child: FbfTile.action(
-                  //             icon: Icons.functions_sharp,
-                  //             title: t.start_createPalette_gen_title,
-                  //             subtitle: t.start_createPalette_gen_subtitle,
-                  //             onTap: () => _showGenerateDialog()
-                  //           ),
-                  //         ),
-                      
-                  //         Container(
-                  //           height: klr.tileHeightx2,
-                  //           width: actionWidth,
-                  //           child: FbfTile.action(
-                  //             icon: Icons.photo_filter,
-                  //             title: t.start_createPalette_img_title,
-                  //             subtitle: t.start_createPalette_img_subtitle,
-                  //             onTap: () => _showExtractDialog()
-                  //           ),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // )
                 ],
               )
             )

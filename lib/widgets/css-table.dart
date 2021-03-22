@@ -37,10 +37,13 @@ class _CssTableState extends State<CssTable> {
     for (var c in palette.colors) {
       final cssName = "color-" + c.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
       output.addAll(buildCss(cssName, c.color));
-      int n = 0;
-      for (var s in [...c.shades, ...c.transformedColors]) {
-        n++;
-        output.addAll(buildCss("$cssName-$n", s));
+      if (c.harmony != null) {
+        int n = 0;
+        for (var s in [...c.transformedColors]) {
+          n++;
+          output.addAll(buildCss("$cssName--${c.harmony}-$n", s));
+        }
+
       }
     }
     return (_useCssVars) 

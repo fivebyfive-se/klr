@@ -112,7 +112,7 @@ class _ColorEditorState extends State<ColorEditor> {
     final t = KlrConfig.t(context);
     final containerHeight = widget.height;
     
-    final tileHeight = klr.tileHeight;
+    final tileHeight = klr.tileHeightSM;
     final editorHeight = containerHeight - tileHeight * 6;
     final editorWidth = widget.width ?? MediaQuery.of(context).size.width;
 

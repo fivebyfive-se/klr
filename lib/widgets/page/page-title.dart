@@ -31,7 +31,7 @@ class PageTitle extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Container(
-        height: klr.tileHeightx15,
+        height: klr.tileHeightMD,
         alignment: Alignment.centerLeft,
         child: ListTile(
           leading: icon,          

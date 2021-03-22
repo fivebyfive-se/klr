@@ -26,13 +26,21 @@ class KlrConfig extends FbfAppConfig<KlrTheme,KlrPages> {
   static AppLocalizations t(BuildContext context)
     => AppLocalizations.of(context);
 
-  static FbfViewport view(BuildContext context)
-    => FbfAppConfig.view(context);
+  static FbfResponsive r(BuildContext context)
+    => FbfAppConfig.r(context);
 
-  double get smallTileHeight => size(6);
-  double get tileHeight => size(8);
-  double get tileHeightx2 => size(16);
-  double get tileHeightx15 => size(12);
+  /// size: 6
+  double get tileHeightXS  => size(6);
+  /// size: 8
+  double get tileHeightSM  => size(8);
+  /// size: 12
+  double get tileHeightMD  => size(12);
+  /// size: 16
+  double get tileHeightLG  => size(16);
+  /// size: 20
+  double get tileHeightXL  => size(20);
+  /// size: 24
+  double get tileHeightXXL => size(24);
 }
 
 class KlrApp extends FbfApp<KlrConfig> {

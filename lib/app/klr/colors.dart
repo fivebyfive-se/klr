@@ -34,8 +34,10 @@ class KlrColors {
   Color steel15 = Color(0xff1B1E26);
   Color steel20 = Color(0xff242833);  
   Color steel25 = Color(0xff2D3240);
+  Color steel30 = Color(0xff383F4D);
   Color steel35 = Color(0xff3E4759);
   Color steel40 = Color(0xff475266);
+  Color steel45 = Color(0xff505C73);
   Color steel50 = Color(0xff596680);
   Color steel60 = Color(0xff737F99);
   Color steel70 = Color(0xff8695B3);

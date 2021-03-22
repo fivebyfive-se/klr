@@ -95,10 +95,14 @@ class KlrTheme extends FbfTheme {
       )
     );
 
-    Color get selectableItemBackground => klrs.steel25;
-    Color get selectableItemBorder => klrs.steel20;
+    Color get selectableItemBackground => klrs.steel30;
+    Color get selectableItemBorder => klrs.steel25;
     Color get selectableItemIcon => klrs.steel35;
     Color get selectableItemIconSelected => klrs.steel90;
-    Color get selectableHeaderBackground => klrs.steel35;
+    Color get selectableHeaderBackground => klrs.steel40;
     Color get selectableLegendBackground => klrs.steel40;
+
+    Color get tableHeaderColor => klrs.steel35;
+    Color get tableSubHeaderColor => klrs.steel30;
+    Color get tableBackground => klrs.steel25;
 }

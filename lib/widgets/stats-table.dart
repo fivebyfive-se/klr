@@ -7,6 +7,7 @@ import 'package:klr/services/palette-stats-service.dart';
 import 'package:klr/widgets/expanding-table.dart';
 import 'package:klr/widgets/stats-chart.dart';
 
+import 'bx.dart';
 import 'editor-tile/popup-menu-tile.dart';
 
 class StatsTable extends StatefulWidget {
@@ -38,36 +39,39 @@ class _StatsTableState extends State<StatsTable> {
 
   @override
   Widget build(BuildContext context) {
-    final viewport = MediaQuery.of(context).size;
+    final klr = KlrConfig.of(context);
+    final r = KlrConfig.r(context);
     final t = KlrConfig.t(context);
+
+    final chartPadding = klr.edge.all(2);
   
     return ExpandingTable(
       headerIcon: Icons.bubble_chart_outlined,
       headerLabel: t.stats_title,
-      headerBuilder: (c, a) => Row(
+      headerBuilder: (c, a) => BxRow(
         children: [
-          Expanded(
-              child: PopupMenuTile<ColorStatDimension>(
-                  label: t.stats_dimension,
-                  items: ColorStatDimension.values,
-                  onSelected: (v) => setState(() => _showDimension = v),
-                  value: _showDimension,
-                ),
-            ),
-            Expanded(
-              child: PopupMenuTile<ColorBlindnessType>(
-                  label: t.stats_colorblindness,
-                  items: ColorBlindnessType.values,
-                  onSelected: (v) => setState(() => _simulateColorBlindness = v),
-                  value: _simulateColorBlindness,
-                ),
-            )
+          PopupMenuTile<ColorStatDimension>(
+            label: t.stats_dimension,
+            items: ColorStatDimension.values,
+            onSelected: (v) => setState(() => _showDimension = v),
+            value: _showDimension,
+          ),
+          PopupMenuTile<ColorBlindnessType>(
+            label: t.stats_colorblindness,
+            items: ColorBlindnessType.values,
+            onSelected: (v) => setState(() => _simulateColorBlindness = v),
+            value: _simulateColorBlindness,
+          ),
         ]
       ),
-      contentBuilder: (c, a) => StatsChart(
-        _chartItems,
-        width: viewport.width
-      ),
+      contentBuilder: (c, a) => 
+        Container(
+          padding: chartPadding,
+          child: StatsChart(
+            _chartItems,
+            width: r.width - chartPadding.horizontal
+          ),
+        ),
     );
   }
 }

@@ -67,7 +67,7 @@ class StickySection extends StatelessWidget {
 
     return SliverStickyHeader(
       header: Container(
-        height: klr.smallTileHeight,
+        height: klr.tileHeightXS,
         color: klr.theme.bottomNavBackground,
         child: DefaultTextStyle(
           child: ListTile(

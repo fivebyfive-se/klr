@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:fbf/fbf.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import 'package:klr/klr.dart';
-import 'package:klr/widgets/expanding-table.dart';
-import 'package:klr/widgets/text-with-icon.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+
+import 'bx.dart';
 
 class SelectableList<T> extends StatefulWidget {
   const SelectableList({
@@ -21,9 +21,11 @@ class SelectableList<T> extends StatefulWidget {
     this.width,
     this.height,
     this.compact,
+    this.itemExtent,
   }) : super(key: key);
 
   final int crossAxisCount;
+  final double itemExtent;
   final List<T> items;
   final void Function(T item) onPressed;
   final Widget noItems;
@@ -44,8 +46,7 @@ class SelectableList<T> extends StatefulWidget {
 class _SelectableListState<T> extends State<SelectableList<T>> {
   List<int> _selected = <int>[];
   bool _selectionActive = false;
-  bool _showHelp = false;
-  bool _viewCompact;
+  bool _viewCompact = true;
 
   KlrConfig get klr => KlrConfig.of(context);
   List<T> get _items => widget.items;
@@ -163,7 +164,7 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
   }
 
   void _showLegend() {
-    final view = KlrConfig.view(context);
+    final r = KlrConfig.r(context);
     final t = KlrConfig.t(context);
     final close = () => Navigator.of(context).pop();
     showDialog(
@@ -192,8 +193,8 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
         ],
         contentTextStyle: klr.textTheme.bodyText1,
         content: Container(
-          height: view.height * .5,
-          width: view.width,
+          height: r.height * .5,
+          width: r.width,
           child: SingleChildScrollView(
             child: Row(
               children: [
@@ -226,14 +227,16 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
   Widget build(BuildContext context) {
     final viewport = MediaQuery.of(context).size;
     final width = widget.width ?? viewport.width;
-    final itemHeight = width / widget.crossAxisCount;
-    final itemWidth  = _viewCompact ? itemHeight : width;
+    final itemHeight = widget.itemExtent ?? (width / widget.crossAxisCount);
+    final itemWidth  = _viewCompact 
+      ? width / widget.crossAxisCount 
+      : width;
 
     return  
       SliverStickyHeader(
         header: Container(
           color: klr.theme.selectableHeaderBackground,
-          height: klr.tileHeight,
+          height: klr.tileHeightSM,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -259,27 +262,29 @@ class _SelectableListState<T> extends State<SelectableList<T>> {
               child: widget.noItems ?? Text('No items...')
             )
           )
-          : SliverGrid.count(
-              crossAxisCount: _viewCompact ? widget.crossAxisCount : 1,
-              childAspectRatio: itemWidth / itemHeight,
-              children: widget.items.mapIndex(
-                (item, index) => SelectableItem(
-                  child: widget.widgetBuilder(
-                    item,
-                    _isSelected(index),
-                    !_viewCompact
-                  ),
-                  onPress: _selectionActive
-                    ? () => _toggleSelected(index)
-                    : () => widget.onPressed?.call(item),
-                  onLongPress: () => _toggleSelected(index),
-                  selected: _isSelected(index),
-                  selectionActive: _selectionActive,
-                  width: itemWidth,
-                  height: itemHeight
-                )
-              ).toList(),
-            ),         
+          : SliverToBoxAdapter(
+              child: BxGrid(
+                crossAxisCount: _viewCompact 
+                  ? widget.crossAxisCount
+                  : 1,
+                itemExtent: itemHeight,
+                children: widget.items.mapIndex(
+                  (item, index) => SelectableItem(
+                    child: widget.widgetBuilder(
+                      item,
+                      _isSelected(index),
+                      !_viewCompact
+                    ),
+                    onPress: _selectionActive
+                      ? () => _toggleSelected(index)
+                      : () => widget.onPressed?.call(item),
+                    onLongPress: () => _toggleSelected(index),
+                    selected: _isSelected(index),
+                    selectionActive: _selectionActive,
+                  )
+                ).toList(),
+              )
+          ),         
     );
   }
 }
@@ -309,8 +314,6 @@ class SelectableItem extends StatelessWidget {
     this.child,
     this.onPress,
     this.onLongPress,
-    this.width,
-    this.height,
   }) : super(key: key);
 
   final Widget child;
@@ -318,50 +321,58 @@ class SelectableItem extends StatelessWidget {
   final bool selectionActive;
   final void Function() onPress;
   final void Function() onLongPress;
-  final double width;
-  final double height;
 
   @override
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
     final padding = selectionActive ? klr.size(6) : 0;
     final selectedPadding = selectionActive ? padding / 8 : 0;
-    return InkWell(
-      onLongPress: onLongPress,
-      onTap: onPress,
-      child: Container(
-        color: klr.theme.selectableItemBorder,
-        height: height,
-        width: width,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            AnimatedContainer(
-              color: klr.theme.selectableItemBackground,
-              alignment: Alignment.center,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOutBack,
-              child: child,
-              width: width - padding,
-              height: height - padding
-            ),
-            AnimatedContainer(
-              alignment: Alignment.topLeft,
-              duration: const Duration(milliseconds: 300),
-              height: selectionActive ? height - selectedPadding : height,
-              width: selectionActive ? width - selectedPadding : width,
-              child: selectionActive 
-                ? Icon(
-                    selected ? Icons.check_circle_outlined : Icons.circle,
-                    color: selected 
-                      ? klr.theme.selectableItemIconSelected
-                      : klr.theme.selectableItemIcon
+    return LayoutBuilder(
+      builder: (context, box) {
+        final boxWidth = box.maxWidth;
+        final boxHeight = box.maxHeight;
+        return SizedBox(
+          width: boxWidth,
+          height: boxHeight,
+          child: InkWell(
+            onLongPress: onLongPress,
+            onTap: onPress,
+            child: Container(
+              color: klr.theme.selectableItemBorder,
+              height: boxHeight,
+              width: boxWidth,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedContainer(
+                    color: klr.theme.selectableItemBackground,
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutBack,
+                    child: child,
+                    width: boxWidth - padding,
+                    height: boxHeight - padding
+                  ),
+                  AnimatedContainer(
+                    alignment: Alignment.topLeft,
+                    duration: const Duration(milliseconds: 300),
+                    height: selectionActive ? boxHeight - selectedPadding : boxHeight,
+                    width: selectionActive ? boxWidth - selectedPadding : boxWidth,
+                    child: selectionActive 
+                      ? Icon(
+                          selected ? Icons.check_circle_outlined : Icons.circle,
+                          color: selected 
+                            ? klr.theme.selectableItemIconSelected
+                            : klr.theme.selectableItemIcon
+                        )
+                      : null
                   )
-                : null
+                ],
+              )
             )
-          ],
         )
-      )
+      );
+      }
     );
   }
 }

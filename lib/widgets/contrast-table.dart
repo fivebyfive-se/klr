@@ -6,11 +6,11 @@ import 'package:fbf/hsluv.dart';
 import 'package:klr/klr.dart';
 
 import 'package:klr/views/palette-page.dart';
-import 'package:klr/widgets/expanding-table.dart';
-import 'package:klr/widgets/text-with-icon.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'editor-tile/list-selector-tile.dart';
+import 'expanding-table.dart';
+import 'text-with-icon.dart';
+import 'bx.dart';
 
 class ContrastTable extends StatefulWidget {
   const ContrastTable({
@@ -36,7 +36,8 @@ class _ContrastTableState extends State<ContrastTable> {
   void _applyColor(ColorItem color, HSLuvColor newColor)
     => widget.onChanged?.call(ColorItem(
       color: newColor,
-      id: color.id
+      id: color.id,
+      parentId: color.parentId
     ));
 
   Widget _colorLabel(ColorItem ci) 
@@ -58,26 +59,11 @@ class _ContrastTableState extends State<ContrastTable> {
     final tsNormal = klr.textTheme.bodyText2;
     final bgColor = _contrastBackground.color;
     
-    final row = (List<Widget> children) 
-      => Expanded(
-          child: Row(
-            mainAxisAlignment:  MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: 
-              children.mapIndex<Widget,Widget>(
-                (item, idx) => Expanded(
-                  child: item,
-                  flex: children.length - (idx == 0 ? 0 : 1)
-                )
-              ).toList()
-          ),
-        );
-
     final contrastResult = (ColorItem ci, [HSLuvColor suggest]) {
       final contrast = ci.color.contrastWith(bgColor);
       final textLabel = _colorLabel(ci);
       final ratioLabel = (double r) => Text(
-        r.toStringAsFixed(1),
+        r.toStringAsFixed(2),
         style: tsLarge.withColor(
         r >= Contrast.W3C_CONTRAST_TEXT ? klr.theme.foreground
           : r >= Contrast.W3C_CONTRAST_LARGE_TEXT ? klr.theme.warning
@@ -89,17 +75,13 @@ class _ContrastTableState extends State<ContrastTable> {
 
       return Container(
         padding: klr.edge.all(1),
-        color: klr.theme.dialogBackground,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: BxGrid(
+          crossAxisCount: 2,
+          itemExtent: klr.tileHeightSM,
           children: [
-            row([
-              textLabel,
-              ratioLabel(contrast)
-            ]),
+            textLabel,
+            ratioLabel(contrast),
             ...(suggest == null ? [] : [
-              row([
                 _colorLabel(
                   ColorItem(
                     color: suggest, 
@@ -107,7 +89,6 @@ class _ContrastTableState extends State<ContrastTable> {
                   )
                 ),
                 ratioLabel(suggestContrast),
-              ]),
             ])
           ]
         ),
@@ -132,21 +113,18 @@ class _ContrastTableState extends State<ContrastTable> {
       return Container(
         color: bgColor.toColor(),
         padding: klr.edge.all(1),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: BxGrid(
+          crossAxisCount: 2,
+          itemExtent: klr.tileHeightSM,
           children: [
-            Expanded(
-              child: ex(ci.color)
-            ),
+            ex(ci.color),
+            Container(),
             ...(suggest == null ? [] : [
-              row([
                 ex(suggest),
                 ElevatedButton(
                   onPressed: () => _applyColor(ci, suggest),
                   child: Text('Apply')
                 )
-              ])
             ])
           ]
         ),
@@ -176,21 +154,16 @@ class _ContrastTableState extends State<ContrastTable> {
               final suggest = isGood ? null : c.color.ensureContrast(bgColor);
 
               return Container(
-                height: klr.tileHeightx2 + klr.tileHeight,
+                height: klr.tileHeightLG,
                 decoration: BoxDecoration(
                   border: klr.border.only(bottom: 2, color: klr.theme.foreground)
                 ),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: BxRow(
+                    itemHeight: klr.tileHeightLG,
                     children: [
-                    Expanded(
-                      child: contrastResult(c, suggest)
-                    ),
-                    Expanded(
-                      child: contrastExample(c, suggest)
-                    ),
-                  ]
+                      contrastResult(c, suggest),
+                      contrastExample(c, suggest),
+                    ]
                 ),
               );
             }
