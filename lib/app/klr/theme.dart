@@ -14,7 +14,8 @@ class KlrTheme extends FbfTheme {
   static KlrAltColors aklrs = KlrAltColors.getInstance();
 
   KlrTheme()
-    : super(
+    : 
+      super(
       fontTheme: KlrFontTheme(),
       layoutTheme: FbfLayoutTheme(
         baseSize: 8.0,
@@ -35,19 +36,19 @@ class KlrTheme extends FbfTheme {
       dialogBackground: aklrs.darkGrey,
       dialogForeground: aklrs.lighterGrey,
 
-      error: Colors.red,
-      warning: Colors.orange[800],
+      error: aklrs.red,
+      warning: aklrs.orange,
 
       primaryTriad: ColorTriad(aklrs.darkYellow, aklrs.darkerYellow, aklrs.yellow),
       secondaryTriad: ColorTriad(aklrs.darkGreen, aklrs.darkerGreen, aklrs.green),
-      tertiaryTriad: ColorTriad(aklrs.darkPink, aklrs.darkerPink, aklrs.pink),
+      tertiaryTriad: ColorTriad(aklrs.pink, aklrs.darkerPink, aklrs.lightPink),
 
       onPrimary: aklrs.darkestGrey,
       onSecondary: aklrs.darkestGrey,
       onTertiary: aklrs.darkestGrey,
 
       highlight: ColorTriad(aklrs.blue, aklrs.darkBlue, aklrs.lightBlue),
-      focus: ColorTriad(klrs.yellow90, klrs.yellow70, klrs.yellow90),
+      focus: ColorTriad(aklrs.violet, aklrs.darkViolet, aklrs.lightViolet),
 
       appBarBackground: aklrs.yellow,
       appBarForeground: aklrs.darkerGrey,
@@ -81,15 +82,15 @@ class KlrTheme extends FbfTheme {
         begin: Alignment(2.0, -0.5),
         end:   Alignment(-0.5, 2.0),
         colors: [
-          aklrs.lightGrey,
+          aklrs.darkViolet,
           aklrs.yellow,
+          aklrs.lightOrange,
           aklrs.darkGreen,
-          aklrs.green,
           aklrs.pink,
-          aklrs.darkerBlue,
-          aklrs.pink
+          aklrs.lighterOrange
         ],
-      )
+      ),
+      
     );
 
     Color get selectableItemBackground => aklrs.darkGrey;
@@ -100,8 +101,13 @@ class KlrTheme extends FbfTheme {
     Color get selectableLegendBackground => aklrs.darkGrey;
 
     Color get tableHeaderColor => aklrs.darkGrey;
-    Color get tableSubHeaderColor => aklrs.darkerGrey;
+    Color get tableHeaderForegroundColor => aklrs.lightestGrey;
+    Color get tableActiveHeaderColor => aklrs.lightYellow;
+    Color get tableActiveHeaderForegroundColor => aklrs.darkestGrey;
+    Color get tableSubHeaderColor => aklrs.lighterYellow;
+    Color get tableSubHeaderForegroundColor => aklrs.darkestGrey;
     Color get tableBackground => aklrs.darkestGrey;
+
   // KlrTheme()
   //   : super(
   //     fontTheme: KlrFontTheme(),
@@ -195,4 +201,19 @@ class KlrTheme extends FbfTheme {
   //   Color get tableHeaderColor => klrs.steel35;
   //   Color get tableSubHeaderColor => klrs.steel30;
   //   Color get tableBackground => klrs.steel25;
+}
+
+class EditorTileTheme {
+  const EditorTileTheme({
+    this.backgroundColor,
+    this.foregroundColor,
+    this.fieldStyle,
+    this.labelStyle
+  });
+
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  final TextStyle fieldStyle;
+  final TextStyle labelStyle;
 }

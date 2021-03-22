@@ -43,7 +43,10 @@ class _ContrastTableState extends State<ContrastTable> {
   Widget _colorLabel(ColorItem ci) 
     => TextWithIcon(
           icon: Icon(Icons.circle, color: ci.color.toColor()),
-          text: Text(ci.label, style: klr.textTheme.bodyText2)
+          text: Text(
+            ci.label, 
+            style: klr.textTheme.bodyText2
+          )
         );
 
   @override
@@ -131,18 +134,27 @@ class _ContrastTableState extends State<ContrastTable> {
       );
     };
 
+    final headerStyle = klr.textTheme.subtitle1.withColor(
+      klr.theme.tableSubHeaderForegroundColor
+    );
+
     return ExpandingTable(
       headerIcon: Icons.brightness_6,
       headerLabel: t.contrast_title,
       headerBuilder: (c, a) => ListSelectorTile<ColorItem>(
         itemWidgetBuilder: (ci) => TextWithIcon(
           icon: Icon(Icons.circle, color: ci.color.toColor()),
-          text: Text(ci.label, style: klr.textTheme.subtitle1)
+          text: Text(
+            ci.label,
+            style: headerStyle
+          )
         ),
         items: _colors,
         label: t.contrast_background,
         onSelected: (v) => setState(() => _contrastBackground = v),
         value: _contrastBackground,
+        labelStyle: headerStyle,
+        fieldStyle: headerStyle,
       ),
       contentBuilder: (c, a) => ListView(
         children: [

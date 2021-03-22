@@ -57,6 +57,9 @@ class _CssTableState extends State<CssTable> {
     final klr = KlrConfig.of(context);
     final t = KlrConfig.t(context);
     final palette = widget.palette;
+    final headerStyle = klr.textTheme.subtitle1.withColor(
+      klr.theme.tableSubHeaderForegroundColor
+    );
     
     return ExpandingTable(
       headerIcon: LineAwesomeIcons.css_3_logo,
@@ -67,18 +70,18 @@ class _CssTableState extends State<CssTable> {
             child: CheckboxListTile(
               value: _useCssVars,
               onChanged: (v) => setState(() => _useCssVars = v),
-              title: Text(t.css_useVariables),
+              title: Text(t.css_useVariables, style: headerStyle),
               controlAffinity: ListTileControlAffinity.leading,
-              activeColor: klr.theme.secondary,
+              activeColor: klr.theme.onPrimary,
             ),
           ),
           Expanded(
             child: CheckboxListTile(
               value: _useHex,
               onChanged: (v) => setState(() => _useHex = v),
-              title: Text(t.css_useHex),
+              title: Text(t.css_useHex, style: headerStyle),
               controlAffinity: ListTileControlAffinity.leading,
-              activeColor: klr.theme.secondary,
+              activeColor: klr.theme.onPrimary,
             ),
           ),
         ]
@@ -91,6 +94,7 @@ class _CssTableState extends State<CssTable> {
           padding: klr.edge.only(bottom: 4, top: 2, left: 1, right: 2),
           theme: klr.theme.codeHighlightTheme,
           textStyle: klr.codeTheme.bodyText1,
+
         )
       )
     );

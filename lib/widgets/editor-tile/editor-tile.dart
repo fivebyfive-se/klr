@@ -8,9 +8,13 @@ abstract class EditorTile extends StatelessWidget {
   const EditorTile({
     Key key,
     this.label,
+    this.labelStyle,
+    this.fieldStyle,
   }) : super(key: key);
 
   final String label;
+  final TextStyle labelStyle;
+  final TextStyle fieldStyle;
 
   double get fieldHeight => 40.0;
   double get fieldWidth  => 108.0;
@@ -24,10 +28,12 @@ abstract class EditorTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final klr = KlrConfig.of(context);
     
-    final labelStyle = klr.textTheme.subtitle1
-      .withFontWeight(FontWeight.normal);
-    final fieldStyle = klr.textTheme.subtitle1
-      .withFontWeight(FontWeight.bold);
+    final tsLabel = klr.textTheme.subtitle1
+      .withFontWeight(FontWeight.normal)
+      .merge(labelStyle);
+    final tsField = klr.textTheme.subtitle1
+      .withFontWeight(FontWeight.bold)
+      .merge(fieldStyle);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -37,11 +43,11 @@ abstract class EditorTile extends StatelessWidget {
       child: ListTile(
         leading: Text(
           label,
-          style: labelStyle
+          style: tsLabel
         ),
         minLeadingWidth: fieldWidth,
         title: DefaultTextStyle(
-          style: fieldStyle,
+          style: tsField,
           child: buildField(context, klr)
         )
       )

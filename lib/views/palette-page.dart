@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:klr/services/color-name-service.dart';
+import 'package:klr/widgets/bx.dart';
 import 'package:klr/widgets/expanding-table.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -58,6 +61,8 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
         ).toList()],
         <ColorItem>[]
     ).toList();
+
+  List<ColorItem> get _allColors => [..._colors, ..._derived];
 
   Future<void> _setPaletteName(String name) async {
     _currPalette.name = name;
@@ -141,13 +146,10 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     }
   }
 
-  Widget _colorTile(ColorItem pc, bool selected, bool showDetails) {
-    final isActive = !pc.isDerived && pc.id == _activeColor;
+  Widget _colorDetails(ColorItem pc, bool showDetails, [bool showLabel = false]) {
     final color = pc.color.toColor();
     final invColor = pc.color.invertLightnessGreyscale().toColor();
-    final titleStyle = klr.textTheme.subtitle1.withColor(invColor);
     final subtitleStyle = klr.textTheme.bodyText2.withColor(invColor);
-    final derivedFrom = pc.isDerived ? _colorById(pc.parentId) : null;
 
     final dim = (String label, double val)
       => TextSpan(
@@ -159,7 +161,43 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
           TextSpan(text: val.toStringAsFixed(1))
         ]
       );
-    final comma = () => TextSpan(text: ', ');
+      final comma = () => TextSpan(text: ', ');
+
+      return showDetails 
+        ? RichText(
+          text: TextSpan(
+            children: [
+              ...(showLabel 
+                ? [TextSpan(
+                    text: pc.label + "\n",
+                    style: klr.textTheme.subtitle1
+                      .withColor(invColor)
+                  )] 
+                : []), 
+              TextSpan(
+                text: '#' + pc.color.toHex() + '\n',
+                style: subtitleStyle.withFontWeight(FontWeight.bold)
+              ),
+              dim('hue', pc.color.hue),
+              comma(),
+              dim('sat', pc.color.saturation),
+              comma(),
+              dim('lig', pc.color.lightness),
+              comma(),
+              dim('luma', color.luma * 100),
+            ],
+            style: subtitleStyle
+          ),
+        )
+      : Text('#' + pc.color.toHex(), style: subtitleStyle);
+  }
+
+  Widget _colorTile(ColorItem pc, bool selected, bool showDetails) {
+    final isActive = !pc.isDerived && pc.id == _activeColor;
+    final color = pc.color.toColor();
+    final invColor = pc.color.invertLightnessGreyscale().toColor();
+    final titleStyle = klr.textTheme.subtitle1.withColor(invColor);
+    final derivedFrom = pc.isDerived ? _colorById(pc.parentId) : null;
 
     return Padding(
       padding: pc.isDerived 
@@ -186,26 +224,7 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
           tileColor: color,
           title: Text(pc.label, style: titleStyle),
           isThreeLine: showDetails,
-          subtitle: showDetails 
-            ? RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '#' + pc.color.toHex() + '\n',
-                      style: subtitleStyle.withFontWeight(FontWeight.bold)
-                    ),
-                    dim('hue', pc.color.hue),
-                    comma(),
-                    dim('sat', pc.color.saturation),
-                    comma(),
-                    dim('lig', pc.color.lightness),
-                    comma(),
-                    dim('luma', color.luma * 100),
-                  ],
-                  style: subtitleStyle
-                ),
-              )
-            : Text('#' + pc.color.toHex(), style: subtitleStyle),
+          subtitle: _colorDetails(pc, showDetails)
         )
       )
     );
@@ -215,6 +234,75 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
     if (!ci.isDerived) {
       _showColorEditor(ci);
     }
+  }
+
+  void _showColorDialog() {
+    final r = KlrConfig.r(context);
+    final cols = sqrt(_allColors.length).round();
+    final showTextIn = <int>[];
+    final toggleShow = (int i) => 
+      showTextIn.contains(i)
+        ? showTextIn.remove(i)
+        : showTextIn.add(i);
+    bool invertBackground = false;
+
+    showDialog(
+      context: context,
+      builder: (c) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          contentPadding: klr.edge.all(8),
+          insetPadding: EdgeInsets.zero,
+          backgroundColor: invertBackground ? Colors.grey : Colors.black,
+          title: Wrap(
+            alignment: WrapAlignment.end,
+            spacing: klr.size(2),
+            crossAxisAlignment: WrapCrossAlignment.center,
+
+            children: [
+              IconButton(
+                icon: Icon(
+                  LineAwesomeIcons.adjust,
+                  color: Colors.grey[700]
+                ),
+                onPressed: () => setState(() => invertBackground = !invertBackground),
+              ),
+              IconButton(
+                icon: Icon(
+                  LineAwesomeIcons.times,
+                  color: Colors.grey[700]
+                ),
+                onPressed: () => Navigator.of(ctx).pop(),
+              )
+            ]
+          ),
+          titlePadding: klr.edge.only(right: 8, top: 4, bottom: 2),
+          content: Container(
+            height: r.height,
+            width: r.width,
+            child: BxGrid(
+              crossAxisCount: max(cols, 1),
+              children: _allColors 
+                .mapIndex<ColorItem,Widget>(
+                  (c,i) => SizedBox.expand(
+                    child: GestureDetector(
+                      onTap: () => setState(() => toggleShow(i)),
+                      child: Container(
+                        color: c.color.toColor(),
+                        alignment: Alignment.center,
+                        child: AnimatedOpacity(
+                          opacity: showTextIn.contains(i) ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 300),
+                          child: _colorDetails(c, true, true)
+                        )
+                      ),
+                    )
+                  )
+                ).toList()
+            ),
+          ),
+        )
+      )
+    ); 
   }
 
   void _showColorEditor(ColorItem ci) {
@@ -228,10 +316,13 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
       backgroundColor: klr.theme.dialogBackground,
       builder: (context) => SizedBox.expand(
         child: SingleChildScrollView(
-          child: ColorEditor(
-            color: paletteColor,
-            width: size.width,
-            height: size.height
+          child: Theme(
+            data: klr.themeData,
+            child: ColorEditor(
+              color: paletteColor,
+              width: size.width,
+              height: size.height
+            )
           )
         )
       )
@@ -316,6 +407,15 @@ class _PalettePageState extends State<PalettePage> with KlrConfigMixin {
                                 .any((c) => c.uuid == i.id && c.harmony != null)
                             ),
                           legend: Text('Remove harmonies from selected')
+                        ),
+                        ListItemAction(
+                          icon: liIcon(
+                            LineAwesomeIcons.swatchbook,
+                            klr.theme.tertiaryAccent
+                          ),
+                          onPressed: (_) => _showColorDialog(),
+                          shouldShow: (_, __) => true,
+                          legend: Text('Show a full screen preview of the palette')
                         )
                       ],
                     ),

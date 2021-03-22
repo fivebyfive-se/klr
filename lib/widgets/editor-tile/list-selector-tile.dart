@@ -16,8 +16,15 @@ class ListSelectorTile<T> extends EditorTile {
     @required this.items,
     @required this.onSelected,
     this.value,
+    TextStyle labelStyle,
+    TextStyle fieldStyle,
   }) 
-    : super(key: key, label: label);
+    : super(
+        key: key,
+        label: label,
+        labelStyle: labelStyle,
+        fieldStyle: fieldStyle,
+      );
 
   /// If supplied, is used to generate the widget for each
   /// item. If not supplied, defaults to using toString

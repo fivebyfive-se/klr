@@ -9,8 +9,15 @@ class TextFieldTile extends EditorTile {
     Key key,
     String label,
     this.value,
-    this.onChanged
-  }) : super(key: key, label: label);
+    this.onChanged,
+    TextStyle labelStyle,
+    TextStyle fieldStyle,
+  }) : super(
+          key: key,
+          label: label,
+          labelStyle: labelStyle,
+          fieldStyle: fieldStyle,
+        );
 
   final String value;
   final void Function(String) onChanged;

@@ -56,7 +56,7 @@ class _TabberState extends State<Tabber> {
     final containerHeight = widget.height ?? vp.height;
 
     final getColor = (int idx) => idx == _activeTabIndex 
-      ? klr.theme.foreground
+      ? klr.theme.primary
       : klr.theme.foregroundDisabled; 
 
     final tabBarWidth = containerWidth;

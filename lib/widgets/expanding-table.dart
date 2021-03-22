@@ -39,8 +39,8 @@ class _ExpandingTableState extends State<ExpandingTable> {
     final klr = KlrConfig.of(context);
     final duration = const Duration(milliseconds: 400);
     final headerColor = _isActive
-      ? klr.theme.primaryAccent
-      : klr.theme.foreground;
+      ? klr.theme.tableActiveHeaderForegroundColor
+      : klr.theme.tableHeaderForegroundColor;
 
     return SliverStickyHeader(
       header: AnimatedContainer(
@@ -51,7 +51,9 @@ class _ExpandingTableState extends State<ExpandingTable> {
         child: BxCol(
           children: <Widget>[
             Container(
-              color: klr.theme.tableHeaderColor,
+              color: _isActive 
+                ? klr.theme.tableActiveHeaderColor
+                : klr.theme.tableHeaderColor,
               child: ListTile(
                 leading: Icon(
                   widget.headerIcon,
@@ -73,7 +75,21 @@ class _ExpandingTableState extends State<ExpandingTable> {
               ? [AnimatedOpacity(
                   duration: duration,
                   opacity: _isActive ? 1.0 : 0.0,
-                  child: _isActive ? widget.headerBuilder(context, _isActive) : Container()
+                  child: _isActive 
+                    ? Theme(
+                        child: widget.headerBuilder(context, _isActive),
+                        data: klr.themeData.copyWith(
+                          textTheme: klr.textTheme.copyWith(
+                            
+                          ),
+                          popupMenuTheme: PopupMenuThemeData(
+                            color: klr.theme.tableSubHeaderColor,
+                            textStyle: klr.textTheme.subtitle2
+                              .withColor(klr.theme.tableSubHeaderForegroundColor)
+                          )
+                        ),
+                      ) 
+                    : Container()
                 )] 
               : []
             )

@@ -13,13 +13,20 @@ class PopupMenuTile<E> extends EditorTile {
   const PopupMenuTile({
     Key key,
     String label,
+    TextStyle labelStyle,
+    TextStyle fieldStyle,
     this.iconDataBuilder,
     this.itemNameBuilder,
     this.items,
     this.onSelected,
     this.value,
   }) 
-    : super(key: key, label: label);
+    : super(
+        key: key,
+        label: label,
+        labelStyle: labelStyle,
+        fieldStyle: fieldStyle,
+      );
 
   /// If supplied, each item in the menu will be prefixed with
   /// an icon as built by this function

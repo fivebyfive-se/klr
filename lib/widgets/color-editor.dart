@@ -177,41 +177,45 @@ class _ColorEditorState extends State<ColorEditor> {
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, box) => ElevatedButton.icon(
-                            style: btnStyle(
-                              klr.theme.tertiaryBackground,
-                              klr.theme.onTertiary
-                            ),
-                            onPressed: () async {
-                              final selected = await showMenu(
-                                context: context,
-                                position: RelativeRect.fromLTRB(
-                                  editorWidth / 2,
-                                  0.0, 
-                                  tileHeight,
-                                  editorHeight + tileHeight * 2
-                                ),
-                                initialValue: _paletteColor.name ?? "",
-                                
-                                items: <PopupMenuEntry<String>>[
-                                  PopupMenuItem(
-                                    child: Text(_paletteColor.name ?? ""),
-                                    value: _paletteColor.name ?? ""
+                              style: btnStyle(),
+                              onPressed: () async {
+                                final selected = await showMenu(
+                                  context: context,
+                                  position: RelativeRect.fromLTRB(
+                                    editorWidth / 2,
+                                    0.0, 
+                                    tileHeight,
+                                    editorHeight + tileHeight * 2
                                   ),
-                                  PopupMenuDivider(),
-                                  ..._suggestedNames.map((n) => PopupMenuItem(
-                                    child: Text(n),
-                                    value: n,
-                                  )).toList()
-                                ]
+                                  initialValue: _paletteColor.name ?? "",
+                                  color: klr.theme.background,
+                                  items: <PopupMenuEntry<String>>[
+                                    PopupMenuItem(
+                                      child: Text(
+                                        _paletteColor.name ?? "",
+                                        style: klr.textTheme.subtitle2.withColor(
+                                          klr.theme.primary
+                                        ),
+                                      ),
+                                      value: _paletteColor.name ?? "",
+                                    ),
+                                    PopupMenuDivider(),
+                                    ..._suggestedNames.map((n) => PopupMenuItem(
+                                        child: Text(n),
+                                        value: n,
+                                      )
+                                    ).toList()
+                                  ]
                               );
                               if (selected != null) {
                                 _setName(selected);
                               }
                             },
-                            icon: Icon(Icons.auto_awesome),
+                            icon: Icon(
+                              Icons.auto_awesome
+                            ),
                             label: Text(
-                              t.color_suggestName,
-                              style: klr.textTheme.subtitle1
+                              t.color_suggestName
                             )
                           )
                          )

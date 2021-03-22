@@ -119,6 +119,12 @@ class KlrColors {
 }
 
 class KlrAltColors {
+  Color lighterGreen = Color(0xff4aada3).deltaLightness(10);
+  Color lightGreen = Color(0xff4aada3).deltaLightness(6);
+  Color green = Color(0xff4aada3);
+  Color darkGreen = Color(0xff4aada3).deltaLightness(-6);
+  Color darkerGreen = Color(0xff4aada3).deltaLightness(-10);
+
   Color lightestYellow = Color(0xffd4c959).deltaLightness(18); 
   Color lighterYellow = Color(0xffd4c959).deltaLightness(12);
   Color lightYellow = Color(0xffd4c959).deltaLightness(6);
@@ -126,23 +132,36 @@ class KlrAltColors {
   Color darkYellow = Color(0xffd4c959).deltaLightness(-6);
   Color darkerYellow = Color(0xffd4c959).deltaLightness(-12);
 
-  Color lighterGreen = Color(0xff4aada3).deltaLightness(10);
-  Color lightGreen = Color(0xff4aada3).deltaLightness(6);
-  Color green = Color(0xff4aada3);
-  Color darkGreen = Color(0xff4aada3).deltaLightness(-6);
-  Color darkerGreen = Color(0xff4aada3).deltaLightness(-10);
+  Color lighterOrange = Color(0xffCC613D).deltaLightness(16);
+  Color lightOrange = Color(0xffCC613D).deltaLightness(8);
+  Color orange = Color(0xffCC613D);
+  Color darkOrange = Color(0xffCC613D).deltaLightness(-8);
+  Color darkerOrange = Color(0xffCC613D).deltaLightness(-16);
+
+  Color lighterRed = Color(0xffD9364D).deltaLightness(16);
+  Color lightRed = Color(0xffD9364D).deltaLightness(8);
+  Color red = Color(0xffD9364D);
+  Color darkRed = Color(0xffD9364D).deltaLightness(-8);
+  Color darkerRed = Color(0xffD9364D).deltaLightness(-16);
+  
+  Color lighterPink = Color(0xffea52ce).deltaLightness(16);
+  Color lightPink = Color(0xffea52ce).deltaLightness(8);
+  Color pink = Color(0xffea52ce);
+  Color darkPink = Color(0xffea52ce).deltaLightness(-8);
+  Color darkerPink = Color(0xffea52ce).deltaLightness(-16);
+
+  Color lighterViolet = Color(0xff8C45B0).deltaLightness(16);
+  Color lightViolet = Color(0xff8C45B0).deltaLightness(8);
+  Color violet = Color(0xff8C45B0);
+  Color darkViolet = Color(0xff8C45B0).deltaLightness(-8);
+  Color darkerViolet = Color(0xff8C45B0).deltaLightness(-16);
+
 
   Color lighterBlue = Color(0xff4997ce).deltaLightness(10);
   Color lightBlue = Color(0xff4997ce).deltaLightness(6);
   Color blue = Color(0xff4997ce);
   Color darkBlue = Color(0xff4997ce).deltaLightness(-6);
   Color darkerBlue = Color(0xff4997ce).deltaLightness(-10);
-
-  Color lighterPink = Color(0xffea52ce).deltaLightness(10);
-  Color lightPink = Color(0xffea52ce).deltaLightness(6);
-  Color pink = Color(0xffea52ce);
-  Color darkPink = Color(0xffea52ce).deltaLightness(-6);
-  Color darkerPink = Color(0xffea52ce).deltaLightness(-10);
 
   Color lightestGrey = Color(0xffc9c9c9);
   Color lighterGrey = Color(0xffaaaaaa);

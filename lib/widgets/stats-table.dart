@@ -42,6 +42,9 @@ class _StatsTableState extends State<StatsTable> {
     final klr = KlrConfig.of(context);
     final r = KlrConfig.r(context);
     final t = KlrConfig.t(context);
+    final headerStyle = klr.textTheme.subtitle1.copyWith(
+      color: klr.theme.tableSubHeaderForegroundColor
+    );
 
     final chartPadding = klr.edge.all(2);
   
@@ -55,12 +58,16 @@ class _StatsTableState extends State<StatsTable> {
             items: ColorStatDimension.values,
             onSelected: (v) => setState(() => _showDimension = v),
             value: _showDimension,
+            labelStyle: headerStyle,
+            fieldStyle: headerStyle,
           ),
           PopupMenuTile<ColorBlindnessType>(
             label: t.stats_colorblindness,
             items: ColorBlindnessType.values,
             onSelected: (v) => setState(() => _simulateColorBlindness = v),
             value: _simulateColorBlindness,
+            labelStyle: headerStyle,
+            fieldStyle: headerStyle,
           ),
         ]
       ),

@@ -15,12 +15,19 @@ class NumberPickerTile extends EditorTile {
     @required this.onChanged,
     this.min = 0.0,
     this.max = 100.0,
-    this.step = 5.0
+    this.step = 5.0,
+    TextStyle labelStyle,
+    TextStyle fieldStyle,
   }) : 
     assert(value != null),
     assert(onChanged != null),
     assert(label != null),
-    super(key: key, label: label);
+    super(
+      key: key,
+      label: label,
+      labelStyle: labelStyle,
+      fieldStyle: fieldStyle
+    );
 
   final double value;
   final double min;
@@ -31,12 +38,14 @@ class NumberPickerTile extends EditorTile {
   @override
   Widget buildField(BuildContext context, KlrConfig klr) {
     final itemStyle = klr.textTheme.bodyText1
-      .copyWith(color: klr.theme.foreground, fontWeight: FontWeight.bold);
+      .copyWith(color: klr.theme.foreground, fontWeight: FontWeight.bold)
+      .merge(fieldStyle);
     final secondaryStyle = klr.textTheme.overline
       .copyWith(
         color: klr.theme.foreground.deltaLightness(-10),
         fontWeight: FontWeight.normal
-      );
+      )
+      .merge(fieldStyle);
 
     final icon = (IconData id, bool enabled) => Icon(
       id, color: enabled 
